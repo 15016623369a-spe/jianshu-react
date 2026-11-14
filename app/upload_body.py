@@ -9,7 +9,7 @@ from app.product_errors import chat_http_error, is_chat_request
 
 _JSON_PATHS = {
     "/api/v1/chat", "/api/v1/approvals", "/api/v1/query",
-    "/api/v2/policy-revenue", "/api/v2/multisource",
+    "/api/v2/policy-revenue", "/api/v2/multisource", "/api/v2/policy-exploration",
 }
 
 

@@ -23,7 +23,7 @@ https://{$RAG_DOMAIN} {
 
 	@api_json {
 		method POST
-		path /api/v1/chat /api/v1/approvals /api/v1/query /api/v2/policy-revenue /api/v2/multisource
+		path /api/v1/chat /api/v1/approvals /api/v1/query /api/v2/policy-revenue /api/v2/multisource /api/v2/policy-exploration
 	}
 	request_body @api_json {
 		max_size 16KiB

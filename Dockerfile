@@ -11,6 +11,7 @@ RUN --mount=type=cache,target=/root/.cache/pip python -m pip install --timeout 1
 COPY app/*.py app/
 COPY app/policy_corpus/*.md app/policy_corpus/
 COPY app/multisource_corpus/*.json app/multisource_corpus/
+COPY app/hard_policy_corpus/*.json app/hard_policy_corpus/*.md app/hard_policy_corpus/
 COPY app/tools/*.py app/tools/
 COPY evaluation/__init__.py evaluation/bird_column_notes.py evaluation/
 COPY sandbox/__init__.py sandbox/

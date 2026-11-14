@@ -29,6 +29,8 @@ from app.conversation_history import ConversationHistory
 from app.file_analysis import analyze_upload, preview_upload
 from app.file_analysis_history import FileAnalysisHistory
 from app.gateway_identity import configured_key, gateway_user, owner_id
+from app.hard_policy_data import prepare_hard_policy_database
+from app.hard_policy_workflow import HardMode, HardPolicyRequest, run_hard_policy
 from app.multisource_data import prepare_multisource_database
 from app.multisource_workflow import MultiSourceMode, MultiSourceRequest, multisource_selector, run_multisource_workflow
 from app.policy_react import deepseek_policy_selector
@@ -101,12 +103,21 @@ def _multisource_demo_database(root: Path) -> Path | None:
         return None
 
 
+def _hard_policy_demo_database(root: Path) -> Path | None:
+    try:
+        return prepare_hard_policy_database(root)
+    except (OSError, ValueError, sqlite3.Error) as exc:
+        _logger.warning("Policy exploration database could not be initialized (%s)", type(exc).__name__)
+        return None
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.root = Path(os.getenv("RAG_DATA_DIR", PROJECT_ROOT / "data" / "step8")).resolve()
     app.state.traces = TraceStore(app.state.root / "traces.sqlite")
     app.state.policy_database = _policy_demo_database(app.state.root / "policy_demo")
     app.state.multisource_database = _multisource_demo_database(app.state.root / "multisource_demo")
+    app.state.hard_policy_database = _hard_policy_demo_database(app.state.root / "policy_exploration_demo")
     app.state.history = ConversationHistory(app.state.root / "conversation_history.sqlite")
     app.state.file_history = FileAnalysisHistory(app.state.root / "file_analysis.sqlite")
     app.state.query_exports = QueryExportStore(app.state.root / "query_exports.sqlite")
@@ -205,6 +216,22 @@ async def multisource_revenue(body: MultiSourceRequest, request: Request, mode: 
     with tracing_context(enabled=False):
         async with state.policy_slots:
             return await run_in_threadpool(run_multisource_workflow, state.multisource_database, body, mode=mode, choose=choose)
+
+
+@app.post("/api/v2/policy-exploration")
+async def hard_policy_revenue(
+    body: HardPolicyRequest, request: Request, mode: HardMode = "auto",
+):
+    state = request.app.state
+    if state.hard_policy_database is None:
+        raise HTTPException(503, "政策探索实验订单库暂时不可用，请检查服务状态。")
+    if state.policy_slots.locked():
+        raise HTTPException(503, "实验请求较多，请稍后重试。")
+    settings = state.settings
+    choose = multisource_selector(settings) if mode != "fixed" and settings.llm_configured and settings.llm_base_url else None
+    with tracing_context(enabled=False):
+        async with state.policy_slots:
+            return await run_in_threadpool(run_hard_policy, state.hard_policy_database, body, mode=mode, choose=choose)
 
 
 def _conversation_root(owner: str) -> Path:
