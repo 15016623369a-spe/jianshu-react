@@ -1,0 +1,137 @@
+{
+  "format_version": 1,
+  "scope": "Published V1 product SQL regression; separate from the policy workflow comparison.",
+  "commit": "43b151aa4505e3bb98acdfa19a30e8b6fceb2ccb",
+  "run_at_utc": "2026-11-14T20:07:19.732124Z",
+  "benchmark": {
+    "entrypoint": "POST /api/v1/query: app.product_sql.query_database",
+    "dataset": "BIRD Mini-Dev SQLite",
+    "split": "dev",
+    "repetitions": 1,
+    "profile": "full",
+    "workers": 2,
+    "model": "deepseek-v4-pro",
+    "provider_host": "api.deepseek.com",
+    "temperature": 0.0,
+    "dataset_sha256": "926af2a0d1b47e5d0d15a7aa8a34d4721007f4550a881555b6a89496b54a2606",
+    "split_sha256": "6cea4e7a557ac262c9897d2804ed3f7c5261e36bf43e2fecdebc1d8a80bc2901",
+    "prompt_version": "product-bird-storage-grain-1",
+    "system_prompt_sha256": "0ad40ed05687733ac44f8da5f3c1ebb818931f70a99bb209de0b5dad6efc9c99",
+    "sqlite_version": "3.54.1",
+    "source_sha256": {
+      "app/product_sql.py": "4f6530be708557280577ba67f634e2368d64437cac88c241dd1cb7b540454d39",
+      "app/text2sql.py": "5d457fa24662c9ae421e8eb893bfa1dd8bebc8dbab8cd834490edef80a0f65e3",
+      "app/schema_linking.py": "bf9af75f4f83aa28425c690709b573ff7e88704193de98be4b0e1b15e024cd51",
+      "app/schema_prompt.py": "bc6be4cb2600d5da494ec3fee65de06e77252a19b9b65935d2bfc73d9069310d",
+      "app/auto_column_notes.py": "3b3779f2f8e69408e9c2d0d87e78d32135abb5d8578d9e9a6d2efd91abf757c0",
+      "evaluation/bird_column_notes.py": "5f74bbdb81f18cbedd2840dd490ca32eb17f3fcca35ca09688874a9e60375099",
+      "app/sql_recovery.py": "3fcf114314bbbe4c8584d48f708e72fc1dba3ae06fe1430adfe5a22473d72957",
+      "app/recovery_models.py": "9573e131750a088b297a31196295808afe786bba42fe031f71c7973c3355adbc",
+      "app/tools/db.py": "4814e005794543b855a5a5c5a34f2bb70e108403efd7baddb96854589a1e1e95",
+      "app/llm.py": "d2244863db41cee7571c3944fa9037fe439f8d983fa4ce38cd9ee35f61a4c561",
+      "app/query_export.py": "216347871e3ba7da18b48ff4cd22781c5e429a6c9cbcabc083c68f3ece8d317f",
+      "app/sql_semantics.py": "6344ce5e54542879965e7eb15b363ba5f868e8c48e603396bf5c987e224173cb",
+      "evaluation/run_product.py": "82ed51f596dd5416b2866f46294b2cc9da8e9136df654adb91d7be21743f5566"
+    }
+  },
+  "live_result": {
+    "benchmark_valid": true,
+    "questions": 50,
+    "correct": 26,
+    "execution_accuracy": 0.52,
+    "answered": 50,
+    "executed": 50,
+    "wrong_answers": 24,
+    "statuses": {
+      "mismatch": 24,
+      "correct": 26
+    },
+    "error_types": {
+      "mismatch": 24
+    },
+    "p50_latency_seconds": 1.39176,
+    "p95_latency_seconds": 4.38928,
+    "model_calls": 51,
+    "model_calls_with_usage": 51,
+    "token_totals": {
+      "prompt_tokens": 62813,
+      "completion_tokens": 8145,
+      "total_tokens": 70958,
+      "prompt_cache_hit_tokens": 59648,
+      "prompt_cache_miss_tokens": 3165
+    },
+    "infrastructure_errors": 0
+  },
+  "frozen_reference": {
+    "relative_path": "evaluation/baselines/product_dev.json",
+    "sha256": "1362a0257e224b1933f89b662a3b4769e8c87a9e0f83b01992835fbcca0131e9",
+    "workers": 3,
+    "summary": {
+      "repetitions": 3,
+      "questions_per_run": 50,
+      "correct_counts": [
+        27,
+        26,
+        27
+      ],
+      "correct_median": 27,
+      "correct_range": [
+        26,
+        27
+      ],
+      "p95_latency_seconds_runs": [
+        9.00078,
+        6.76199,
+        9.37052
+      ],
+      "p95_latency_seconds_median": 9.00078
+    },
+    "comparability": {
+      "same_task_ids_data_split_model_prompt_and_profile": true,
+      "source_paths_changed_since_freeze": [
+        "app/product_sql.py",
+        "app/text2sql.py",
+        "app/schema_linking.py",
+        "app/sql_recovery.py",
+        "app/recovery_models.py",
+        "app/tools/db.py"
+      ],
+      "nightly_gate_applied": false,
+      "limits": "This single run used two workers. The frozen reference used three workers over three runs. The EX range is descriptive. Latency differences do not establish an improvement."
+    },
+    "case_changes_versus_historical_majority": {
+      "majority_correct_count": 26,
+      "regressed_ids": [
+        353
+      ],
+      "improved_ids": [
+        250
+      ]
+    }
+  },
+  "offline_v1": {
+    "unit_tests_passed": 164,
+    "recorded_conversation_scenarios_passed": 30,
+    "recorded_conversation_scenarios_total": 30
+  },
+  "inherited_sql_replay": {
+    "method": "Replay each final candidate SQL from the V1 live run through the staged V2 checkout's unchanged product query core on the same BIRD database.",
+    "questions": 50,
+    "matching_cases": 50,
+    "correct": 26,
+    "mismatch": 24,
+    "provider_calls": 0,
+    "compared_fields": [
+      "kind", "status", "ex", "prediction_count", "prediction_unique_count",
+      "prediction_columns", "reference_count", "reference_unique_count"
+    ],
+    "limits": "This holds final SQL fixed and does not replay intermediate model responses or test changes to model generation."
+  },
+  "historical_full_schema_baseline": {
+    "model": "deepseek-flash",
+    "correct": 21,
+    "questions": 50,
+    "relative_path": "docs/v1-baseline.md",
+    "used_as_regression_reference": false
+  }
+}

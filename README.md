@@ -1,6 +1,6 @@
 # 见数 V2 · 政策问数
 
-这个仓库从 [见数 Text2SQL Agent `43b151a`](https://github.com/15016623369a-spe/text2sql-agent/commit/43b151aa4505e3bb98acdfa19a30e8b6fceb2ccb) 派生。V2 先提供固定顺序的「政策问数」工作区，为后续 ReAct 实验建立基线。
+这个仓库从 [见数 Text2SQL Agent `43b151a`](https://github.com/15016623369a-spe/text2sql-agent/commit/43b151aa4505e3bb98acdfa19a30e8b6fceb2ccb) 派生。V2 的「政策问数」提供固定流程、ReAct + 快路径和纯 ReAct 三种执行方式。固定流程是默认。对同一批 18 道留出题各跑三轮，三组都通过 54/54，固定流程延迟最低。[ReAct 对照实验](docs/v2-react-experiment.md)
 
 运行 `bash scripts/demo.sh` 后打开 [政策问数工作区](http://127.0.0.1:28501/?workspace=policy)。保留表单默认的 **2026-10-01 至 2026-10-31（含当天）** 和「全部地区」，执行后可以核对 **¥477.00** 的构成。10 月 15 日前扣除实际退款，10 月 15 日起每笔最多扣 ¥3。界面提供分段统计、政策原文、实际 SQL 和绑定参数。政策覆盖有缺口时，流程在执行 SQL 前停止。
 
