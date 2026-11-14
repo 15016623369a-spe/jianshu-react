@@ -1,0 +1,180 @@
+{
+  "kind": "answer",
+  "reason": null,
+  "message": "已按适用政策与真实账本核对净营收。",
+  "mode": "uncached",
+  "scope": {
+    "start": "2026-11-01",
+    "end_exclusive": "2026-12-01",
+    "region": "华南",
+    "product": "电水壶"
+  },
+  "currency": "CNY",
+  "total_cents": 24640,
+  "evidence": {
+    "category": "家电",
+    "policy": {
+      "id": "policy-south-appliances",
+      "title": "华南家电退款政策",
+      "product": null,
+      "category": "家电",
+      "region": "华南",
+      "start": "2026-10-01",
+      "end_exclusive": "2026-12-01",
+      "source": "policy",
+      "authority": "official",
+      "ref_kind": "latest",
+      "ref_title": null,
+      "cap_cents": null,
+      "ledger": null,
+      "quote": "华南家电订单的扣退款口径见查询期间生效的最新公告。"
+    },
+    "bulletin": {
+      "id": "bulletin-south-appliances-nov",
+      "title": "华南家电十一月争议扣回公告",
+      "product": null,
+      "category": "家电",
+      "region": "华南",
+      "start": "2026-11-01",
+      "end_exclusive": "2026-12-01",
+      "source": "bulletin",
+      "authority": "official",
+      "ref_kind": null,
+      "ref_title": null,
+      "cap_cents": 800,
+      "ledger": "chargebacks",
+      "quote": "十一月使用争议扣回台账。先合并同一订单的全部扣回，再逐单扣减，每笔不超过 8 元。"
+    },
+    "schema": {
+      "ledger": "chargebacks",
+      "tables": [
+        {
+          "name": "orders",
+          "columns": [
+            "id",
+            "ordered_on",
+            "product",
+            "region",
+            "amount_cents",
+            "refund_cents"
+          ]
+        },
+        {
+          "name": "chargebacks",
+          "columns": [
+            "id",
+            "order_id",
+            "amount_cents"
+          ]
+        }
+      ]
+    },
+    "query": {
+      "order_count": 3,
+      "gross_cents": 26000,
+      "deducted_cents": 1360,
+      "net_cents": 24640,
+      "sql": "WITH selected_orders AS (\n  SELECT id, amount_cents, refund_cents\n  FROM orders\n  WHERE product = ? AND region = ? AND ordered_on >= ? AND ordered_on < ?\n),\nevents_per_order AS (\n  SELECT L.order_id, SUM(L.amount_cents) AS amount_cents\n  FROM chargebacks AS L JOIN selected_orders AS O ON L.order_id = O.id\n  GROUP BY L.order_id\n),\ndeductions AS (\n  SELECT selected_orders.amount_cents AS gross_cents, MIN(COALESCE(events_per_order.amount_cents, 0), ?) AS deducted_cents\n  FROM selected_orders LEFT JOIN events_per_order ON selected_orders.id = events_per_order.order_id\n)\nSELECT COUNT(*) AS order_count,\n       COALESCE(SUM(gross_cents), 0) AS gross_cents,\n       COALESCE(SUM(deducted_cents), 0) AS deducted_cents,\n       COALESCE(SUM(gross_cents - deducted_cents), 0) AS net_cents\nFROM deductions",
+      "parameters": [
+        "电水壶",
+        "华南",
+        "2026-11-01",
+        "2026-12-01",
+        800
+      ],
+      "ledger": "chargebacks"
+    }
+  },
+  "tool_trace": [
+    {
+      "step": 1,
+      "tool": "identify_product",
+      "status": "ok",
+      "ids": [
+        "电水壶",
+        "家电"
+      ],
+      "reason": null
+    },
+    {
+      "step": 2,
+      "tool": "find_policy",
+      "status": "ok",
+      "ids": [
+        "policy-south-appliances"
+      ],
+      "reason": null
+    },
+    {
+      "step": 3,
+      "tool": "plan",
+      "status": "ok",
+      "ids": [
+        "find_latest_bulletin"
+      ],
+      "reason": null
+    },
+    {
+      "step": 4,
+      "tool": "find_latest_bulletin",
+      "status": "ok",
+      "ids": [
+        "bulletin-south-appliances-nov"
+      ],
+      "reason": null
+    },
+    {
+      "step": 5,
+      "tool": "replan",
+      "status": "ok",
+      "ids": [
+        "inspect_ledger",
+        "query"
+      ],
+      "reason": null
+    },
+    {
+      "step": 6,
+      "tool": "inspect_ledger",
+      "status": "ok",
+      "ids": [
+        "chargebacks"
+      ],
+      "reason": null
+    },
+    {
+      "step": 7,
+      "tool": "query",
+      "status": "ok",
+      "ids": [
+        "chargebacks"
+      ],
+      "reason": null
+    },
+    {
+      "step": 8,
+      "tool": "verify",
+      "status": "ok",
+      "ids": [
+        "bulletin-south-appliances-nov"
+      ],
+      "reason": null
+    }
+  ],
+  "metrics": {
+    "prompt_tokens": 288,
+    "completion_tokens": 13,
+    "total_tokens": 301,
+    "model_calls": 2,
+    "sql_queries": 1,
+    "replans": 1,
+    "cache_hits": 0,
+    "invalid_plans": 0,
+    "usage_complete": true,
+    "latency_ms": 1326.66
+  },
+  "call_sources": [
+    "injected",
+    "deepseek-v4-pro"
+  ]
+}

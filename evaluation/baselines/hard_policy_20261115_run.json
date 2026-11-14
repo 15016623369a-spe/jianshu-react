@@ -1,0 +1,36 @@
+{
+  "suite": "hard-policy-multi-plan-20261115-v1",
+  "holdout_cases": 25,
+  "development_cases": 4,
+  "modes": [
+    "fixed",
+    "uncached",
+    "plan"
+  ],
+  "started_at_utc": "2026-11-14T21:33:08.721191+00:00",
+  "order_seed": 102317,
+  "model": "deepseek-v4-pro",
+  "temperature": 0,
+  "provider_host": "api.deepseek.com",
+  "workers": 5,
+  "repeats": 3,
+  "source_sha256": {
+    "app/hard_policy_corpus/bulletins.md": "3a2a617dce587b52ba1f695bb950f6e5760cc5aab738d6b82ed7912779290179",
+    "app/hard_policy_corpus/catalog.json": "b218a8850f608b6868d1520820f8c9560f80417f9f2634f293b275b6fbf1b1d5",
+    "app/hard_policy_corpus/chargebacks.json": "1a46f7d79977712fc7f7eef230b1eeb18e8c6cf9ec2365feae1af83e73fb3962",
+    "app/hard_policy_corpus/orders.json": "8b6c09b84a1eb744aa1a5378713c39836e768c8f27a1a0a4b5f2a001a7abc480",
+    "app/hard_policy_corpus/policies.md": "62d1a6db66cdcd7093cb960afa4d4cf6877b15823e853cb95248c41a30496167",
+    "app/hard_policy_corpus/refunds.json": "3aacf9d4a4a50cbd6980b850d54831a33678a4f042b455d799250cc30f1551b6",
+    "app/hard_policy_data.py": "35579db6bf5998235e20df9111697bbd5594351919718acc12006cb0b2dff621",
+    "app/hard_policy_ui.py": "24b4fa47249a347007ec5d6d2178fcd8fbfc6094c279259e2f30fd375f58ac22",
+    "app/hard_policy_workflow.py": "520fce19667a95ff4d8d5f9d134c2abee938b62552672f9279c80a2ab7fba22f",
+    "evaluation/hard_policy_cases.json": "b0c9a7e6231bcd40895dd9f1ee59bc50d61df09db19ca6683071ffe9fd80b9b5",
+    "evaluation/run_hard_policy_comparison.py": "4c24871c21df87617f0063bfa0f4edce4a34abca548d4904c87ddd95ab6e3d30",
+    "evaluation/hard_policy_reference.py": "645ad158fc970abc610234341cfba666dcb3745c161aeb2f34ee4df6365d4032",
+    "app/llm.py": "a81fa1e64d81a4f60935c515e1ff3de5242ea970db6b0b33519fe9a92ebe8ee1",
+    "app/tools/db.py": "e49d303eb54ecaba0db7506b3eca064e2991f0f1dc86c56eacaf0d098fbec9e5",
+    "app/multisource_workflow.py": "a076c78ff89a63634906cd2e650a413baa0351589e84c2004b1e33cf3ffe737b"
+  },
+  "latency_method": "application call excluding verifier scoring and executor queue; P95 nearest rank",
+  "cache_method": "new cache per round; prime only on distinct development scopes; report warm-up separately"
+}
