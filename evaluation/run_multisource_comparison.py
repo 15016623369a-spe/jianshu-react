@@ -1,4 +1,4 @@
-"""Freeze-check and compare deterministic and controlled ReAct multi-source runs."""
+"""Compare fixed, ReAct, and Plan-and-Execute runs on frozen multi-source cases."""
 from __future__ import annotations
 
 import argparse
@@ -24,12 +24,14 @@ from evaluation.run_policy_comparison import _known_total, _p95
 
 SUITE_PATH = Path(__file__).with_name("multisource_cases.json")
 RESERVE_PATH = Path(__file__).with_name("multisource_reserve.json")
-MODES = ("fixed", "react")
+PLAN_HOLDOUT_PATH = Path(__file__).with_name("multisource_plan_holdout.json")
+MODES = ("fixed", "react", "plan")
+HELD_OUT_SPLITS = {"reserve": RESERVE_PATH, "plan-holdout": PLAN_HOLDOUT_PATH}
 SCOPE_FIELDS = ("start", "end_exclusive", "region")
 GROUP_FIELDS = ("id", "product", "region", "order_count", "gross_cents", "deducted_cents", "net_cents", "evidence_ids")
 QUANTITY_FIELDS = ("order_count", "gross_cents", "deducted_cents", "net_cents")
 TOKEN_FIELDS = ("prompt_tokens", "completion_tokens", "total_tokens")
-TOOL_NAMES = ("discover_groups", "lookup_policies", "lookup_bulletins", "aggregate_groups", "finish")
+TOOL_NAMES = ("discover_groups", "lookup_policies", "lookup_bulletins", "aggregate_groups", "finish", "plan", "replan")
 MODEL_ERRORS = ("model_error", "model_unconfigured", "timeout", "workflow_error")
 ORDER_SEED = 78124
 
@@ -42,15 +44,17 @@ def _load_suite(split: str) -> dict:
     suite = json.loads(SUITE_PATH.read_text(encoding="utf-8"))
     fixture = read_fixture()
     cases = suite["development"] + suite["holdout"]
-    if split == "reserve":
-        reserve = json.loads(RESERVE_PATH.read_text(encoding="utf-8"))
-        cases += reserve["holdout"]
+    if split in HELD_OUT_SPLITS:
+        held_out = json.loads(HELD_OUT_SPLITS[split].read_text(encoding="utf-8"))
+        cases += held_out["holdout"]
+        if split == "plan-holdout":
+            cases += json.loads(RESERVE_PATH.read_text(encoding="utf-8"))["holdout"]
     if len({_scope_key(case) for case in cases}) != len(cases) or len({case["id"] for case in cases}) != len(cases):
         raise ValueError("Every development and holdout case must have a unique scope and ID")
     for case in cases:
         if expected_result(case["request"], fixture) != case["expected"]:
             raise ValueError(f"Frozen reference path changed: {case['id']}")
-    return {"suite": reserve["suite"], "cases": reserve["holdout"]} if split == "reserve" else {
+    return {"suite": held_out["suite"], "cases": held_out["holdout"]} if split in HELD_OUT_SPLITS else {
         "suite": suite["suite"], "cases": suite[split],
     }
 
@@ -61,8 +65,9 @@ def _fingerprints(split: str) -> dict[str, str]:
         Path(__file__), SUITE_PATH, Path(__file__).with_name("multisource_reference.py"),
         PROJECT_ROOT / "app/llm.py", PROJECT_ROOT / "app/tools/db.py",
     }
-    if split == "reserve":
+    if split in HELD_OUT_SPLITS:
         paths.add(RESERVE_PATH)
+        paths.add(HELD_OUT_SPLITS[split])
     return {path.relative_to(PROJECT_ROOT).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in sorted(paths)}
 
@@ -84,12 +89,14 @@ def _score(result: dict, case: dict, mode: str) -> dict[str, bool]:
     evidence = result["evidence"]
     counts = _trace_counts(result["tool_trace"])
     metrics = result["metrics"]
-    want_model = mode == "react" and expected["kind"] != "clarification"
+    want_model = mode != "fixed" and expected["kind"] != "clarification"
     checks = {
         "outcome": result["kind"] == expected["kind"],
         "scope": result["scope"] == dict(zip(SCOPE_FIELDS, _scope_key(case), strict=True)),
         "treatment": result["mode"] == mode and (metrics["model_calls"] > 0) == want_model,
     }
+    if mode == "plan" and expected["kind"] != "clarification":
+        checks["validated_plan"] = counts.get("plan") == 1
     if expected["kind"] != "answer":
         checks.update(
             reason=result["reason"] in expected["reasons"],
@@ -168,6 +175,7 @@ def _evaluate(database: Path, case: dict, number: int, mode: str, selector) -> d
         "latency_ms": elapsed_ms, "model_calls": model_calls, "model_calls_with_usage": metered,
         "usage": usage, "sql_queries": metrics.get("sql_queries", 0),
         "invalid_actions": metrics.get("invalid_actions", 0), "duplicate_actions": metrics.get("duplicate_actions", 0),
+        "replans": metrics.get("replans", sum(entry.get("tool") == "replan" for entry in result.get("tool_trace", []))),
         "tools": [{key: entry[key] for key in ("step", "tool", "ids", "status", "reason") if key in entry}
                   for entry in result.get("tool_trace", [])],
         "error_type": error,
@@ -188,6 +196,7 @@ def _scores(rows: list[dict]) -> dict:
         "sql_queries": sum(row["sql_queries"] for row in rows),
         "invalid_actions": sum(row["invalid_actions"] for row in rows),
         "duplicate_actions": sum(row["duplicate_actions"] for row in rows),
+        "replans": sum(row["replans"] for row in rows),
         "tools_ok": dict(sum((Counter(_trace_counts(row["tools"])) for row in rows), Counter())),
         "evidence_counts": dict(sum((Counter(row["evidence_counts"]) for row in rows), Counter())),
         "failures": [{"id": row["id"], "round": row["round"], "reason": row["observed"]["reason"],
@@ -207,15 +216,19 @@ def _summarize(rows: list[dict], modes: list[str]) -> dict:
             "by_expected_outcome": {kind: _scores([row for row in selected if row["expected"]["kind"] == kind])
                                    for kind in sorted({row["expected"]["kind"] for row in selected})},
         }
-    paired = {}
-    if set(modes) == set(MODES):
-        matched = {(row["round"], row["id"], row["mode"]): row["passed"] for row in rows}
-        for group in sorted({row["group"] for row in rows}):
-            comparison = Counter((matched[row["round"], row["id"], "fixed"], row["passed"])
-                                 for row in rows if row["group"] == group and row["mode"] == "react")
-            paired[group] = {"gains": comparison[False, True], "losses": comparison[True, False],
-                             "both_pass": comparison[True, True], "both_fail": comparison[False, False]}
-    return {"methods": methods, "paired_react_vs_fixed": paired}
+    matched = {(row["round"], row["id"], row["mode"]): row["passed"] for row in rows}
+    groups = sorted({row["group"] for row in rows})
+    pairs = {}
+    for mode, baseline in (("react", "fixed"), ("plan", "fixed"), ("plan", "react")):
+        paired = {}
+        if mode in modes and baseline in modes:
+            for group in groups:
+                comparison = Counter((matched[row["round"], row["id"], baseline], row["passed"])
+                                     for row in rows if row["group"] == group and row["mode"] == mode)
+                paired[group] = {"gains": comparison[False, True], "losses": comparison[True, False],
+                                 "both_pass": comparison[True, True], "both_fail": comparison[False, False]}
+        pairs[f"paired_{mode}_vs_{baseline}"] = paired
+    return {"methods": methods, **pairs}
 
 
 def main() -> int:
@@ -223,8 +236,8 @@ def main() -> int:
     from app.multisource_workflow import multisource_selector
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--split", choices=("development", "holdout", "reserve"), default="holdout")
-    parser.add_argument("--modes", nargs="+", choices=MODES, default=list(MODES))
+    parser.add_argument("--split", choices=("development", "holdout", *HELD_OUT_SPLITS), default="holdout")
+    parser.add_argument("--modes", nargs="+", choices=MODES, default=["fixed", "react"])
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--workers", type=int, default=5)
     parser.add_argument("--env-file", type=Path)
@@ -234,7 +247,7 @@ def main() -> int:
     if not 1 <= args.repeats <= 10 or not 1 <= args.workers <= 8 or len(set(args.modes)) != len(args.modes):
         parser.error("Use 1–10 repeats, 1–8 workers and distinct modes")
     settings = selector = None
-    if "react" in args.modes:
+    if any(mode != "fixed" for mode in args.modes):
         if args.env_file:
             if not args.env_file.is_file():
                 parser.error("--env-file must be an existing configuration file")
@@ -244,7 +257,7 @@ def main() -> int:
         if not settings.llm_configured or endpoint.scheme != "https" or not endpoint.hostname or any(
             (endpoint.username, endpoint.password, endpoint.query, endpoint.fragment),
         ):
-            parser.error("Live ReAct requires an HTTPS model configuration")
+            parser.error("Live model modes require an HTTPS model configuration")
         selector = multisource_selector(settings)
     suite = _load_suite(args.split)
     cases = suite["cases"]
