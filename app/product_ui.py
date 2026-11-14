@@ -5,6 +5,8 @@ import hashlib
 import json
 import os
 import re
+from datetime import date, timedelta
+from decimal import Decimal
 from functools import partial
 from pathlib import Path
 from uuid import UUID, uuid4
@@ -39,14 +41,23 @@ DEMO_QUESTIONS = (
     ("各地区订单数", "按地区统计订单数量"),
     ("上月退款总额", "上月退款总额是多少？"),
 )
+WORKSPACES = {
+    "对话": ("", "和数据对话", "用自然语言查数据库，继续追问，并核对结果背后的 SQL。"),
+    "文件分析": ("file", "文件分析", "上传 CSV 或 Excel，确认表头，再做排名、图表与公式核对。"),
+    "政策问数": ("policy", "政策问数", "按政策生效日期分段计算净营收，核对每段的政策条款和查询结果。"),
+}
+POLICY_STAGES = {
+    "resolve_scope": "确认日期和地区",
+    "load_policies": "读取适用政策",
+    "plan_segments": "按生效日期划分区间",
+    "execute_sql": "执行分段只读查询",
+    "verify": "核对分段结果和证据",
+}
+POLICY_STAGE_STATUS = {"ok": "完成", "clarification": "待确认", "abstained": "已停止", "error": "检查未通过"}
 
 
-def render_workspace_header(file_analysis: bool) -> None:
-    title, description = (
-        ("文件分析", "上传 CSV 或 Excel，确认表头，再做排名、图表与公式核对。")
-        if file_analysis else
-        ("和数据对话", "用自然语言查数据库，继续追问，并核对结果背后的 SQL。")
-    )
+def render_workspace_header(mode: str) -> None:
+    _, title, description = WORKSPACES[mode]
     st.html(
         '<header class="jianshu-hero">'
         '<div class="jianshu-hero-copy">'
@@ -69,6 +80,78 @@ def get_json(path: str, *, params: dict | None = None) -> dict:
     response = httpx.get(API + path, params=params, headers=GATEWAY_HEADERS, timeout=8, trust_env=False)
     response.raise_for_status()
     return response.json()
+
+
+def render_policy_workspace(session_id: str) -> None:
+    st.caption("使用合成订单。默认查询 2026 年 10 月，该月内退款政策变更过一次。")
+    with st.form(f"policy-revenue-{session_id}"):
+        start_field, end_field, region_field = st.columns(3)
+        start = start_field.date_input("起始日期", date(2026, 10, 1), min_value=date(2000, 1, 1),
+                                      max_value=date(2099, 12, 31))
+        end = end_field.date_input("结束日期（含当天）", date(2026, 10, 31), min_value=date(2000, 1, 1),
+                                  max_value=date(2099, 12, 31))
+        region = region_field.selectbox("地区", (None, "华南", "华东", "华北"),
+                                        format_func=lambda value: value or "全部地区")
+        submitted = st.form_submit_button("按政策计算净营收", type="primary")
+
+    result_key = "policy_revenue_result"
+    if submitted:
+        st.session_state.pop(result_key, None)
+        try:
+            with st.spinner("正在读取政策并计算净营收"):
+                response = httpx.post(API + "/api/v2/policy-revenue", headers=GATEWAY_HEADERS, json={
+                    "start": start.isoformat() if start is not None else None,
+                    "end_exclusive": (end + timedelta(days=1)).isoformat() if end is not None else None,
+                    "region": region,
+                }, timeout=15, trust_env=False)
+                response.raise_for_status()
+                st.session_state[result_key] = (session_id, response.json())
+        except (httpx.HTTPError, ValueError):
+            st.error("暂时无法完成政策查询，请检查服务状态后重试。")
+
+    saved_session, result = st.session_state.get(result_key, (None, None))
+    if saved_session == session_id and result:
+        render_policy_result(result)
+
+
+def render_policy_result(result: dict) -> None:
+    if result["kind"] == "answer":
+        scope = result["scope"]
+        st.metric("政策口径净营收", f"¥{Decimal(result['total_cents']) / 100:,.2f}")
+        st.caption(f"{scope['start']} 至 {scope['end_exclusive']}（不含结束日） · {scope['region'] or '全部地区'}")
+        st.subheader("分段结果")
+        policies = {policy["evidence_id"]: policy for policy in result["evidence"]["policies"]}
+        queries = {query["evidence_id"]: query for query in result["evidence"]["queries"]}
+        for segment in result["segments"]:
+            policy = policies[segment["policy_evidence_id"]]
+            query = queries[segment["sql_evidence_id"]]
+            amount = f"¥{Decimal(segment['revenue_cents']) / 100:,.2f}"
+            with st.expander(f"{segment['start']} 至 {segment['end_exclusive']} · {amount}"):
+                st.caption(f"{segment['order_count']} 笔订单 · 区间不含结束日")
+                st.markdown("**政策依据**")
+                st.text(f"{policy['title']} · {policy['section']}")
+                st.text(policy["quote"])
+                st.caption(f"{policy['start']} 至 {policy['end_exclusive']}（不含结束日） · {policy['evidence_id']}")
+                st.markdown("**只读查询**")
+                st.code(query["sql"], language="sql")
+                st.text("绑定参数 " + json.dumps(query["parameters"], ensure_ascii=False))
+                st.dataframe(table_data(query["columns"], query["rows"]), hide_index=True, width="stretch")
+                st.caption(query["evidence_id"])
+    elif result["kind"] == "clarification":
+        st.info({
+            "missing_dates": "请选择起始日期和结束日期。",
+            "invalid_period": "结束日期不能早于起始日期。",
+        }.get(result["reason"], result["message"]))
+    else:
+        st.warning(result["message"])
+
+    metrics = result["metrics"]
+    with st.expander("本次执行步骤"):
+        for step in result["steps"]:
+            stage = POLICY_STAGES.get(step["stage"], step["stage"])
+            status = POLICY_STAGE_STATUS.get(step["status"], step["status"])
+            st.text(f"{stage} · {status}")
+        st.caption(f"{metrics['latency_ms']:.1f} ms · {metrics['sql_queries']} 次 SQL 查询 · {metrics['model_calls']} 次模型调用")
 
 
 def invoke(path: str, **kwargs) -> tuple[dict, dict]:
@@ -434,7 +517,7 @@ def choose_postgres_tables(session_id: str, saved_tables: list[str]) -> list[str
     return selected
 
 
-st.set_page_config(page_title="见数 · Text2SQL Agent", layout="wide")
+st.set_page_config(page_title="见数 V2 · 数据 Agent", layout="wide")
 GATEWAY_KEY = configured_key()
 GATEWAY_HEADERS = {}
 user = None
@@ -467,14 +550,20 @@ except (httpx.HTTPError, ValueError):
     st.error("暂时无法连接 API，请确认服务已启动。")
     st.stop()
 
-mode = st.sidebar.radio("工作区", ["对话", "文件分析"],
-                        index=int(st.query_params.get("workspace") == "file"), key="workspace-mode")
-render_workspace_header(mode == "文件分析")
-if mode == "文件分析" and st.query_params.get("workspace") != "file":
-    st.query_params["workspace"] = "file"
-elif mode == "对话" and st.query_params.get("workspace") == "file":
+workspace = st.query_params.get("workspace", "")
+workspace_ids = [entry[0] for entry in WORKSPACES.values()]
+mode = st.sidebar.radio("工作区", list(WORKSPACES),
+                        index=workspace_ids.index(workspace) if workspace in workspace_ids else 0,
+                        key="workspace-mode")
+render_workspace_header(mode)
+mode_id = WORKSPACES[mode][0]
+if mode_id and workspace != mode_id:
+    st.query_params["workspace"] = mode_id
+elif not mode_id and "workspace" in st.query_params:
     del st.query_params["workspace"]
-if mode == "文件分析":
+if mode == "政策问数":
+    render_policy_workspace(session_id)
+elif mode == "文件分析":
     render_file_workspace(session_id, capabilities["model_configured"])
 else:
     identity = (user, session_id)

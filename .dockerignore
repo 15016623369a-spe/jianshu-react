@@ -10,6 +10,8 @@
 app/**
 !app/*.py
 !app/product_ui.css
+!app/policy_corpus/
+!app/policy_corpus/*.md
 !app/tools/
 app/tools/**
 !app/tools/*.py

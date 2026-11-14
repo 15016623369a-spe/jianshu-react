@@ -11,6 +11,21 @@ def main():
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(executable_path=os.getenv("CHROMIUM_EXECUTABLE"))
         try:
+            policy = browser.new_page(viewport={"width": 1280, "height": 900})
+            policy.goto(f"{origin}/?session={uuid4()}&workspace=policy", wait_until="domcontentloaded")
+            expect(policy.get_by_role("heading", name="政策问数")).to_be_visible(timeout=20000)
+            policy.get_by_role("button", name="按政策计算净营收").click()
+            expect(policy.get_by_text("¥477.00", exact=True)).to_be_visible(timeout=20000)
+            first = policy.get_by_text("2026-10-01 至 2026-10-15 · ¥350.00", exact=True)
+            second = policy.get_by_text("2026-10-15 至 2026-11-01 · ¥127.00", exact=True)
+            first.click()
+            expect(policy.get_by_text("退款政策 · 2026 年 10 月上半月版", exact=False)).to_be_visible()
+            second.click()
+            expect(policy.get_by_text("退款政策 · 2026 年 10 月修订版", exact=False)).to_be_visible()
+            expect(policy.get_by_text("绑定参数 [300,", exact=False)).to_be_visible()
+            policy.close()
+            print("PASS cross-version policy revenue and cited SQL", flush=True)
+
             starter = browser.new_page(viewport={"width": 1280, "height": 900})
             starter.goto(f"{origin}/?session={uuid4()}", wait_until="domcontentloaded")
             expect(starter.get_by_role("heading", name="和数据对话")).to_be_visible(timeout=20000)

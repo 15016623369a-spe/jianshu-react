@@ -9,6 +9,7 @@ WORKDIR /opt/rag
 COPY requirements.txt requirements-step8.txt ./
 RUN --mount=type=cache,target=/root/.cache/pip python -m pip install --timeout 15 --retries 2 --only-binary=:all: -r requirements.txt -r requirements-step8.txt
 COPY app/*.py app/
+COPY app/policy_corpus/*.md app/policy_corpus/
 COPY app/tools/*.py app/tools/
 COPY evaluation/__init__.py evaluation/bird_column_notes.py evaluation/
 COPY sandbox/__init__.py sandbox/

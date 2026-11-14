@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import logging
 import os
 import sqlite3
 from collections.abc import Callable
@@ -22,12 +23,13 @@ from pydantic import BaseModel, ConfigDict, Field, StrictBool, StringConstraints
 from starlette.concurrency import run_in_threadpool
 from starlette.responses import JSONResponse
 
-from app.commerce_demo import ApprovalID
+from app.commerce_demo import ApprovalID, prepare_database
 from app.config import PROJECT_ROOT, load_settings
 from app.conversation_history import ConversationHistory
 from app.file_analysis import analyze_upload, preview_upload
 from app.file_analysis_history import FileAnalysisHistory
 from app.gateway_identity import configured_key, gateway_user, owner_id
+from app.policy_workflow import PolicyRevenueRequest, run_policy_workflow
 from app.product_assistant import answer_data_turn
 from app.product_errors import chat_http_error, is_chat_request
 from app.product_sql import DB_ID_PATTERN, database_path, list_databases, query_database
@@ -46,6 +48,7 @@ Question = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1,
 DatabaseID = Annotated[str, StringConstraints(pattern=DB_ID_PATTERN)]
 TableName = Annotated[str, StringConstraints(strict=True, min_length=1, max_length=63)]
 TableSelection = Annotated[list[TableName], Field(min_length=1, max_length=MAX_POSTGRES_TABLES)]
+_logger = logging.getLogger(__name__)
 
 
 class Payload(BaseModel):
@@ -74,10 +77,24 @@ class DatabaseQuery(Payload):
     evidence: str = Field(default="", max_length=1500)
 
 
+def _policy_demo_database(root: Path) -> Path | None:
+    try:
+        root.mkdir(parents=True, exist_ok=True)
+        try:
+            return prepare_database(root)
+        except FileExistsError:
+            # Another worker published the synthetic database atomically during seeding.
+            return prepare_database(root)
+    except (OSError, ValueError, sqlite3.Error) as exc:
+        _logger.warning("Policy demo database could not be initialized (%s)", type(exc).__name__)
+        return None
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.root = Path(os.getenv("RAG_DATA_DIR", PROJECT_ROOT / "data" / "step8")).resolve()
     app.state.traces = TraceStore(app.state.root / "traces.sqlite")
+    app.state.policy_database = _policy_demo_database(app.state.root / "policy_demo")
     app.state.history = ConversationHistory(app.state.root / "conversation_history.sqlite")
     app.state.file_history = FileAnalysisHistory(app.state.root / "file_analysis.sqlite")
     app.state.query_exports = QueryExportStore(app.state.root / "query_exports.sqlite")
@@ -95,7 +112,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Text2SQL Agent", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="见数 · Text2SQL Agent", version="2.0.0", lifespan=lifespan)
 app.add_middleware(BoundedJSON)
 _STREAM = {200: {"content": {"application/x-ndjson": {}}, "description": "Workflow events and final trace summary"}}
 
@@ -143,6 +160,15 @@ async def http_failure(request, exc):
 @app.get("/healthz")
 def health():
     return {"status": "ok"}
+
+
+@app.post("/api/v2/policy-revenue")
+def policy_revenue(body: PolicyRevenueRequest, request: Request):
+    database = request.app.state.policy_database
+    if database is None:
+        raise HTTPException(503, "政策问数演示订单库暂时不可用，请检查服务状态。")
+    with tracing_context(enabled=False):
+        return run_policy_workflow(database, body)
 
 
 def _conversation_root(owner: str) -> Path:

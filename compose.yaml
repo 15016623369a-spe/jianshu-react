@@ -28,7 +28,7 @@ services:
       - state:/state
       - sandbox_rpc:/run/rag:ro
     ports:
-      - "127.0.0.1:${RAG_API_PORT:-8000}:8000"
+      - "127.0.0.1:${RAG_API_PORT:-28000}:8000"
     healthcheck:
       test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/healthz', timeout=2).close()"]
       interval: 3s
@@ -45,7 +45,7 @@ services:
     environment:
       RAG_API_URL: http://api:8000
     ports:
-      - "127.0.0.1:${RAG_UI_PORT:-8501}:8501"
+      - "127.0.0.1:${RAG_UI_PORT:-28501}:8501"
     healthcheck:
       test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://127.0.0.1:8501/_stcore/health', timeout=2).close()"]
       interval: 3s
@@ -62,7 +62,7 @@ services:
     network_mode: none
     environment:
       DOCKER_HOST: unix:///var/run/docker.sock
-      RAG_SANDBOX_IMAGE: ${RAG_SANDBOX_IMAGE:-rag-step7-sandbox:1}
+      RAG_SANDBOX_IMAGE: ${RAG_SANDBOX_IMAGE:-jianshu-react-worker:local}
     volumes:
       - sandbox_rpc:/run/rag
       - type: bind
@@ -81,7 +81,7 @@ services:
 
   sandbox-image:
     build: ./sandbox/step7
-    image: ${RAG_SANDBOX_IMAGE:-rag-step7-sandbox:1}
+    image: ${RAG_SANDBOX_IMAGE:-jianshu-react-worker:local}
     entrypoint: ["python", "-c", "pass"]
     network_mode: none
 

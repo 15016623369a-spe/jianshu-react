@@ -1,4 +1,10 @@
-# 见数 · Text2SQL Agent
+# 见数 V2 · 政策问数
+
+这个仓库从 [见数 Text2SQL Agent `43b151a`](https://github.com/15016623369a-spe/text2sql-agent/commit/43b151aa4505e3bb98acdfa19a30e8b6fceb2ccb) 派生。V2 先提供固定顺序的「政策问数」工作区，为后续 ReAct 实验建立基线。
+
+运行 `bash scripts/demo.sh` 后打开 [政策问数工作区](http://127.0.0.1:28501/?workspace=policy)。保留表单默认的 **2026-10-01 至 2026-10-31（含当天）** 和「全部地区」，执行后可以核对 **¥477.00** 的构成。10 月 15 日前扣除实际退款，10 月 15 日起每笔最多扣 ¥3。界面提供分段统计、政策原文、实际 SQL 和绑定参数。政策覆盖有缺口时，流程在执行 SQL 前停止。
+
+首版接受结构化日期与地区，使用两份合成政策和独立的演示订单库，全程无需模型密钥。[工作机制、验收和基线复跑](docs/v2-policy-workflow.md)
 
 用自然语言查询数据库，或上传一份 Excel 直接做分析。见数会在问题缺少时间、地区或指标口径时先确认条件，然后执行查询，给出可核对的 SQL、统计表和图表。也可以在同一会话里继续追问、调整筛选条件或下载结果。
 
@@ -6,7 +12,7 @@
 
 ![见数数据库问数工作区，展示演示库净营收、查询口径、SQL 及 CSV 下载入口](docs/media/chat-workspace.png)
 
-## 两个工作区
+## 继承的工作区
 
 ### 数据库问数
 
@@ -30,12 +36,10 @@
 需要 Docker Desktop 或带 Compose v2 的 Docker Engine。首次构建需要联网下载镜像和依赖。
 
 ```bash
-git clone https://github.com/15016623369a-spe/text2sql-agent.git
-cd text2sql-agent
 bash scripts/demo.sh
 ```
 
-打开 [演示界面](http://127.0.0.1:18501) 或 [演示 API 文档](http://127.0.0.1:18000/docs)。演示使用独立端口和状态卷，内置 6 条合成订单，参考日期为 2026-11-10。示例营收、多级表头 Top N 和公式核对均可在服务启动后离线完成。用 `bash scripts/demo.sh stop` 停止演示。
+打开 [演示界面](http://127.0.0.1:28501) 或 [演示 API 文档](http://127.0.0.1:28000/docs)。演示使用独立端口和状态卷，内置 6 条合成订单，参考日期为 2026-11-10。示例营收、多级表头 Top N 和公式核对均可在服务启动后离线完成。用 `bash scripts/demo.sh stop` 停止演示。
 
 配置模型后，可以用 `bash scripts/demo.sh live` 启动在线演示。问「列出订单编号、地区和下单日期，按订单编号升序排列」，展开「本次追踪」查看模型调用、SQL 试跑和 token。固定营收案例由本地逻辑执行，模型调用次数和 token 均为 0。[演示脚本与预期结果](docs/demo.md)
 
@@ -134,7 +138,7 @@ cp .env.example .env
 docker compose up --build --wait
 ```
 
-默认发布到本机回环地址。打开 [Streamlit 界面](http://127.0.0.1:8501) 和 [FastAPI 文档](http://127.0.0.1:8000/docs)。`LLM_PROVIDER` 和 `LLM_BASE_URL` 选择供应商及兼容端点，`RAG_LLM_MODEL` 覆盖 Compose 模型。状态保存于 Docker 卷。用 `docker compose down` 停止服务。
+默认发布到本机回环地址。打开 [Streamlit 界面](http://127.0.0.1:28501) 和 [FastAPI 文档](http://127.0.0.1:28000/docs)。`LLM_PROVIDER` 和 `LLM_BASE_URL` 选择供应商及兼容端点，`RAG_LLM_MODEL` 覆盖 Compose 模型。状态保存于 Docker 卷。用 `docker compose down` 停止服务。
 
 ### 接入外部数据
 
@@ -154,6 +158,7 @@ RAG_BIRD_DATA_DIR=/absolute/path/to/dev_databases \
 
 ## API 索引
 
+- `POST /api/v2/policy-revenue` 按实际生效的退款政策查询净营收，并返回可核对的文档与 SQL 证据。
 - `POST /api/v1/chat` 处理对话、澄清和审批申请，`GET /api/v1/sessions/{id}` 读取会话状态，`GET /api/v1/sessions/{id}/messages` 分页读取历史。
 - `GET /api/v1/databases` 列出数据源，`GET /api/v1/databases/postgres/schema` 浏览结构，`POST /api/v1/query` 直接提交只读问数。
 - `POST /api/v1/approvals` 提交演示备注的批准或拒绝。
@@ -163,7 +168,7 @@ RAG_BIRD_DATA_DIR=/absolute/path/to/dev_databases \
 用独立演示的 API 发送一条离线问题。继续对话时复用同一 `session_id`。
 
 ```bash
-curl -NsS http://127.0.0.1:18000/api/v1/chat \
+curl -NsS http://127.0.0.1:28000/api/v1/chat \
   -H 'Content-Type: application/json' \
   --data '{"session_id":"f1461498-8902-4678-ac42-36dc38025d65","question":"一共有多少笔订单？"}'
 ```

@@ -24,11 +24,11 @@ case "$mode" in
         ;;
 esac
 
-export RAG_API_PORT="${RAG_DEMO_API_PORT:-18000}"
-export RAG_UI_PORT="${RAG_DEMO_UI_PORT:-18501}"
-export RAG_SANDBOX_IMAGE=rag-demo-worker:local
+export RAG_API_PORT="${RAG_DEMO_API_PORT:-28000}"
+export RAG_UI_PORT="${RAG_DEMO_UI_PORT:-28501}"
+export RAG_SANDBOX_IMAGE=jianshu-react-demo-worker:local
 export RAG_POSTGRES_HOST="" RAG_LANGSMITH_EXPORT=false LANGSMITH_API_KEY=""
-compose=(docker compose --project-name rag-demo --env-file "$env_file" -f compose.yaml)
+compose=(docker compose --project-name jianshu-react --env-file "$env_file" -f compose.yaml)
 
 if [[ "$mode" == "stop" ]]; then
     "${compose[@]}" stop
@@ -44,4 +44,4 @@ if [[ "$mode" == "live" ]] && ! "${compose[@]}" config --environment | awk '
 fi
 
 "${compose[@]}" up -d --build --wait
-printf '演示界面 http://127.0.0.1:%s\n演示 API http://127.0.0.1:%s\n' "$RAG_UI_PORT" "$RAG_API_PORT"
+printf '政策问数 http://127.0.0.1:%s/?workspace=policy\n演示 API http://127.0.0.1:%s\n' "$RAG_UI_PORT" "$RAG_API_PORT"

@@ -23,7 +23,7 @@ https://{$RAG_DOMAIN} {
 
 	@api_json {
 		method POST
-		path /api/v1/chat /api/v1/approvals /api/v1/query
+		path /api/v1/chat /api/v1/approvals /api/v1/query /api/v2/policy-revenue
 	}
 	request_body @api_json {
 		max_size 16KiB
@@ -34,7 +34,8 @@ https://{$RAG_DOMAIN} {
 		max_size 11MiB
 	}
 
-	handle /api/v1/* {
+	@api path /api/v1/* /api/v2/*
+	handle @api {
 		reverse_proxy api:8000 {
 			header_up -Authorization
 			header_up X-Rag-User {http.auth.user.id}

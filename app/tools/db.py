@@ -89,7 +89,7 @@ class ReadOnlyDB:
             self._conn.close()
             self._conn = None
 
-    def dry_run(self, sql: str) -> None:
+    def dry_run(self, sql: str, *, parameters: tuple = ()) -> None:
         """Compile one read query without stepping the original statement."""
         conn = self._conn
         if conn is None:
@@ -104,7 +104,8 @@ class ReadOnlyDB:
 
         conn.set_authorizer(authorize)
         try:
-            self.query("EXPLAIN " + sql, limit=0)
+            options = {"parameters": parameters} if parameters else {}
+            self.query("EXPLAIN " + sql, limit=0, **options)
         finally:
             conn.set_authorizer(_authorize_select)
         # SQLite can compile commands such as VACUUM without authorizer callbacks.
@@ -133,7 +134,7 @@ class ReadOnlyDB:
         return reads
 
     @contextmanager
-    def scan(self, sql: str, *, max_columns: int | None = None):
+    def scan(self, sql: str, *, max_columns: int | None = None, parameters: tuple = ()):
         """Stream one read-only result while the SQLite deadline is active."""
         conn = self._conn
         if conn is None:
@@ -145,7 +146,7 @@ class ReadOnlyDB:
 
         conn.set_progress_handler(expired, 1000)
         try:
-            with closing(conn.execute(sql)) as cursor:
+            with closing(conn.execute(sql, parameters)) as cursor:
                 if cursor.description is None:
                     raise sqlite3.ProgrammingError("Expected one query returning columns")
                 columns = [item[0] for item in cursor.description]
@@ -163,10 +164,10 @@ class ReadOnlyDB:
 
     def query(
         self, sql: str, limit: int | None = 20, *,
-        max_columns: int | None = None, max_result_bytes: int | None = None,
+        max_columns: int | None = None, max_result_bytes: int | None = None, parameters: tuple = (),
     ) -> tuple[list[str], list[tuple]]:
         """Execute a read query with a deadline and optional preview limits."""
-        with self.scan(sql, max_columns=max_columns) as (columns, cursor):
+        with self.scan(sql, max_columns=max_columns, parameters=parameters) as (columns, cursor):
             if max_result_bytes is None:
                 rows = cursor.fetchall() if limit is None else cursor.fetchmany(limit)
             else:
