@@ -23,6 +23,7 @@ from evaluation.multisource_reference import CORPUS, expected_result, read_fixtu
 from evaluation.run_policy_comparison import _known_total, _p95
 
 SUITE_PATH = Path(__file__).with_name("multisource_cases.json")
+RESERVE_PATH = Path(__file__).with_name("multisource_reserve.json")
 MODES = ("fixed", "react")
 SCOPE_FIELDS = ("start", "end_exclusive", "region")
 GROUP_FIELDS = ("id", "product", "region", "order_count", "gross_cents", "deducted_cents", "net_cents", "evidence_ids")
@@ -37,24 +38,31 @@ def _scope_key(case: dict) -> tuple:
     return tuple(case["request"].get(field) for field in SCOPE_FIELDS)
 
 
-def _load_suite() -> dict:
+def _load_suite(split: str) -> dict:
     suite = json.loads(SUITE_PATH.read_text(encoding="utf-8"))
     fixture = read_fixture()
     cases = suite["development"] + suite["holdout"]
+    if split == "reserve":
+        reserve = json.loads(RESERVE_PATH.read_text(encoding="utf-8"))
+        cases += reserve["holdout"]
     if len({_scope_key(case) for case in cases}) != len(cases) or len({case["id"] for case in cases}) != len(cases):
         raise ValueError("Every development and holdout case must have a unique scope and ID")
     for case in cases:
         if expected_result(case["request"], fixture) != case["expected"]:
             raise ValueError(f"Frozen reference path changed: {case['id']}")
-    return suite
+    return {"suite": reserve["suite"], "cases": reserve["holdout"]} if split == "reserve" else {
+        "suite": suite["suite"], "cases": suite[split],
+    }
 
 
-def _fingerprints() -> dict[str, str]:
+def _fingerprints(split: str) -> dict[str, str]:
     app_paths = set((PROJECT_ROOT / "app").glob("multisource*.py"))
     paths = app_paths | set(CORPUS.glob("*.json")) | {
         Path(__file__), SUITE_PATH, Path(__file__).with_name("multisource_reference.py"),
         PROJECT_ROOT / "app/llm.py", PROJECT_ROOT / "app/tools/db.py",
     }
+    if split == "reserve":
+        paths.add(RESERVE_PATH)
     return {path.relative_to(PROJECT_ROOT).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in sorted(paths)}
 
@@ -215,7 +223,7 @@ def main() -> int:
     from app.multisource_workflow import multisource_selector
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--split", choices=("development", "holdout"), default="holdout")
+    parser.add_argument("--split", choices=("development", "holdout", "reserve"), default="holdout")
     parser.add_argument("--modes", nargs="+", choices=MODES, default=list(MODES))
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--workers", type=int, default=5)
@@ -238,14 +246,14 @@ def main() -> int:
         ):
             parser.error("Live ReAct requires an HTTPS model configuration")
         selector = multisource_selector(settings)
-    suite = _load_suite()
-    cases = suite[args.split]
+    suite = _load_suite(args.split)
+    cases = suite["cases"]
     metadata = {
         "suite": suite["suite"], "split": args.split, "case_count": len(cases), "modes": args.modes,
         "started_at_utc": datetime.now(timezone.utc).isoformat(), "order_seed": ORDER_SEED,
         "model": settings.llm_model if settings else None, "temperature": 0 if settings else None,
         "provider_host": urlsplit(settings.llm_base_url).hostname if settings else None,
-        "workers": args.workers, "repeats": args.repeats, "source_sha256": _fingerprints(),
+        "workers": args.workers, "repeats": args.repeats, "source_sha256": _fingerprints(args.split),
         "latency_method": "per application call excluding queue time; P95 nearest rank",
     }
     args.output_dir.mkdir(parents=True, exist_ok=False)

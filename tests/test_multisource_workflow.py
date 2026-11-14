@@ -60,13 +60,27 @@ class MultiSourceWorkflowTests(unittest.TestCase):
     def test_early_finish_cannot_publish_partial_evidence(self):
         choose = select_actions(
             {"tool": "discover_groups"}, {"tool": "lookup_policies", "ids": ["group:1"]},
-            {"tool": "finish"},
+            {"tool": "finish"}, {"tool": "finish"},
         )
         result = self.run_case(mode="react", choose=choose)
-        self.assertEqual(result["reason"], "verification_failed")
+        self.assertEqual(result["reason"], "no_progress")
         self.assertEqual(result["metrics"]["sql_queries"], 1)
         self.assertIsNone(result["total_cents"])
         self.assertFalse(any(result["evidence"].values()))
+
+    def test_early_finish_can_recover_with_reported_ready_group(self):
+        choose = select_actions(
+            {"tool": "discover_groups"}, {"tool": "lookup_policies", "ids": ["group:1"]},
+            {"tool": "finish"}, {"tool": "aggregate_groups", "ids": ["group:1"]}, {"tool": "finish"},
+        )
+        result = self.run_case("2026-10-01", "2026-10-07", "华南", mode="react", choose=choose)
+        self.assertEqual((result["kind"], result["total_cents"]), ("answer", 25200))
+        self.assertEqual(result["metrics"]["invalid_actions"], 1)
+        before = json.loads(choose.call_args_list[3].args[0][1]["content"])
+        after = json.loads(choose.call_args_list[4].args[0][1]["content"])
+        self.assertEqual(before["available"]["aggregate_groups"], ["group:1"])
+        self.assertFalse(before["available"]["finish"])
+        self.assertTrue(after["available"]["finish"])
 
     def test_missing_bulletin_abstains_after_reading_first_document(self):
         result = self.run_case("2026-10-25", "2026-10-26", "华东")

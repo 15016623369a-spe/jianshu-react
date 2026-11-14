@@ -1,0 +1,762 @@
+{
+  "suite": "refund-revenue-multisource-reserve-v1",
+  "holdout": [
+    {
+      "id": "reserve-direct-first-day-with-unrefunded-companion",
+      "group": "direct",
+      "request": {
+        "start": "2026-10-01",
+        "end_exclusive": "2026-10-03",
+        "region": "华南"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 17500,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "小家电",
+            "region": "华南",
+            "order_count": 2,
+            "discovered_order_count": 1,
+            "gross_cents": 18000,
+            "deducted_cents": 500,
+            "net_cents": 17500,
+            "evidence_ids": [
+              "policy-appliance-south"
+            ]
+          }
+        ],
+        "max_referrals": 0
+      }
+    },
+    {
+      "id": "reserve-direct-end-excludes-second-refund",
+      "group": "direct",
+      "request": {
+        "start": "2026-10-01",
+        "end_exclusive": "2026-10-06",
+        "region": "华南"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 17500,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "小家电",
+            "region": "华南",
+            "order_count": 2,
+            "discovered_order_count": 1,
+            "gross_cents": 18000,
+            "deducted_cents": 500,
+            "net_cents": 17500,
+            "evidence_ids": [
+              "policy-appliance-south"
+            ]
+          }
+        ],
+        "max_referrals": 0
+      }
+    },
+    {
+      "id": "reserve-direct-only-november-appliance",
+      "group": "direct",
+      "request": {
+        "start": "2026-11-06",
+        "end_exclusive": "2026-11-09",
+        "region": "华南"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 12500,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "小家电",
+            "region": "华南",
+            "order_count": 1,
+            "discovered_order_count": 1,
+            "gross_cents": 13000,
+            "deducted_cents": 500,
+            "net_cents": 12500,
+            "evidence_ids": [
+              "policy-appliance-south"
+            ]
+          }
+        ],
+        "max_referrals": 0
+      }
+    },
+    {
+      "id": "reserve-direct-other-region-cap-with-companion",
+      "group": "direct",
+      "request": {
+        "start": "2026-11-18",
+        "end_exclusive": "2026-11-20",
+        "region": "华东"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 19800,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "小家电",
+            "region": "华东",
+            "order_count": 2,
+            "discovered_order_count": 1,
+            "gross_cents": 21000,
+            "deducted_cents": 1200,
+            "net_cents": 19800,
+            "evidence_ids": [
+              "policy-appliance-east"
+            ]
+          }
+        ],
+        "max_referrals": 0
+      }
+    },
+    {
+      "id": "reserve-direct-all-including-zero-orders-without-policy",
+      "group": "direct",
+      "request": {
+        "start": "2026-10-03",
+        "end_exclusive": "2026-10-08"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 19200,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "图书",
+            "region": "华东",
+            "order_count": 2,
+            "discovered_order_count": 1,
+            "gross_cents": 13000,
+            "deducted_cents": 1500,
+            "net_cents": 11500,
+            "evidence_ids": [
+              "policy-books-east"
+            ]
+          },
+          {
+            "id": "group:2",
+            "product": "小家电",
+            "region": "华南",
+            "order_count": 1,
+            "discovered_order_count": 1,
+            "gross_cents": 8000,
+            "deducted_cents": 300,
+            "net_cents": 7700,
+            "evidence_ids": [
+              "policy-appliance-south"
+            ]
+          }
+        ],
+        "max_referrals": 0
+      }
+    },
+    {
+      "id": "reserve-direct-books-full-refund-include-late-end",
+      "group": "direct",
+      "request": {
+        "start": "2026-10-26",
+        "end_exclusive": "2026-10-29",
+        "region": "华东"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 2800,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "图书",
+            "region": "华东",
+            "order_count": 1,
+            "discovered_order_count": 1,
+            "gross_cents": 3400,
+            "deducted_cents": 600,
+            "net_cents": 2800,
+            "evidence_ids": [
+              "policy-books-east"
+            ]
+          }
+        ],
+        "max_referrals": 0
+      }
+    },
+    {
+      "id": "reserve-one-referral-second-order-under-cap",
+      "group": "one_referral",
+      "request": {
+        "start": "2026-10-09",
+        "end_exclusive": "2026-10-10",
+        "region": "华北"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 10300,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "户外",
+            "region": "华北",
+            "order_count": 1,
+            "discovered_order_count": 1,
+            "gross_cents": 11000,
+            "deducted_cents": 700,
+            "net_cents": 10300,
+            "evidence_ids": [
+              "policy-outdoor-north",
+              "bulletin-outdoor-north"
+            ]
+          }
+        ],
+        "max_referrals": 1
+      }
+    },
+    {
+      "id": "reserve-one-referral-exact-cap",
+      "group": "one_referral",
+      "request": {
+        "start": "2026-10-20",
+        "end_exclusive": "2026-10-21",
+        "region": "华北"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 11000,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "户外",
+            "region": "华北",
+            "order_count": 1,
+            "discovered_order_count": 1,
+            "gross_cents": 12800,
+            "deducted_cents": 1800,
+            "net_cents": 11000,
+            "evidence_ids": [
+              "policy-outdoor-north",
+              "bulletin-outdoor-north"
+            ]
+          }
+        ],
+        "max_referrals": 1
+      }
+    },
+    {
+      "id": "reserve-one-referral-with-direct-both-other-regions",
+      "group": "one_referral",
+      "request": {
+        "start": "2026-10-01",
+        "end_exclusive": "2026-10-10"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 67200,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "图书",
+            "region": "华东",
+            "order_count": 2,
+            "discovered_order_count": 1,
+            "gross_cents": 13000,
+            "deducted_cents": 1500,
+            "net_cents": 11500,
+            "evidence_ids": [
+              "policy-books-east"
+            ]
+          },
+          {
+            "id": "group:2",
+            "product": "小家电",
+            "region": "华南",
+            "order_count": 3,
+            "discovered_order_count": 2,
+            "gross_cents": 26000,
+            "deducted_cents": 800,
+            "net_cents": 25200,
+            "evidence_ids": [
+              "policy-appliance-south"
+            ]
+          },
+          {
+            "id": "group:3",
+            "product": "户外",
+            "region": "华北",
+            "order_count": 2,
+            "discovered_order_count": 2,
+            "gross_cents": 33000,
+            "deducted_cents": 2500,
+            "net_cents": 30500,
+            "evidence_ids": [
+              "policy-outdoor-north",
+              "bulletin-outdoor-north"
+            ]
+          }
+        ],
+        "max_referrals": 1
+      }
+    },
+    {
+      "id": "reserve-two-referrals-only-first-gift",
+      "group": "two_referrals",
+      "request": {
+        "start": "2026-10-11",
+        "end_exclusive": "2026-10-12",
+        "region": "华南"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 4400,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "礼品",
+            "region": "华南",
+            "order_count": 1,
+            "discovered_order_count": 1,
+            "gross_cents": 4500,
+            "deducted_cents": 100,
+            "net_cents": 4400,
+            "evidence_ids": [
+              "policy-gift-south",
+              "bulletin-gift-heading",
+              "bulletin-gift-special"
+            ]
+          }
+        ],
+        "max_referrals": 2
+      }
+    },
+    {
+      "id": "reserve-two-referrals-only-second-gift-and-companion",
+      "group": "two_referrals",
+      "request": {
+        "start": "2026-10-12",
+        "end_exclusive": "2026-10-14",
+        "region": "华南"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 5940,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "礼品",
+            "region": "华南",
+            "order_count": 2,
+            "discovered_order_count": 1,
+            "gross_cents": 6000,
+            "deducted_cents": 60,
+            "net_cents": 5940,
+            "evidence_ids": [
+              "policy-gift-south",
+              "bulletin-gift-heading",
+              "bulletin-gift-special"
+            ]
+          }
+        ],
+        "max_referrals": 2
+      }
+    },
+    {
+      "id": "reserve-two-referrals-upper-cap-tie",
+      "group": "two_referrals",
+      "request": {
+        "start": "2026-10-21",
+        "end_exclusive": "2026-10-22",
+        "region": "华南"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 2700,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "礼品",
+            "region": "华南",
+            "order_count": 1,
+            "discovered_order_count": 1,
+            "gross_cents": 2800,
+            "deducted_cents": 100,
+            "net_cents": 2700,
+            "evidence_ids": [
+              "policy-gift-south",
+              "bulletin-gift-heading",
+              "bulletin-gift-special"
+            ]
+          }
+        ],
+        "max_referrals": 2
+      }
+    },
+    {
+      "id": "reserve-two-referrals-with-one-referral",
+      "group": "two_referrals",
+      "request": {
+        "start": "2026-10-08",
+        "end_exclusive": "2026-10-12"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 39900,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "户外",
+            "region": "华北",
+            "order_count": 3,
+            "discovered_order_count": 2,
+            "gross_cents": 38000,
+            "deducted_cents": 2500,
+            "net_cents": 35500,
+            "evidence_ids": [
+              "policy-outdoor-north",
+              "bulletin-outdoor-north"
+            ]
+          },
+          {
+            "id": "group:2",
+            "product": "礼品",
+            "region": "华南",
+            "order_count": 1,
+            "discovered_order_count": 1,
+            "gross_cents": 4500,
+            "deducted_cents": 100,
+            "net_cents": 4400,
+            "evidence_ids": [
+              "policy-gift-south",
+              "bulletin-gift-heading",
+              "bulletin-gift-special"
+            ]
+          }
+        ],
+        "max_referrals": 2
+      }
+    },
+    {
+      "id": "reserve-two-referrals-with-one-referral-and-both-direct",
+      "group": "two_referrals",
+      "request": {
+        "start": "2026-10-01",
+        "end_exclusive": "2026-10-24"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 115240,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "图书",
+            "region": "华东",
+            "order_count": 3,
+            "discovered_order_count": 2,
+            "gross_cents": 19500,
+            "deducted_cents": 2500,
+            "net_cents": 17000,
+            "evidence_ids": [
+              "policy-books-east"
+            ]
+          },
+          {
+            "id": "group:2",
+            "product": "小家电",
+            "region": "华南",
+            "order_count": 4,
+            "discovered_order_count": 3,
+            "gross_cents": 40000,
+            "deducted_cents": 1300,
+            "net_cents": 38700,
+            "evidence_ids": [
+              "policy-appliance-south"
+            ]
+          },
+          {
+            "id": "group:3",
+            "product": "户外",
+            "region": "华北",
+            "order_count": 4,
+            "discovered_order_count": 3,
+            "gross_cents": 50800,
+            "deducted_cents": 4300,
+            "net_cents": 46500,
+            "evidence_ids": [
+              "policy-outdoor-north",
+              "bulletin-outdoor-north"
+            ]
+          },
+          {
+            "id": "group:4",
+            "product": "礼品",
+            "region": "华南",
+            "order_count": 4,
+            "discovered_order_count": 3,
+            "gross_cents": 13300,
+            "deducted_cents": 260,
+            "net_cents": 13040,
+            "evidence_ids": [
+              "policy-gift-south",
+              "bulletin-gift-heading",
+              "bulletin-gift-special"
+            ]
+          }
+        ],
+        "max_referrals": 2
+      }
+    },
+    {
+      "id": "reserve-two-referrals-with-direct-through-november",
+      "group": "two_referrals",
+      "request": {
+        "start": "2026-10-16",
+        "end_exclusive": "2026-11-15",
+        "region": "华南"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 32600,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "小家电",
+            "region": "华南",
+            "order_count": 2,
+            "discovered_order_count": 2,
+            "gross_cents": 27000,
+            "deducted_cents": 1000,
+            "net_cents": 26000,
+            "evidence_ids": [
+              "policy-appliance-south"
+            ]
+          },
+          {
+            "id": "group:2",
+            "product": "礼品",
+            "region": "华南",
+            "order_count": 2,
+            "discovered_order_count": 2,
+            "gross_cents": 6800,
+            "deducted_cents": 200,
+            "net_cents": 6600,
+            "evidence_ids": [
+              "policy-gift-south",
+              "bulletin-gift-heading",
+              "bulletin-gift-special"
+            ]
+          }
+        ],
+        "max_referrals": 2
+      }
+    },
+    {
+      "id": "reserve-two-referrals-late-three-regions-all-rules",
+      "group": "two_referrals",
+      "request": {
+        "start": "2026-11-06",
+        "end_exclusive": "2026-12-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 67500,
+        "groups": [
+          {
+            "id": "group:1",
+            "product": "图书",
+            "region": "华东",
+            "order_count": 2,
+            "discovered_order_count": 1,
+            "gross_cents": 15700,
+            "deducted_cents": 200,
+            "net_cents": 15500,
+            "evidence_ids": [
+              "policy-books-east"
+            ]
+          },
+          {
+            "id": "group:2",
+            "product": "小家电",
+            "region": "华东",
+            "order_count": 2,
+            "discovered_order_count": 1,
+            "gross_cents": 21000,
+            "deducted_cents": 1200,
+            "net_cents": 19800,
+            "evidence_ids": [
+              "policy-appliance-east"
+            ]
+          },
+          {
+            "id": "group:3",
+            "product": "小家电",
+            "region": "华南",
+            "order_count": 1,
+            "discovered_order_count": 1,
+            "gross_cents": 13000,
+            "deducted_cents": 500,
+            "net_cents": 12500,
+            "evidence_ids": [
+              "policy-appliance-south"
+            ]
+          },
+          {
+            "id": "group:4",
+            "product": "户外",
+            "region": "华北",
+            "order_count": 2,
+            "discovered_order_count": 1,
+            "gross_cents": 17000,
+            "deducted_cents": 1200,
+            "net_cents": 15800,
+            "evidence_ids": [
+              "policy-outdoor-north",
+              "bulletin-outdoor-north"
+            ]
+          },
+          {
+            "id": "group:5",
+            "product": "礼品",
+            "region": "华南",
+            "order_count": 1,
+            "discovered_order_count": 1,
+            "gross_cents": 4000,
+            "deducted_cents": 100,
+            "net_cents": 3900,
+            "evidence_ids": [
+              "policy-gift-south",
+              "bulletin-gift-heading",
+              "bulletin-gift-special"
+            ]
+          }
+        ],
+        "max_referrals": 2
+      }
+    },
+    {
+      "id": "reserve-zero-only-unrefunded-order-with-unknown-policy",
+      "group": "zero",
+      "request": {
+        "start": "2026-10-05",
+        "end_exclusive": "2026-10-06",
+        "region": "华北"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 0,
+        "groups": [],
+        "max_referrals": 0
+      }
+    },
+    {
+      "id": "reserve-zero-capped-refundable-order-at-exclusive-end",
+      "group": "zero",
+      "request": {
+        "start": "2026-11-16",
+        "end_exclusive": "2026-11-18",
+        "region": "华东"
+      },
+      "expected": {
+        "kind": "answer",
+        "total_cents": 0,
+        "groups": [],
+        "max_referrals": 0
+      }
+    },
+    {
+      "id": "reserve-guard-bulletin-missing-with-books-candidate",
+      "group": "abstained",
+      "request": {
+        "start": "2026-10-23",
+        "end_exclusive": "2026-10-29",
+        "region": "华东"
+      },
+      "expected": {
+        "kind": "abstained",
+        "reasons": [
+          "bulletin_missing"
+        ],
+        "discovered_groups": 2
+      }
+    },
+    {
+      "id": "reserve-guard-unknown-policy-withoutdoor-candidate",
+      "group": "abstained",
+      "request": {
+        "start": "2026-11-03",
+        "end_exclusive": "2026-11-15",
+        "region": "华北"
+      },
+      "expected": {
+        "kind": "abstained",
+        "reasons": [
+          "policy_missing"
+        ],
+        "discovered_groups": 2
+      }
+    },
+    {
+      "id": "reserve-guard-policy-covers-orders-but-not-query-start",
+      "group": "abstained",
+      "request": {
+        "start": "2026-09-30",
+        "end_exclusive": "2026-10-05",
+        "region": "华南"
+      },
+      "expected": {
+        "kind": "abstained",
+        "reasons": [
+          "policy_missing"
+        ],
+        "discovered_groups": 1
+      }
+    },
+    {
+      "id": "reserve-guard-one-season-seven-groups",
+      "group": "abstained",
+      "request": {
+        "start": "2026-10-01",
+        "end_exclusive": "2026-12-01"
+      },
+      "expected": {
+        "kind": "abstained",
+        "reasons": [
+          "scope_too_broad"
+        ],
+        "discovered_groups": 7
+      }
+    },
+    {
+      "id": "reserve-clarification-missing-end-for-region",
+      "group": "clarification",
+      "request": {
+        "start": "2026-11-18",
+        "region": "华东"
+      },
+      "expected": {
+        "kind": "clarification",
+        "reasons": [
+          "missing_dates"
+        ]
+      }
+    },
+    {
+      "id": "reserve-clarification-equal-boundaries",
+      "group": "clarification",
+      "request": {
+        "start": "2026-10-11",
+        "end_exclusive": "2026-10-11",
+        "region": "华南"
+      },
+      "expected": {
+        "kind": "clarification",
+        "reasons": [
+          "invalid_period"
+        ]
+      }
+    }
+  ]
+}
