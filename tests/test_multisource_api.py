@@ -43,16 +43,32 @@ class MultisourceAPITests(unittest.TestCase):
             }).json()
             self.assertEqual((ordinary["kind"], ordinary["strategy"], ordinary["total_cents"]), ("answer", "fixed", 47700))
 
-    def test_explicit_react_requires_configuration_and_invalid_requests_are_bounded(self):
+    def test_model_driven_modes_require_configuration_and_invalid_requests_are_bounded(self):
         with TestClient(self.app) as client:
-            response = client.post(API, params={"mode": "react"}, json=SCOPE)
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual((response.json()["kind"], response.json()["reason"]), ("abstained", "model_unconfigured"))
-            self.assertIsNone(response.json()["total_cents"])
+            for mode in ("react", "plan"):
+                with self.subTest(mode=mode):
+                    response = client.post(API, params={"mode": mode}, json=SCOPE)
+                    self.assertEqual(response.status_code, 200)
+                    result = response.json()
+                    self.assertEqual((result["mode"], result["kind"], result["reason"]),
+                                     (mode, "abstained", "model_unconfigured"))
+                    self.assertIsNone(result["total_cents"])
             self.assertEqual(client.post(API, params={"mode": "unknown"}, json=SCOPE).status_code, 422)
             self.assertEqual(client.post(API, json={**SCOPE, "sql": "select * from orders"}).status_code, 422)
             self.assertEqual(client.post(API, json={**SCOPE, "region": "unknown"}).status_code, 422)
             self.assertEqual(client.post(API, json={"oversized": "x" * (17 * 1024)}).status_code, 413)
+
+    def test_explicit_plan_routes_through_configured_model(self):
+        with patch.dict(os.environ, {
+            "LLM_API_KEY": "test-key", "LLM_BASE_URL": "https://provider.invalid",
+        }), TestClient(self.app) as client, patch("app.product_api.multisource_selector") as build_selector, patch(
+            "app.product_api.run_multisource_workflow", return_value={"mode": "plan"},
+        ) as run:
+            response = client.post(API, params={"mode": "plan"}, json=SCOPE)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()["mode"], "plan")
+            build_selector.assert_called_once()
+            self.assertEqual(run.call_args.kwargs, {"mode": "plan", "choose": build_selector.return_value})
 
     def test_production_mode_requires_gateway_identity_and_same_origin(self):
         key = "b" * 64

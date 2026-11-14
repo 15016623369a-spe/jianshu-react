@@ -8,8 +8,10 @@ from decimal import Decimal
 import httpx
 import streamlit as st
 
-_MODES = {"fixed": "固定流程", "react": "ReAct 实验"}
+_MODES = {"fixed": "固定流程", "react": "ReAct 实验", "plan": "Plan-and-Execute 实验"}
 _TOOLS = {
+    "plan": "生成执行计划",
+    "replan": "根据证据调整计划",
     "discover_groups": "在订单库发现产品和地区",
     "lookup_policies": "查找适用政策",
     "lookup_bulletins": "查找引用的补充公告",
@@ -85,9 +87,13 @@ def _render_result(result: dict) -> None:
         for event in result["tool_trace"]:
             label = _TOOLS.get(event["tool"], "模型动作")
             status = _STATUSES.get(event["status"], event["status"])
-            ids = " · " + "、".join(event["ids"]) if event["ids"] else ""
+            ids = event["ids"]
+            planned = event["tool"] in ("plan", "replan")
+            ids_label = " · " + "、".join(ids) if ids and not planned else ""
             reason = f" · {event['reason']}" if event.get("reason") else ""
-            st.text(f"{event['step']}. {label} · {status}{ids}{reason}")
+            st.text(f"{event['step']}. {label} · {status}{ids_label}{reason}")
+            if planned and ids:
+                st.caption(" → ".join(_TOOLS.get(step, step) for step in ids))
 
 
 def render_multisource_workspace(api: str, headers: dict[str, str], session_id: str, model_configured: bool) -> None:
@@ -96,7 +102,7 @@ def render_multisource_workspace(api: str, headers: dict[str, str], session_id: 
         mode = st.radio("执行方式", list(_MODES) if model_configured else ["fixed"],
                         format_func=_MODES.__getitem__, horizontal=True)
         if not model_configured:
-            st.caption("配置模型后可选择 ReAct 实验。")
+            st.caption("配置模型后可选择 ReAct 或 Plan-and-Execute。")
         left, middle, right = st.columns(3)
         start = left.date_input("起始日期", date(2026, 10, 1), min_value=date(2000, 1, 1),
                                 max_value=date(2099, 12, 31))

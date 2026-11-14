@@ -30,7 +30,7 @@ from app.file_analysis import analyze_upload, preview_upload
 from app.file_analysis_history import FileAnalysisHistory
 from app.gateway_identity import configured_key, gateway_user, owner_id
 from app.multisource_data import prepare_multisource_database
-from app.multisource_workflow import MultiSourceRequest, multisource_selector, run_multisource_workflow
+from app.multisource_workflow import MultiSourceMode, MultiSourceRequest, multisource_selector, run_multisource_workflow
 from app.policy_react import deepseek_policy_selector
 from app.policy_workflow import PolicyMode, PolicyRevenueRequest, run_policy_workflow
 from app.product_assistant import answer_data_turn
@@ -194,14 +194,14 @@ async def policy_revenue(body: PolicyRevenueRequest, request: Request, mode: Pol
 
 
 @app.post("/api/v2/multisource")
-async def multisource_revenue(body: MultiSourceRequest, request: Request, mode: Literal["fixed", "react"] = "fixed"):
+async def multisource_revenue(body: MultiSourceRequest, request: Request, mode: MultiSourceMode = "fixed"):
     state = request.app.state
     if state.multisource_database is None:
         raise HTTPException(503, "多源实验订单库暂时不可用，请检查服务状态。")
     if state.policy_slots.locked():
         raise HTTPException(503, "实验请求较多，请稍后重试。")
     settings = state.settings
-    choose = multisource_selector(settings) if mode == "react" and settings.llm_configured and settings.llm_base_url else None
+    choose = multisource_selector(settings) if mode != "fixed" and settings.llm_configured and settings.llm_base_url else None
     with tracing_context(enabled=False):
         async with state.policy_slots:
             return await run_in_threadpool(run_multisource_workflow, state.multisource_database, body, mode=mode, choose=choose)
