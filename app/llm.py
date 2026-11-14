@@ -17,6 +17,7 @@ def chat_completion(
     *,
     max_tokens: int,
     json_output: bool = False,
+    timeout: float | None = None,
 ) -> tuple[int, dict]:
     if not settings.llm_configured or not settings.llm_base_url:
         raise ValueError("Set LLM_API_KEY and LLM_BASE_URL before calling the model")
@@ -41,8 +42,9 @@ def chat_completion(
         },
         method="POST",
     )
+    timeout = timeout if timeout is not None else (30 if json_output else 15)
     with span("model_call") as measurement:
-        with urllib.request.urlopen(request, timeout=30 if json_output else 15) as response:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
             status = response.status
             raw = response.read(_MAX_RESPONSE_BYTES + 1)
             if len(raw) > _MAX_RESPONSE_BYTES:

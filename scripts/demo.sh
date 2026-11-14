@@ -12,11 +12,11 @@ env_file=/dev/null
 case "$mode" in
     start|stop) export LLM_API_KEY="" ;;
     live)
-        if [[ ! -f .env ]]; then
-            printf '请先在项目 .env 中配置模型地址和密钥。\n' >&2
+        env_file="${RAG_DEMO_ENV_FILE:-.env}"
+        if [[ ! -f "$env_file" ]]; then
+            printf '请先配置模型地址和密钥。可通过 RAG_DEMO_ENV_FILE 指定配置文件。\n' >&2
             exit 1
         fi
-        env_file=.env
         ;;
     *)
         printf '用法：bash scripts/demo.sh [start|live|stop]\n' >&2
@@ -39,7 +39,7 @@ if [[ "$mode" == "live" ]] && ! "${compose[@]}" config --environment | awk '
     /^LLM_API_KEY=[[:space:]]*[^[:space:]]/ { configured = 1 }
     END { exit !configured }
 '; then
-    printf '请先在项目 .env 中填写 LLM_API_KEY。\n' >&2
+    printf '请先在模型配置文件中填写 LLM_API_KEY。\n' >&2
     exit 1
 fi
 

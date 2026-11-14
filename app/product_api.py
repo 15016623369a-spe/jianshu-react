@@ -29,7 +29,8 @@ from app.conversation_history import ConversationHistory
 from app.file_analysis import analyze_upload, preview_upload
 from app.file_analysis_history import FileAnalysisHistory
 from app.gateway_identity import configured_key, gateway_user, owner_id
-from app.policy_workflow import PolicyRevenueRequest, run_policy_workflow
+from app.policy_react import deepseek_policy_selector
+from app.policy_workflow import PolicyMode, PolicyRevenueRequest, run_policy_workflow
 from app.product_assistant import answer_data_turn
 from app.product_errors import chat_http_error, is_chat_request
 from app.product_sql import DB_ID_PATTERN, database_path, list_databases, query_database
@@ -105,6 +106,7 @@ async def lifespan(app: FastAPI):
     app.state.postgres_metadata_slots = asyncio.Semaphore(4)
     app.state.gateway_key = configured_key()
     app.state.upload_slots = asyncio.Semaphore(4)
+    app.state.policy_slots = asyncio.Semaphore(4)
     if app.state.gateway_key and app.state.settings.llm_configured:
         model_url = urlsplit(app.state.settings.llm_base_url or "")
         if model_url.scheme != "https" or not model_url.hostname or model_url.username or model_url.query or model_url.fragment:
@@ -163,12 +165,21 @@ def health():
 
 
 @app.post("/api/v2/policy-revenue")
-def policy_revenue(body: PolicyRevenueRequest, request: Request):
+async def policy_revenue(body: PolicyRevenueRequest, request: Request, mode: PolicyMode = "fixed"):
     database = request.app.state.policy_database
     if database is None:
         raise HTTPException(503, "政策问数演示订单库暂时不可用，请检查服务状态。")
+    if mode == "fixed":
+        with tracing_context(enabled=False):
+            return await run_in_threadpool(run_policy_workflow, database, body)
+    settings = request.app.state.settings
+    choose = deepseek_policy_selector(settings) if settings.llm_configured and settings.llm_base_url else None
+    slots = request.app.state.policy_slots
+    if slots.locked():
+        raise HTTPException(503, "政策问数请求较多，请稍后重试。")
     with tracing_context(enabled=False):
-        return run_policy_workflow(database, body)
+        async with slots:
+            return await run_in_threadpool(run_policy_workflow, database, body, mode=mode, choose=choose)
 
 
 def _conversation_root(owner: str) -> Path:

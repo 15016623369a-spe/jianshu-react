@@ -69,7 +69,7 @@ def _verified_citations(segments: list[dict], evidence: dict, region: str | None
     )
 
 
-def _inspect(result: dict, expected: dict, request: dict) -> tuple[dict, dict[str, bool]]:
+def _inspect(result: dict, expected: dict, request: dict, *, expect_no_model: bool = True) -> tuple[dict, dict[str, bool]]:
     segments = result.get("segments", [])
     evidence = result.get("evidence") or {}
     metrics = result.get("metrics") or {}
@@ -81,9 +81,10 @@ def _inspect(result: dict, expected: dict, request: dict) -> tuple[dict, dict[st
     checks = {
         "action": observed["kind"] == expected["kind"],
         "scope": result.get("scope") == {field: request.get(field) for field in ("start", "end_exclusive", "region")},
-        "no_model_calls": _same(metrics.get("model_calls"), 0),
         "sql_query_count": _same(metrics.get("sql_queries"), len(expected.get("segments", []))),
     }
+    if expect_no_model:
+        checks["no_model_calls"] = _same(metrics.get("model_calls"), 0)
     if expected["kind"] != "answer":
         checks["reason"] = observed["reason"] == expected["reason"]
         checks["no_partial_answer"] = not segments and not evidence.get("queries") and observed["total_cents"] is None

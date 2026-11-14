@@ -52,8 +52,19 @@ POLICY_STAGES = {
     "plan_segments": "按生效日期划分区间",
     "execute_sql": "执行分段只读查询",
     "verify": "核对分段结果和证据",
+    "react": "根据政策和查询结果选择下一步",
 }
 POLICY_STAGE_STATUS = {"ok": "完成", "clarification": "待确认", "abstained": "已停止", "error": "检查未通过"}
+POLICY_MODES = {"fixed": "固定流程", "hybrid": "ReAct + 快路径", "react": "纯 ReAct"}
+POLICY_ROUTES = {
+    "explicit_fixed": "用户选择固定流程",
+    "scope_validation": "先确认请求的时间范围",
+    "single_policy": "区间由单一政策覆盖，使用快路径",
+    "multi_version_or_uncovered": "区间可能跨政策版本或缺少覆盖，使用 ReAct",
+    "explicit_react": "用户选择纯 ReAct",
+}
+POLICY_TOOLS = {"search_policies": "检索适用政策", "run_segment": "执行分段查询", "finish": "提交证据核对"}
+TOOL_STATUS = {"ok": "完成", "invalid": "动作无效", "duplicate": "已阻止重复动作", "error": "已停止"}
 
 
 def render_workspace_header(mode: str) -> None:
@@ -82,9 +93,13 @@ def get_json(path: str, *, params: dict | None = None) -> dict:
     return response.json()
 
 
-def render_policy_workspace(session_id: str) -> None:
+def render_policy_workspace(session_id: str, model_configured: bool) -> None:
     st.caption("使用合成订单。默认查询 2026 年 10 月，该月内退款政策变更过一次。")
     with st.form(f"policy-revenue-{session_id}"):
+        strategy = st.selectbox("执行方式", list(POLICY_MODES) if model_configured else ["fixed"],
+                                format_func=POLICY_MODES.__getitem__)
+        if not model_configured:
+            st.caption("配置模型后可试用两种 ReAct 模式。")
         start_field, end_field, region_field = st.columns(3)
         start = start_field.date_input("起始日期", date(2026, 10, 1), min_value=date(2000, 1, 1),
                                       max_value=date(2099, 12, 31))
@@ -99,11 +114,11 @@ def render_policy_workspace(session_id: str) -> None:
         st.session_state.pop(result_key, None)
         try:
             with st.spinner("正在读取政策并计算净营收"):
-                response = httpx.post(API + "/api/v2/policy-revenue", headers=GATEWAY_HEADERS, json={
+                response = httpx.post(API + "/api/v2/policy-revenue", params={"mode": strategy}, headers=GATEWAY_HEADERS, json={
                     "start": start.isoformat() if start is not None else None,
                     "end_exclusive": (end + timedelta(days=1)).isoformat() if end is not None else None,
                     "region": region,
-                }, timeout=15, trust_env=False)
+                }, timeout=30, trust_env=False)
                 response.raise_for_status()
                 st.session_state[result_key] = (session_id, response.json())
         except (httpx.HTTPError, ValueError):
@@ -147,11 +162,20 @@ def render_policy_result(result: dict) -> None:
 
     metrics = result["metrics"]
     with st.expander("本次执行步骤"):
+        st.caption(POLICY_ROUTES.get(result.get("routing_reason"), "固定流程"))
         for step in result["steps"]:
             stage = POLICY_STAGES.get(step["stage"], step["stage"])
             status = POLICY_STAGE_STATUS.get(step["status"], step["status"])
             st.text(f"{stage} · {status}")
         st.caption(f"{metrics['latency_ms']:.1f} ms · {metrics['sql_queries']} 次 SQL 查询 · {metrics['model_calls']} 次模型调用")
+        if metrics["model_calls"]:
+            usage = f"{metrics['total_tokens']:,} tokens" if metrics.get("usage_complete") else "模型用量记录不完整"
+            st.caption(usage)
+        for event in result.get("tool_trace", []):
+            label = POLICY_TOOLS.get(event["tool"], "模型动作")
+            status = TOOL_STATUS.get(event["status"], "已停止")
+            segment = f" · {event['segment_id']}" if event["segment_id"] else ""
+            st.text(f"{event['step']}. {label}{segment} · {status}")
 
 
 def invoke(path: str, **kwargs) -> tuple[dict, dict]:
@@ -562,7 +586,7 @@ if mode_id and workspace != mode_id:
 elif not mode_id and "workspace" in st.query_params:
     del st.query_params["workspace"]
 if mode == "政策问数":
-    render_policy_workspace(session_id)
+    render_policy_workspace(session_id, capabilities["model_configured"])
 elif mode == "文件分析":
     render_file_workspace(session_id, capabilities["model_configured"])
 else:
