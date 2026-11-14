@@ -1,0 +1,112 @@
+{
+  "kind": "answer",
+  "reason": null,
+  "total_cents": 81040,
+  "metrics": {
+    "prompt_tokens": 615,
+    "completion_tokens": 46,
+    "total_tokens": 661,
+    "prompt_cache_hit_tokens": 256,
+    "prompt_cache_miss_tokens": 359,
+    "model_calls": 2,
+    "invalid_actions": 0,
+    "duplicate_actions": 0,
+    "replans": 1,
+    "usage_complete": true,
+    "sql_queries": 5,
+    "latency_ms": 1006.301
+  },
+  "tool_trace": [
+    {
+      "step": 1,
+      "tool": "plan",
+      "ids": [
+        "discover_groups",
+        "lookup_policies",
+        "lookup_bulletins",
+        "aggregate_groups"
+      ],
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "step": 2,
+      "tool": "discover_groups",
+      "ids": [],
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "step": 3,
+      "tool": "lookup_policies",
+      "ids": [
+        "group:1",
+        "group:2",
+        "group:3",
+        "group:4"
+      ],
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "step": 4,
+      "tool": "lookup_bulletins",
+      "ids": [
+        "bulletin-outdoor-north",
+        "bulletin-gift-heading"
+      ],
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "step": 5,
+      "tool": "aggregate_groups",
+      "ids": [
+        "group:1",
+        "group:2",
+        "group:3"
+      ],
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "step": 6,
+      "tool": "replan",
+      "ids": [
+        "lookup_bulletins",
+        "aggregate_groups"
+      ],
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "step": 7,
+      "tool": "lookup_bulletins",
+      "ids": [
+        "bulletin-gift-special"
+      ],
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "step": 8,
+      "tool": "aggregate_groups",
+      "ids": [
+        "group:4"
+      ],
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "step": 9,
+      "tool": "finish",
+      "ids": [],
+      "status": "ok",
+      "reason": null
+    }
+  ],
+  "call_sources": [
+    "injected",
+    "live"
+  ]
+}

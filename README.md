@@ -6,7 +6,7 @@
 
 首版接受结构化日期与地区，使用两份合成政策和独立的演示订单库，全程无需模型密钥。[工作机制、验收和基线复跑](docs/v2-policy-workflow.md)
 
-[多源问数实验](http://127.0.0.1:28501/?workspace=multisource)提供固定流程与可手动切换的受控 ReAct。它从订单发现产品和地区，逐层跟进政策引用，再回库汇总，可核对每个分组的政策、公告与 SQL。[多源实验测试报告](docs/v2-multisource-test-report.md)
+[多源问数实验](http://127.0.0.1:28501/?workspace=multisource)默认使用固定流程，可手动切换 ReAct 或 Plan-and-Execute。它从订单发现产品和地区，逐层跟进政策引用，再回库汇总，可核对每个分组的政策、公告与 SQL。[多源 ReAct 测试报告](docs/v2-multisource-test-report.md) · [Plan-and-Execute 对照报告](docs/v2-plan-execute-test-report.md)
 
 用自然语言查询数据库，或上传一份 Excel 直接做分析。见数会在问题缺少时间、地区或指标口径时先确认条件，然后执行查询，给出可核对的 SQL、统计表和图表。也可以在同一会话里继续追问、调整筛选条件或下载结果。
 

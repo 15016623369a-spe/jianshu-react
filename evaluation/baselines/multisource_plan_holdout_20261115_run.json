@@ -1,0 +1,33 @@
+{
+  "suite": "refund-revenue-multisource-plan-holdout-v1",
+  "split": "plan-holdout",
+  "case_count": 21,
+  "modes": [
+    "fixed",
+    "react",
+    "plan"
+  ],
+  "started_at_utc": "2026-11-14T21:16:56.248626+00:00",
+  "order_seed": 78124,
+  "model": "deepseek-v4-pro",
+  "temperature": 0,
+  "provider_host": "api.deepseek.com",
+  "workers": 5,
+  "repeats": 3,
+  "source_sha256": {
+    "app/llm.py": "a81fa1e64d81a4f60935c515e1ff3de5242ea970db6b0b33519fe9a92ebe8ee1",
+    "app/multisource_corpus/bulletins.json": "ca3e42ae730aebf70cea456554625b6c59a572dacbb16d355e2e2680a3115851",
+    "app/multisource_corpus/orders.json": "f9b4b519b65180b1a8de3e21f0dbdbef36da3371201cfcabdf6afcedddef95a0",
+    "app/multisource_corpus/policies.json": "b5f0213ed8698860c58f7a2003229c825d991e0676d63a8882ae6ceb01704c5b",
+    "app/multisource_data.py": "2e46d7c41adf09932ecc84d1ca466acc764a222292d884ea4108f9f3f47b45e7",
+    "app/multisource_ui.py": "ae5ab8cd0ebf1239aab631ef668e9556b8666f2c3d306f84dd2e3cc85f66f8c1",
+    "app/multisource_workflow.py": "a076c78ff89a63634906cd2e650a413baa0351589e84c2004b1e33cf3ffe737b",
+    "app/tools/db.py": "e49d303eb54ecaba0db7506b3eca064e2991f0f1dc86c56eacaf0d098fbec9e5",
+    "evaluation/multisource_cases.json": "c407e5c598d4e9f461d39183af23b02b431fb465788ea96c4b71953a8f335a6f",
+    "evaluation/multisource_plan_holdout.json": "7552ed1b9e420e4fe970b6456b7ea863d4c9a265b66cc4016f1ab4b08416da06",
+    "evaluation/multisource_reference.py": "b9bd810070311d40250b1a441cd2b223ef0b49202e5ab7b651ff74f6ca466af0",
+    "evaluation/multisource_reserve.json": "146655da14e1af79f356cebb95bbb5a7e60d46ec6ca5b6bf90ebaabb0f33a645",
+    "evaluation/run_multisource_comparison.py": "5fc3731a2871dd4a11769f7a0a01bb1e031389cdda05b3a7a9a01bf9789f91d6"
+  },
+  "latency_method": "per application call excluding queue time; P95 nearest rank"
+}
