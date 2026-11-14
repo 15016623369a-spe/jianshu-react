@@ -1,0 +1,5 @@
+[
+  {"id": "bulletin-outdoor-north", "source": "bulletin", "product": "户外", "region": "华北", "start": "2026-10-01", "end_exclusive": "2026-12-01", "cap_cents": 1800, "ref": null, "quote": "华北户外按订单扣除实际退款，每笔最多扣人民币 18 元。"},
+  {"id": "bulletin-gift-heading", "source": "bulletin", "product": "礼品", "region": "华南", "start": "2026-10-01", "end_exclusive": "2026-12-01", "cap_cents": null, "ref": "bulletin-gift-special", "quote": "本目录转引《华南礼品专项退款口径》，执行时以专项口径为准。"},
+  {"id": "bulletin-gift-special", "source": "bulletin", "product": "礼品", "region": "华南", "start": "2026-10-01", "end_exclusive": "2026-12-01", "cap_cents": 100, "ref": null, "quote": "华南礼品按订单扣除实际退款，每笔最多扣人民币 1 元。"}
+]

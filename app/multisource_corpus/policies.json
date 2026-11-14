@@ -1,0 +1,8 @@
+[
+  {"id": "policy-appliance-south", "source": "policy", "product": "小家电", "region": "华南", "start": "2026-10-01", "end_exclusive": "2026-12-01", "cap_cents": 500, "ref": null, "quote": "华南小家电按订单扣除实际退款，每笔最多扣人民币 5 元。"},
+  {"id": "policy-appliance-east", "source": "policy", "product": "小家电", "region": "华东", "start": "2026-10-01", "end_exclusive": "2026-12-01", "cap_cents": 1200, "ref": null, "quote": "华东小家电按订单扣除实际退款，每笔最多扣人民币 12 元。"},
+  {"id": "policy-books-east", "source": "policy", "product": "图书", "region": "华东", "start": "2026-10-01", "end_exclusive": "2026-12-01", "cap_cents": null, "ref": null, "quote": "华东图书按订单扣除全部实际退款。"},
+  {"id": "policy-outdoor-north", "source": "policy", "product": "户外", "region": "华北", "start": "2026-10-01", "end_exclusive": "2026-12-01", "cap_cents": null, "ref": "bulletin-outdoor-north", "quote": "华北户外订单的退款上限以《华北户外补充公告》为准。"},
+  {"id": "policy-gift-south", "source": "policy", "product": "礼品", "region": "华南", "start": "2026-10-01", "end_exclusive": "2026-12-01", "cap_cents": null, "ref": "bulletin-gift-heading", "quote": "华南礼品订单的退款标准见《礼品公告目录》转引的专项条款。"},
+  {"id": "policy-digital-east", "source": "policy", "product": "数码", "region": "华东", "start": "2026-10-01", "end_exclusive": "2026-12-01", "cap_cents": null, "ref": "bulletin-digital-east", "quote": "华东数码订单的退款上限由《华东数码季度补充公告》规定。"}
+]

@@ -12,6 +12,8 @@ app/**
 !app/product_ui.css
 !app/policy_corpus/
 !app/policy_corpus/*.md
+!app/multisource_corpus/
+!app/multisource_corpus/*.json
 !app/tools/
 app/tools/**
 !app/tools/*.py

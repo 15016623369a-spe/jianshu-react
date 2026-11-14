@@ -17,6 +17,7 @@ import streamlit as st
 from app.file_downloads import csv_table, table_rows, xlsx_table
 from app.file_preview_ui import choose_layout
 from app.gateway_identity import KEY_HEADER, USER_HEADER, configured_key, gateway_user
+from app.multisource_ui import render_multisource_workspace
 
 API = os.getenv("RAG_API_URL", "http://127.0.0.1:8000")
 STAGES = {
@@ -45,6 +46,7 @@ WORKSPACES = {
     "对话": ("", "和数据对话", "用自然语言查数据库，继续追问，并核对结果背后的 SQL。"),
     "文件分析": ("file", "文件分析", "上传 CSV 或 Excel，确认表头，再做排名、图表与公式核对。"),
     "政策问数": ("policy", "政策问数", "按政策生效日期分段计算净营收，核对每段的政策条款和查询结果。"),
+    "多源实验": ("multisource", "多源问数实验", "从退款订单识别产品和地区，再查政策与补充公告，按适用口径计算净营收。"),
 }
 POLICY_STAGES = {
     "resolve_scope": "确认日期和地区",
@@ -587,6 +589,8 @@ elif not mode_id and "workspace" in st.query_params:
     del st.query_params["workspace"]
 if mode == "政策问数":
     render_policy_workspace(session_id, capabilities["model_configured"])
+elif mode == "多源实验":
+    render_multisource_workspace(API, GATEWAY_HEADERS, session_id, capabilities["model_configured"])
 elif mode == "文件分析":
     render_file_workspace(session_id, capabilities["model_configured"])
 else:
