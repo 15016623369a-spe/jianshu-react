@@ -1,0 +1,474 @@
+{
+  "suite": "versioned-policy-revenue-holdout-expanded-v1",
+  "reference_method": "Day-level policy coverage and integer-cent aggregation from the unchanged six synthetic seed orders.",
+  "cases": [
+    {
+      "id": "expanded-simple-policy-opens-before-first-order",
+      "group": "simple",
+      "request": {"start": "2026-10-01", "end_exclusive": "2026-10-03"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-10-01", "end_exclusive": "2026-10-03", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-simple-first-order-start-inclusive",
+      "group": "simple",
+      "request": {"start": "2026-10-03", "end_exclusive": "2026-10-04"},
+      "expected": {"kind": "answer", "total_cents": 10000, "segments": [
+        {"start": "2026-10-03", "end_exclusive": "2026-10-04", "policy_id": "refund-2026-10-a", "order_count": 1, "gross_cents": 12000, "deducted_cents": 2000, "revenue_cents": 10000}
+      ]}
+    },
+    {
+      "id": "expanded-simple-south-order-excluded-by-east",
+      "group": "simple",
+      "request": {"start": "2026-10-03", "end_exclusive": "2026-10-04", "region": "华东"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-10-03", "end_exclusive": "2026-10-04", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-simple-both-uncapped-refunds",
+      "group": "simple",
+      "request": {"start": "2026-10-02", "end_exclusive": "2026-10-12"},
+      "expected": {"kind": "answer", "total_cents": 35000, "segments": [
+        {"start": "2026-10-02", "end_exclusive": "2026-10-12", "policy_id": "refund-2026-10-a", "order_count": 2, "gross_cents": 42000, "deducted_cents": 7000, "revenue_cents": 35000}
+      ]}
+    },
+    {
+      "id": "expanded-simple-east-start-inclusive",
+      "group": "simple",
+      "request": {"start": "2026-10-11", "end_exclusive": "2026-10-15"},
+      "expected": {"kind": "answer", "total_cents": 25000, "segments": [
+        {"start": "2026-10-11", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 1, "gross_cents": 30000, "deducted_cents": 5000, "revenue_cents": 25000}
+      ]}
+    },
+    {
+      "id": "expanded-simple-uncapped-south-full-policy",
+      "group": "simple",
+      "request": {"start": "2026-10-01", "end_exclusive": "2026-10-15", "region": "华南"},
+      "expected": {"kind": "answer", "total_cents": 10000, "segments": [
+        {"start": "2026-10-01", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 1, "gross_cents": 12000, "deducted_cents": 2000, "revenue_cents": 10000}
+      ]}
+    },
+    {
+      "id": "expanded-simple-early-north-no-orders",
+      "group": "simple",
+      "request": {"start": "2026-10-02", "end_exclusive": "2026-10-14", "region": "华北"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-10-02", "end_exclusive": "2026-10-14", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-simple-day-before-transition",
+      "group": "simple",
+      "request": {"start": "2026-10-14", "end_exclusive": "2026-10-15"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-10-14", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-simple-transition-only",
+      "group": "simple",
+      "request": {"start": "2026-10-15", "end_exclusive": "2026-10-16"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-10-15", "end_exclusive": "2026-10-16", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-simple-pre-first-late-order",
+      "group": "simple",
+      "request": {"start": "2026-10-15", "end_exclusive": "2026-10-20", "region": "华北"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-10-15", "end_exclusive": "2026-10-20", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-simple-north-late-no-refund",
+      "group": "simple",
+      "request": {"start": "2026-10-20", "end_exclusive": "2026-10-21", "region": "华北"},
+      "expected": {"kind": "answer", "total_cents": 5000, "segments": [
+        {"start": "2026-10-20", "end_exclusive": "2026-10-21", "policy_id": "refund-2026-10-b", "order_count": 1, "gross_cents": 5000, "deducted_cents": 0, "revenue_cents": 5000}
+      ]}
+    },
+    {
+      "id": "expanded-simple-same-day-other-region",
+      "group": "simple",
+      "request": {"start": "2026-10-20", "end_exclusive": "2026-10-21", "region": "华南"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-10-20", "end_exclusive": "2026-10-21", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-simple-late-south-cap-unfiltered",
+      "group": "simple",
+      "request": {"start": "2026-10-21", "end_exclusive": "2026-10-22"},
+      "expected": {"kind": "answer", "total_cents": 7700, "segments": [
+        {"start": "2026-10-21", "end_exclusive": "2026-10-22", "policy_id": "refund-2026-10-b", "order_count": 1, "gross_cents": 8000, "deducted_cents": 300, "revenue_cents": 7700}
+      ]}
+    },
+    {
+      "id": "expanded-simple-late-north-plus-south",
+      "group": "simple",
+      "request": {"start": "2026-10-15", "end_exclusive": "2026-10-22"},
+      "expected": {"kind": "answer", "total_cents": 12700, "segments": [
+        {"start": "2026-10-15", "end_exclusive": "2026-10-22", "policy_id": "refund-2026-10-b", "order_count": 2, "gross_cents": 13000, "deducted_cents": 300, "revenue_cents": 12700}
+      ]}
+    },
+    {
+      "id": "expanded-simple-south-cap-plus-november-no-refund",
+      "group": "simple",
+      "request": {"start": "2026-10-21", "end_exclusive": "2026-11-03", "region": "华南"},
+      "expected": {"kind": "answer", "total_cents": 16700, "segments": [
+        {"start": "2026-10-21", "end_exclusive": "2026-11-03", "policy_id": "refund-2026-10-b", "order_count": 2, "gross_cents": 17000, "deducted_cents": 300, "revenue_cents": 16700}
+      ]}
+    },
+    {
+      "id": "expanded-simple-november-single-order",
+      "group": "simple",
+      "request": {"start": "2026-11-02", "end_exclusive": "2026-11-03"},
+      "expected": {"kind": "answer", "total_cents": 9000, "segments": [
+        {"start": "2026-11-02", "end_exclusive": "2026-11-03", "policy_id": "refund-2026-10-b", "order_count": 1, "gross_cents": 9000, "deducted_cents": 0, "revenue_cents": 9000}
+      ]}
+    },
+    {
+      "id": "expanded-simple-november-north-no-orders",
+      "group": "simple",
+      "request": {"start": "2026-11-01", "end_exclusive": "2026-11-10", "region": "华北"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-11-01", "end_exclusive": "2026-11-10", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-simple-last-covered-date",
+      "group": "simple",
+      "request": {"start": "2026-11-30", "end_exclusive": "2026-12-01"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-11-30", "end_exclusive": "2026-12-01", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-minimal-transition-window-north",
+      "group": "mixed",
+      "request": {"start": "2026-10-14", "end_exclusive": "2026-10-16", "region": "华北"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-10-14", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-16", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-policy-opens-no-late-orders",
+      "group": "mixed",
+      "request": {"start": "2026-10-01", "end_exclusive": "2026-10-16"},
+      "expected": {"kind": "answer", "total_cents": 35000, "segments": [
+        {"start": "2026-10-01", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 2, "gross_cents": 42000, "deducted_cents": 7000, "revenue_cents": 35000},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-16", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-late-only-after-empty-early",
+      "group": "mixed",
+      "request": {"start": "2026-10-14", "end_exclusive": "2026-10-21"},
+      "expected": {"kind": "answer", "total_cents": 5000, "segments": [
+        {"start": "2026-10-14", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-21", "policy_id": "refund-2026-10-b", "order_count": 1, "gross_cents": 5000, "deducted_cents": 0, "revenue_cents": 5000}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-transition-and-capped-refund",
+      "group": "mixed",
+      "request": {"start": "2026-10-14", "end_exclusive": "2026-10-22", "region": "华南"},
+      "expected": {"kind": "answer", "total_cents": 7700, "segments": [
+        {"start": "2026-10-14", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-22", "policy_id": "refund-2026-10-b", "order_count": 1, "gross_cents": 8000, "deducted_cents": 300, "revenue_cents": 7700}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-transition-to-november-south",
+      "group": "mixed",
+      "request": {"start": "2026-10-14", "end_exclusive": "2026-11-03", "region": "华南"},
+      "expected": {"kind": "answer", "total_cents": 16700, "segments": [
+        {"start": "2026-10-14", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0},
+        {"start": "2026-10-15", "end_exclusive": "2026-11-03", "policy_id": "refund-2026-10-b", "order_count": 2, "gross_cents": 17000, "deducted_cents": 300, "revenue_cents": 16700}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-transition-to-last-covered-north",
+      "group": "mixed",
+      "request": {"start": "2026-10-14", "end_exclusive": "2026-12-01", "region": "华北"},
+      "expected": {"kind": "answer", "total_cents": 5000, "segments": [
+        {"start": "2026-10-14", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0},
+        {"start": "2026-10-15", "end_exclusive": "2026-12-01", "policy_id": "refund-2026-10-b", "order_count": 1, "gross_cents": 5000, "deducted_cents": 0, "revenue_cents": 5000}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-both-nonempty-and-all-unsigned",
+      "group": "mixed",
+      "request": {"start": "2026-10-01", "end_exclusive": "2026-10-23"},
+      "expected": {"kind": "answer", "total_cents": 47700, "segments": [
+        {"start": "2026-10-01", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 2, "gross_cents": 42000, "deducted_cents": 7000, "revenue_cents": 35000},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-23", "policy_id": "refund-2026-10-b", "order_count": 2, "gross_cents": 13000, "deducted_cents": 300, "revenue_cents": 12700}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-north-first-late-excluded",
+      "group": "mixed",
+      "request": {"start": "2026-10-09", "end_exclusive": "2026-10-20", "region": "华北"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-10-09", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-20", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-east-order-day-included-through-cutover",
+      "group": "mixed",
+      "request": {"start": "2026-10-11", "end_exclusive": "2026-10-16", "region": "华东"},
+      "expected": {"kind": "answer", "total_cents": 25000, "segments": [
+        {"start": "2026-10-11", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 1, "gross_cents": 30000, "deducted_cents": 5000, "revenue_cents": 25000},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-16", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-east-after-own-order",
+      "group": "mixed",
+      "request": {"start": "2026-10-12", "end_exclusive": "2026-10-22", "region": "华东"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-10-12", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-22", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-south-start-on-early-order",
+      "group": "mixed",
+      "request": {"start": "2026-10-03", "end_exclusive": "2026-10-22", "region": "华南"},
+      "expected": {"kind": "answer", "total_cents": 17700, "segments": [
+        {"start": "2026-10-03", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 1, "gross_cents": 12000, "deducted_cents": 2000, "revenue_cents": 10000},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-22", "policy_id": "refund-2026-10-b", "order_count": 1, "gross_cents": 8000, "deducted_cents": 300, "revenue_cents": 7700}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-south-start-after-early-order",
+      "group": "mixed",
+      "request": {"start": "2026-10-04", "end_exclusive": "2026-10-22", "region": "华南"},
+      "expected": {"kind": "answer", "total_cents": 7700, "segments": [
+        {"start": "2026-10-04", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-22", "policy_id": "refund-2026-10-b", "order_count": 1, "gross_cents": 8000, "deducted_cents": 300, "revenue_cents": 7700}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-south-end-on-capped-order",
+      "group": "mixed",
+      "request": {"start": "2026-10-01", "end_exclusive": "2026-10-21", "region": "华南"},
+      "expected": {"kind": "answer", "total_cents": 10000, "segments": [
+        {"start": "2026-10-01", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 1, "gross_cents": 12000, "deducted_cents": 2000, "revenue_cents": 10000},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-21", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-south-end-before-november-order",
+      "group": "mixed",
+      "request": {"start": "2026-10-03", "end_exclusive": "2026-11-02", "region": "华南"},
+      "expected": {"kind": "answer", "total_cents": 17700, "segments": [
+        {"start": "2026-10-03", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 1, "gross_cents": 12000, "deducted_cents": 2000, "revenue_cents": 10000},
+        {"start": "2026-10-15", "end_exclusive": "2026-11-02", "policy_id": "refund-2026-10-b", "order_count": 1, "gross_cents": 8000, "deducted_cents": 300, "revenue_cents": 7700}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-all-end-on-november-order",
+      "group": "mixed",
+      "request": {"start": "2026-10-03", "end_exclusive": "2026-11-02"},
+      "expected": {"kind": "answer", "total_cents": 47700, "segments": [
+        {"start": "2026-10-03", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 2, "gross_cents": 42000, "deducted_cents": 7000, "revenue_cents": 35000},
+        {"start": "2026-10-15", "end_exclusive": "2026-11-02", "policy_id": "refund-2026-10-b", "order_count": 2, "gross_cents": 13000, "deducted_cents": 300, "revenue_cents": 12700}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-all-november-inclusive",
+      "group": "mixed",
+      "request": {"start": "2026-10-02", "end_exclusive": "2026-11-03"},
+      "expected": {"kind": "answer", "total_cents": 56700, "segments": [
+        {"start": "2026-10-02", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 2, "gross_cents": 42000, "deducted_cents": 7000, "revenue_cents": 35000},
+        {"start": "2026-10-15", "end_exclusive": "2026-11-03", "policy_id": "refund-2026-10-b", "order_count": 3, "gross_cents": 22000, "deducted_cents": 300, "revenue_cents": 21700}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-start-on-east-end-on-south",
+      "group": "mixed",
+      "request": {"start": "2026-10-11", "end_exclusive": "2026-10-21", "region": "华东"},
+      "expected": {"kind": "answer", "total_cents": 25000, "segments": [
+        {"start": "2026-10-11", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 1, "gross_cents": 30000, "deducted_cents": 5000, "revenue_cents": 25000},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-21", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-start-after-east-late-north-and-south",
+      "group": "mixed",
+      "request": {"start": "2026-10-12", "end_exclusive": "2026-10-23"},
+      "expected": {"kind": "answer", "total_cents": 12700, "segments": [
+        {"start": "2026-10-12", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-23", "policy_id": "refund-2026-10-b", "order_count": 2, "gross_cents": 13000, "deducted_cents": 300, "revenue_cents": 12700}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-entire-coverage-south",
+      "group": "mixed",
+      "request": {"start": "2026-10-01", "end_exclusive": "2026-12-01", "region": "华南"},
+      "expected": {"kind": "answer", "total_cents": 26700, "segments": [
+        {"start": "2026-10-01", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 1, "gross_cents": 12000, "deducted_cents": 2000, "revenue_cents": 10000},
+        {"start": "2026-10-15", "end_exclusive": "2026-12-01", "policy_id": "refund-2026-10-b", "order_count": 2, "gross_cents": 17000, "deducted_cents": 300, "revenue_cents": 16700}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-entire-coverage-east",
+      "group": "mixed",
+      "request": {"start": "2026-10-01", "end_exclusive": "2026-12-01", "region": "华东"},
+      "expected": {"kind": "answer", "total_cents": 25000, "segments": [
+        {"start": "2026-10-01", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 1, "gross_cents": 30000, "deducted_cents": 5000, "revenue_cents": 25000},
+        {"start": "2026-10-15", "end_exclusive": "2026-12-01", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-entire-coverage-north",
+      "group": "mixed",
+      "request": {"start": "2026-10-01", "end_exclusive": "2026-12-01", "region": "华北"},
+      "expected": {"kind": "answer", "total_cents": 5000, "segments": [
+        {"start": "2026-10-01", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0},
+        {"start": "2026-10-15", "end_exclusive": "2026-12-01", "policy_id": "refund-2026-10-b", "order_count": 1, "gross_cents": 5000, "deducted_cents": 0, "revenue_cents": 5000}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-east-only-absent-in-both",
+      "group": "mixed",
+      "request": {"start": "2026-10-12", "end_exclusive": "2026-10-20", "region": "华东"},
+      "expected": {"kind": "answer", "total_cents": 0, "segments": [
+        {"start": "2026-10-12", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-20", "policy_id": "refund-2026-10-b", "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "revenue_cents": 0}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-early-and-north-late",
+      "group": "mixed",
+      "request": {"start": "2026-10-03", "end_exclusive": "2026-10-21"},
+      "expected": {"kind": "answer", "total_cents": 40000, "segments": [
+        {"start": "2026-10-03", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 2, "gross_cents": 42000, "deducted_cents": 7000, "revenue_cents": 35000},
+        {"start": "2026-10-15", "end_exclusive": "2026-10-21", "policy_id": "refund-2026-10-b", "order_count": 1, "gross_cents": 5000, "deducted_cents": 0, "revenue_cents": 5000}
+      ]}
+    },
+    {
+      "id": "expanded-mixed-exclude-south-early-include-november",
+      "group": "mixed",
+      "request": {"start": "2026-10-04", "end_exclusive": "2026-11-03"},
+      "expected": {"kind": "answer", "total_cents": 46700, "segments": [
+        {"start": "2026-10-04", "end_exclusive": "2026-10-15", "policy_id": "refund-2026-10-a", "order_count": 1, "gross_cents": 30000, "deducted_cents": 5000, "revenue_cents": 25000},
+        {"start": "2026-10-15", "end_exclusive": "2026-11-03", "policy_id": "refund-2026-10-b", "order_count": 3, "gross_cents": 22000, "deducted_cents": 300, "revenue_cents": 21700}
+      ]}
+    },
+    {
+      "id": "expanded-guard-entirely-outside-before-with-orders",
+      "group": "guard",
+      "request": {"start": "2026-09-28", "end_exclusive": "2026-09-30", "region": "华东"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-entirely-outside-before-without-orders",
+      "group": "guard",
+      "request": {"start": "2026-09-01", "end_exclusive": "2026-09-04", "region": "华北"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-ends-on-first-covered-day",
+      "group": "guard",
+      "request": {"start": "2026-09-30", "end_exclusive": "2026-10-01"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-starts-one-day-before-coverage",
+      "group": "guard",
+      "request": {"start": "2026-09-30", "end_exclusive": "2026-10-02"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-uncovered-and-first-order-included",
+      "group": "guard",
+      "request": {"start": "2026-09-30", "end_exclusive": "2026-10-04", "region": "华南"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-starts-before-coverage-spans-two-policies",
+      "group": "guard",
+      "request": {"start": "2026-09-30", "end_exclusive": "2026-10-22"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-ends-one-day-after-coverage",
+      "group": "guard",
+      "request": {"start": "2026-11-30", "end_exclusive": "2026-12-02"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-starts-on-first-uncovered-day",
+      "group": "guard",
+      "request": {"start": "2026-12-01", "end_exclusive": "2026-12-02"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-entirely-outside-after-region",
+      "group": "guard",
+      "request": {"start": "2026-12-18", "end_exclusive": "2026-12-25", "region": "华东"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-covered-orders-and-trailing-gap",
+      "group": "guard",
+      "request": {"start": "2026-11-01", "end_exclusive": "2026-12-03", "region": "华南"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-gaps-on-both-sides",
+      "group": "guard",
+      "request": {"start": "2026-09-30", "end_exclusive": "2026-12-02"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-gaps-on-both-sides-empty-region",
+      "group": "guard",
+      "request": {"start": "2026-09-25", "end_exclusive": "2026-12-05", "region": "华北"},
+      "expected": {"kind": "abstained", "reason": "policy_gap"}
+    },
+    {
+      "id": "expanded-guard-missing-start-no-region",
+      "group": "guard",
+      "request": {"end_exclusive": "2026-10-15"},
+      "expected": {"kind": "clarification", "reason": "missing_dates"}
+    },
+    {
+      "id": "expanded-guard-missing-end-south",
+      "group": "guard",
+      "request": {"start": "2026-10-21", "region": "华南"},
+      "expected": {"kind": "clarification", "reason": "missing_dates"}
+    },
+    {
+      "id": "expanded-guard-missing-both-with-region",
+      "group": "guard",
+      "request": {"region": "华东"},
+      "expected": {"kind": "clarification", "reason": "missing_dates"}
+    },
+    {
+      "id": "expanded-guard-empty-at-policy-start",
+      "group": "guard",
+      "request": {"start": "2026-10-01", "end_exclusive": "2026-10-01", "region": "华南"},
+      "expected": {"kind": "clarification", "reason": "invalid_period"}
+    },
+    {
+      "id": "expanded-guard-empty-at-policy-end",
+      "group": "guard",
+      "request": {"start": "2026-12-01", "end_exclusive": "2026-12-01"},
+      "expected": {"kind": "clarification", "reason": "invalid_period"}
+    },
+    {
+      "id": "expanded-guard-reverse-crossing-boundary",
+      "group": "guard",
+      "request": {"start": "2026-10-16", "end_exclusive": "2026-10-14", "region": "华北"},
+      "expected": {"kind": "clarification", "reason": "invalid_period"}
+    }
+  ]
+}

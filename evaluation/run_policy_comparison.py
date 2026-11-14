@@ -27,7 +27,10 @@ from evaluation.run_policy_workflow import _inspect
 
 _MODES = ("fixed", "hybrid", "react")
 _GROUPS = ("simple", "mixed", "guard")
-_SUITE = Path(__file__).with_name("react_holdout.json")
+_SUITES = {
+    "original": Path(__file__).with_name("react_holdout.json"),
+    "expanded": Path(__file__).with_name("react_holdout_expanded.json"),
+}
 _DEVELOPMENT = Path(__file__).with_name("policy_workflow_cases.json")
 _ORDER_SEED = 918274
 _BUDGET_STOPS = {
@@ -37,9 +40,11 @@ _BUDGET_STOPS = {
 _MEASURED_NAMES = ("model_calls", "sql_queries", "invalid_actions", "duplicate_actions")
 
 
-def _load_suite() -> dict:
-    release = json.loads(_SUITE.read_text(encoding="utf-8"))
-    development = json.loads(_DEVELOPMENT.read_text(encoding="utf-8"))
+def _load_suite(name: str = "original") -> dict:
+    release = json.loads(_SUITES[name].read_text(encoding="utf-8"))
+    prior_files = [_DEVELOPMENT]
+    if name == "expanded":
+        prior_files.append(_SUITES["original"])
 
     def request_key(case: dict) -> tuple:
         request = PolicyRevenueRequest.model_validate(case["request"])
@@ -47,17 +52,22 @@ def _load_suite() -> dict:
 
     cases = release["cases"]
     keys = {request_key(case) for case in cases}
-    if len(keys) != len(cases) or keys & {request_key(case) for case in development["cases"]}:
-        raise ValueError("Holdout cases overlap with each other or the development set")
+    prior_keys = {
+        request_key(case)
+        for file in prior_files
+        for case in json.loads(file.read_text(encoding="utf-8"))["cases"]
+    }
+    if len(keys) != len(cases) or keys & prior_keys:
+        raise ValueError("Holdout cases overlap with each other or a prior suite")
     if len({case["id"] for case in cases}) != len(cases) or set(case["group"] for case in cases) != set(_GROUPS):
         raise ValueError("Holdout IDs or group labels are invalid")
     return release
 
 
-def _fingerprint() -> dict[str, str]:
+def _fingerprint(suite: Path) -> dict[str, str]:
     files = [
         "app/commerce_demo.py", "app/llm.py", "app/policy_workflow.py", "app/policy_react.py",
-        "app/tools/db.py", _SUITE.relative_to(PROJECT_ROOT).as_posix(),
+        "app/tools/db.py", suite.relative_to(PROJECT_ROOT).as_posix(),
         Path(__file__).relative_to(PROJECT_ROOT).as_posix(),
     ]
     files.extend(path.relative_to(PROJECT_ROOT).as_posix() for path in sorted((PROJECT_ROOT / "app/policy_corpus").glob("*.md")))
@@ -202,6 +212,7 @@ def _summarize(records: list[dict], modes: list[str]) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--suite", choices=tuple(_SUITES), default="original")
     parser.add_argument("--modes", nargs="+", choices=_MODES, default=list(_MODES))
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--workers", type=int, default=4)
@@ -221,7 +232,7 @@ def main() -> int:
         from app.policy_react import deepseek_policy_selector
 
         choose = deepseek_policy_selector(settings)
-    suite = _load_suite()
+    suite = _load_suite(args.suite)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     output = args.output_dir or Path(__file__).with_name("results") / f"policy-comparison-{stamp}"
     output.mkdir(parents=True, exist_ok=False)
@@ -229,7 +240,7 @@ def main() -> int:
         "suite": suite["suite"], "started_at_utc": stamp, "model": settings.llm_model if settings else None,
         "provider_host": urlsplit(settings.llm_base_url).hostname if settings else None,
         "temperature": args.temperature if settings else None, "workers": args.workers, "modes": args.modes,
-        "repeats": args.repeats, "order_seed": _ORDER_SEED, "source_sha256": _fingerprint(),
+        "repeats": args.repeats, "order_seed": _ORDER_SEED, "source_sha256": _fingerprint(_SUITES[args.suite]),
         "case_count": len(suite["cases"]),
         "score_definition": "exact expected outcome, scope, cited evidence, SQL query counts, and actual treatment route",
         "latency_method": "measured around local application call, excluding queue time; P95 nearest rank",

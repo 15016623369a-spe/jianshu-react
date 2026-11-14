@@ -1,0 +1,422 @@
+{
+  "started_at_utc": "2026-11-14T20:23:19.093973+00:00",
+  "scope": "Separate three-policy budget probe. Excluded from the expanded holdout.",
+  "model": "deepseek-v4-pro",
+  "temperature": 0.0,
+  "source_sha256": {
+    "app/commerce_demo.py": "e6fde5c9c9931c683ee5adcab4ba9536e94e2a4caea731d84fd9c4d97d908ac0",
+    "app/llm.py": "a81fa1e64d81a4f60935c515e1ff3de5242ea970db6b0b33519fe9a92ebe8ee1",
+    "app/policy_workflow.py": "1c354f5acb42c9be42afb86cc492ac978b4e87a576d349e81e40de4afce5ec16",
+    "app/policy_react.py": "c4dde1cd20fb681da8a2fe513a0bc1d05b142ccc0fbeae91b2aafa1f274dac29",
+    "app/tools/db.py": "e49d303eb54ecaba0db7506b3eca064e2991f0f1dc86c56eacaf0d098fbec9e5"
+  },
+  "policies": [
+    {
+      "id": "refund-2026-10-a",
+      "effective_from": "2026-10-01",
+      "effective_until": "2026-10-15",
+      "max_refund_cents_per_order": null
+    },
+    {
+      "id": "refund-2026-10-b",
+      "effective_from": "2026-10-15",
+      "effective_until": "2026-10-21",
+      "max_refund_cents_per_order": 300
+    },
+    {
+      "id": "refund-2026-10-c",
+      "effective_from": "2026-10-21",
+      "effective_until": "2026-12-01",
+      "max_refund_cents_per_order": 100
+    }
+  ],
+  "cases": [
+    {
+      "id": "three_policies",
+      "request": {
+        "start": "2026-10-01",
+        "end_exclusive": "2026-11-01",
+        "region": null
+      },
+      "mode": "fixed",
+      "expected_segments_cents": [
+        35000,
+        5000,
+        7900
+      ],
+      "expected_total_cents": 47900,
+      "kind": "answer",
+      "strategy": "fixed",
+      "stop_reason": "finish",
+      "total_cents": 47900,
+      "segments_cents": [
+        35000,
+        5000,
+        7900
+      ],
+      "passed": true,
+      "metrics": {
+        "model_calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 0,
+        "invalid_actions": 0,
+        "duplicate_actions": 0,
+        "usage_complete": true,
+        "sql_queries": 3,
+        "latency_ms": 0.756
+      },
+      "tool_trace": [
+        {
+          "step": 1,
+          "tool": "search_policies",
+          "segment_id": null,
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 2,
+          "tool": "run_segment",
+          "segment_id": "segment:1",
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 3,
+          "tool": "run_segment",
+          "segment_id": "segment:2",
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 4,
+          "tool": "run_segment",
+          "segment_id": "segment:3",
+          "status": "ok",
+          "reason": null
+        }
+      ]
+    },
+    {
+      "id": "three_policies",
+      "request": {
+        "start": "2026-10-01",
+        "end_exclusive": "2026-11-01",
+        "region": null
+      },
+      "mode": "hybrid",
+      "expected_segments_cents": [
+        35000,
+        5000,
+        7900
+      ],
+      "expected_total_cents": 47900,
+      "kind": "abstained",
+      "strategy": "react",
+      "stop_reason": "max_sql",
+      "total_cents": null,
+      "segments_cents": [],
+      "passed": false,
+      "metrics": {
+        "model_calls": 4,
+        "prompt_tokens": 1481,
+        "completion_tokens": 49,
+        "total_tokens": 1530,
+        "prompt_cache_hit_tokens": 1024,
+        "prompt_cache_miss_tokens": 457,
+        "invalid_actions": 0,
+        "duplicate_actions": 0,
+        "usage_complete": true,
+        "sql_queries": 2,
+        "latency_ms": 2981.061
+      },
+      "tool_trace": [
+        {
+          "step": 1,
+          "tool": "search_policies",
+          "segment_id": null,
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 2,
+          "tool": "run_segment",
+          "segment_id": "segment:1",
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 3,
+          "tool": "run_segment",
+          "segment_id": "segment:2",
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 4,
+          "tool": "run_segment",
+          "segment_id": "segment:3",
+          "status": "error",
+          "reason": "max_sql"
+        }
+      ]
+    },
+    {
+      "id": "three_policies",
+      "request": {
+        "start": "2026-10-01",
+        "end_exclusive": "2026-11-01",
+        "region": null
+      },
+      "mode": "react",
+      "expected_segments_cents": [
+        35000,
+        5000,
+        7900
+      ],
+      "expected_total_cents": 47900,
+      "kind": "abstained",
+      "strategy": "react",
+      "stop_reason": "max_sql",
+      "total_cents": null,
+      "segments_cents": [],
+      "passed": false,
+      "metrics": {
+        "model_calls": 4,
+        "prompt_tokens": 1481,
+        "completion_tokens": 49,
+        "total_tokens": 1530,
+        "prompt_cache_hit_tokens": 1152,
+        "prompt_cache_miss_tokens": 329,
+        "invalid_actions": 0,
+        "duplicate_actions": 0,
+        "usage_complete": true,
+        "sql_queries": 2,
+        "latency_ms": 3415.293
+      },
+      "tool_trace": [
+        {
+          "step": 1,
+          "tool": "search_policies",
+          "segment_id": null,
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 2,
+          "tool": "run_segment",
+          "segment_id": "segment:1",
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 3,
+          "tool": "run_segment",
+          "segment_id": "segment:2",
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 4,
+          "tool": "run_segment",
+          "segment_id": "segment:3",
+          "status": "error",
+          "reason": "max_sql"
+        }
+      ]
+    },
+    {
+      "id": "two_policies",
+      "request": {
+        "start": "2026-10-15",
+        "end_exclusive": "2026-11-01",
+        "region": null
+      },
+      "mode": "fixed",
+      "expected_segments_cents": [
+        5000,
+        7900
+      ],
+      "expected_total_cents": 12900,
+      "kind": "answer",
+      "strategy": "fixed",
+      "stop_reason": "finish",
+      "total_cents": 12900,
+      "segments_cents": [
+        5000,
+        7900
+      ],
+      "passed": true,
+      "metrics": {
+        "model_calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 0,
+        "invalid_actions": 0,
+        "duplicate_actions": 0,
+        "usage_complete": true,
+        "sql_queries": 2,
+        "latency_ms": 1.895
+      },
+      "tool_trace": [
+        {
+          "step": 1,
+          "tool": "search_policies",
+          "segment_id": null,
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 2,
+          "tool": "run_segment",
+          "segment_id": "segment:1",
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 3,
+          "tool": "run_segment",
+          "segment_id": "segment:2",
+          "status": "ok",
+          "reason": null
+        }
+      ]
+    },
+    {
+      "id": "two_policies",
+      "request": {
+        "start": "2026-10-15",
+        "end_exclusive": "2026-11-01",
+        "region": null
+      },
+      "mode": "hybrid",
+      "expected_segments_cents": [
+        5000,
+        7900
+      ],
+      "expected_total_cents": 12900,
+      "kind": "answer",
+      "strategy": "react",
+      "stop_reason": "finish",
+      "total_cents": 12900,
+      "segments_cents": [
+        5000,
+        7900
+      ],
+      "passed": true,
+      "metrics": {
+        "model_calls": 4,
+        "prompt_tokens": 1337,
+        "completion_tokens": 41,
+        "total_tokens": 1378,
+        "prompt_cache_hit_tokens": 768,
+        "prompt_cache_miss_tokens": 569,
+        "invalid_actions": 0,
+        "duplicate_actions": 0,
+        "usage_complete": true,
+        "sql_queries": 2,
+        "latency_ms": 2541.839
+      },
+      "tool_trace": [
+        {
+          "step": 1,
+          "tool": "search_policies",
+          "segment_id": null,
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 2,
+          "tool": "run_segment",
+          "segment_id": "segment:1",
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 3,
+          "tool": "run_segment",
+          "segment_id": "segment:2",
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 4,
+          "tool": "finish",
+          "segment_id": null,
+          "status": "ok",
+          "reason": null
+        }
+      ]
+    },
+    {
+      "id": "two_policies",
+      "request": {
+        "start": "2026-10-15",
+        "end_exclusive": "2026-11-01",
+        "region": null
+      },
+      "mode": "react",
+      "expected_segments_cents": [
+        5000,
+        7900
+      ],
+      "expected_total_cents": 12900,
+      "kind": "answer",
+      "strategy": "react",
+      "stop_reason": "finish",
+      "total_cents": 12900,
+      "segments_cents": [
+        5000,
+        7900
+      ],
+      "passed": true,
+      "metrics": {
+        "model_calls": 4,
+        "prompt_tokens": 1337,
+        "completion_tokens": 41,
+        "total_tokens": 1378,
+        "prompt_cache_hit_tokens": 1024,
+        "prompt_cache_miss_tokens": 313,
+        "invalid_actions": 0,
+        "duplicate_actions": 0,
+        "usage_complete": true,
+        "sql_queries": 2,
+        "latency_ms": 3346.404
+      },
+      "tool_trace": [
+        {
+          "step": 1,
+          "tool": "search_policies",
+          "segment_id": null,
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 2,
+          "tool": "run_segment",
+          "segment_id": "segment:1",
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 3,
+          "tool": "run_segment",
+          "segment_id": "segment:2",
+          "status": "ok",
+          "reason": null
+        },
+        {
+          "step": 4,
+          "tool": "finish",
+          "segment_id": null,
+          "status": "ok",
+          "reason": null
+        }
+      ]
+    }
+  ]
+}

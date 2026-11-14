@@ -1,0 +1,696 @@
+{
+  "methods": {
+    "fixed": {
+      "overall": {
+        "attempts": 180,
+        "passed": 180,
+        "correct_by_round": [
+          60,
+          60,
+          60
+        ],
+        "questions_per_round": 60,
+        "median_ms": 1.2255,
+        "p95_ms": 2.591,
+        "p95_ms_by_round": [
+          2.005,
+          2.523,
+          4.082
+        ],
+        "stats_per_case": {
+          "model_calls": 0,
+          "sql_queries": 1.1,
+          "invalid_actions": 0,
+          "duplicate_actions": 0
+        },
+        "totals": {
+          "model_calls": 0,
+          "sql_queries": 198,
+          "invalid_actions": 0,
+          "duplicate_actions": 0
+        },
+        "model_calls_with_usage": 0,
+        "usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "estimated_cost_usd": 0.0,
+        "cost_bases": {
+          "no_model_calls": 180
+        },
+        "routes": {
+          "fixed": 180
+        },
+        "tool_status_counts": {
+          "ok": 324,
+          "error": 36
+        },
+        "stop_reasons": {
+          "finish": 126,
+          "missing_dates": 9,
+          "policy_gap": 36,
+          "invalid_period": 9
+        },
+        "budget_stops": 0,
+        "failed_cases": [],
+        "error_types": {}
+      },
+      "by_group": {
+        "simple": {
+          "attempts": 54,
+          "passed": 54,
+          "correct_by_round": [
+            18,
+            18,
+            18
+          ],
+          "questions_per_round": 18,
+          "median_ms": 1.307,
+          "p95_ms": 2.462,
+          "p95_ms_by_round": [
+            16.067,
+            2.462,
+            5.508
+          ],
+          "stats_per_case": {
+            "model_calls": 0,
+            "sql_queries": 1,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "totals": {
+            "model_calls": 0,
+            "sql_queries": 54,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "estimated_cost_usd": 0.0,
+          "cost_bases": {
+            "no_model_calls": 54
+          },
+          "routes": {
+            "fixed": 54
+          },
+          "tool_status_counts": {
+            "ok": 108
+          },
+          "stop_reasons": {
+            "finish": 54
+          },
+          "budget_stops": 0,
+          "failed_cases": [],
+          "error_types": {}
+        },
+        "mixed": {
+          "attempts": 72,
+          "passed": 72,
+          "correct_by_round": [
+            24,
+            24,
+            24
+          ],
+          "questions_per_round": 24,
+          "median_ms": 1.6415,
+          "p95_ms": 4.082,
+          "p95_ms_by_round": [
+            2.15,
+            2.633,
+            4.892
+          ],
+          "stats_per_case": {
+            "model_calls": 0,
+            "sql_queries": 2,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "totals": {
+            "model_calls": 0,
+            "sql_queries": 144,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "estimated_cost_usd": 0.0,
+          "cost_bases": {
+            "no_model_calls": 72
+          },
+          "routes": {
+            "fixed": 72
+          },
+          "tool_status_counts": {
+            "ok": 216
+          },
+          "stop_reasons": {
+            "finish": 72
+          },
+          "budget_stops": 0,
+          "failed_cases": [],
+          "error_types": {}
+        },
+        "guard": {
+          "attempts": 54,
+          "passed": 54,
+          "correct_by_round": [
+            18,
+            18,
+            18
+          ],
+          "questions_per_round": 18,
+          "median_ms": 0.2525,
+          "p95_ms": 0.737,
+          "p95_ms_by_round": [
+            1.125,
+            0.712,
+            0.798
+          ],
+          "stats_per_case": {
+            "model_calls": 0,
+            "sql_queries": 0,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "totals": {
+            "model_calls": 0,
+            "sql_queries": 0,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "estimated_cost_usd": 0.0,
+          "cost_bases": {
+            "no_model_calls": 54
+          },
+          "routes": {
+            "fixed": 54
+          },
+          "tool_status_counts": {
+            "error": 36
+          },
+          "stop_reasons": {
+            "missing_dates": 9,
+            "policy_gap": 36,
+            "invalid_period": 9
+          },
+          "budget_stops": 0,
+          "failed_cases": [],
+          "error_types": {}
+        }
+      }
+    },
+    "hybrid": {
+      "overall": {
+        "attempts": 180,
+        "passed": 180,
+        "correct_by_round": [
+          60,
+          60,
+          60
+        ],
+        "questions_per_round": 60,
+        "median_ms": 827.498,
+        "p95_ms": 3425.43,
+        "p95_ms_by_round": [
+          3438.799,
+          3250.671,
+          3392.892
+        ],
+        "stats_per_case": {
+          "model_calls": 1.8,
+          "sql_queries": 1.1,
+          "invalid_actions": 0,
+          "duplicate_actions": 0
+        },
+        "totals": {
+          "model_calls": 324,
+          "sql_queries": 198,
+          "invalid_actions": 0,
+          "duplicate_actions": 0
+        },
+        "model_calls_with_usage": 324,
+        "usage": {
+          "prompt_tokens": 104112,
+          "completion_tokens": 3204,
+          "total_tokens": 107316
+        },
+        "estimated_cost_usd": 0.05440547199999998,
+        "cost_bases": {
+          "no_model_calls": 72,
+          "deepseek_v4_pro_peak": 108
+        },
+        "routes": {
+          "fixed": 72,
+          "react": 108
+        },
+        "tool_status_counts": {
+          "ok": 396,
+          "error": 36
+        },
+        "stop_reasons": {
+          "finish": 126,
+          "policy_gap": 36,
+          "missing_dates": 9,
+          "invalid_period": 9
+        },
+        "budget_stops": 0,
+        "failed_cases": [],
+        "error_types": {}
+      },
+      "by_group": {
+        "simple": {
+          "attempts": 54,
+          "passed": 54,
+          "correct_by_round": [
+            18,
+            18,
+            18
+          ],
+          "questions_per_round": 18,
+          "median_ms": 1.154,
+          "p95_ms": 3.933,
+          "p95_ms_by_round": [
+            18.0,
+            3.212,
+            4.361
+          ],
+          "stats_per_case": {
+            "model_calls": 0,
+            "sql_queries": 1,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "totals": {
+            "model_calls": 0,
+            "sql_queries": 54,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "estimated_cost_usd": 0.0,
+          "cost_bases": {
+            "no_model_calls": 54
+          },
+          "routes": {
+            "fixed": 54
+          },
+          "tool_status_counts": {
+            "ok": 108
+          },
+          "stop_reasons": {
+            "finish": 54
+          },
+          "budget_stops": 0,
+          "failed_cases": [],
+          "error_types": {}
+        },
+        "mixed": {
+          "attempts": 72,
+          "passed": 72,
+          "correct_by_round": [
+            24,
+            24,
+            24
+          ],
+          "questions_per_round": 24,
+          "median_ms": 3069.7915000000003,
+          "p95_ms": 3563.902,
+          "p95_ms_by_round": [
+            3563.902,
+            3517.1,
+            3493.256
+          ],
+          "stats_per_case": {
+            "model_calls": 4,
+            "sql_queries": 2,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "totals": {
+            "model_calls": 288,
+            "sql_queries": 144,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "model_calls_with_usage": 288,
+          "usage": {
+            "prompt_tokens": 96264,
+            "completion_tokens": 2952,
+            "total_tokens": 99216
+          },
+          "estimated_cost_usd": 0.04892799999999996,
+          "cost_bases": {
+            "deepseek_v4_pro_peak": 72
+          },
+          "routes": {
+            "react": 72
+          },
+          "tool_status_counts": {
+            "ok": 288
+          },
+          "stop_reasons": {
+            "finish": 72
+          },
+          "budget_stops": 0,
+          "failed_cases": [],
+          "error_types": {}
+        },
+        "guard": {
+          "attempts": 54,
+          "passed": 54,
+          "correct_by_round": [
+            18,
+            18,
+            18
+          ],
+          "questions_per_round": 18,
+          "median_ms": 745.8855,
+          "p95_ms": 958.856,
+          "p95_ms_by_round": [
+            1193.425,
+            958.856,
+            1038.319
+          ],
+          "stats_per_case": {
+            "model_calls": 0.667,
+            "sql_queries": 0,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "totals": {
+            "model_calls": 36,
+            "sql_queries": 0,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "model_calls_with_usage": 36,
+          "usage": {
+            "prompt_tokens": 7848,
+            "completion_tokens": 252,
+            "total_tokens": 8100
+          },
+          "estimated_cost_usd": 0.005477472,
+          "cost_bases": {
+            "deepseek_v4_pro_peak": 36,
+            "no_model_calls": 18
+          },
+          "routes": {
+            "react": 36,
+            "fixed": 18
+          },
+          "tool_status_counts": {
+            "error": 36
+          },
+          "stop_reasons": {
+            "policy_gap": 36,
+            "missing_dates": 9,
+            "invalid_period": 9
+          },
+          "budget_stops": 0,
+          "failed_cases": [],
+          "error_types": {}
+        }
+      }
+    },
+    "react": {
+      "overall": {
+        "attempts": 180,
+        "passed": 180,
+        "correct_by_round": [
+          60,
+          60,
+          60
+        ],
+        "questions_per_round": 60,
+        "median_ms": 2468.8689999999997,
+        "p95_ms": 3608.448,
+        "p95_ms_by_round": [
+          3606.133,
+          3608.448,
+          3588.063
+        ],
+        "stats_per_case": {
+          "model_calls": 2.7,
+          "sql_queries": 1.1,
+          "invalid_actions": 0,
+          "duplicate_actions": 0
+        },
+        "totals": {
+          "model_calls": 486,
+          "sql_queries": 198,
+          "invalid_actions": 0,
+          "duplicate_actions": 0
+        },
+        "model_calls_with_usage": 486,
+        "usage": {
+          "prompt_tokens": 148986,
+          "completion_tokens": 4662,
+          "total_tokens": 153648
+        },
+        "estimated_cost_usd": 0.07776419199999995,
+        "cost_bases": {
+          "deepseek_v4_pro_peak": 162,
+          "no_model_calls": 18
+        },
+        "routes": {
+          "react": 162,
+          "fixed": 18
+        },
+        "tool_status_counts": {
+          "ok": 450,
+          "error": 36
+        },
+        "stop_reasons": {
+          "finish": 126,
+          "policy_gap": 36,
+          "missing_dates": 9,
+          "invalid_period": 9
+        },
+        "budget_stops": 0,
+        "failed_cases": [],
+        "error_types": {}
+      },
+      "by_group": {
+        "simple": {
+          "attempts": 54,
+          "passed": 54,
+          "correct_by_round": [
+            18,
+            18,
+            18
+          ],
+          "questions_per_round": 18,
+          "median_ms": 2286.844,
+          "p95_ms": 2860.533,
+          "p95_ms_by_round": [
+            3658.984,
+            2860.533,
+            3008.783
+          ],
+          "stats_per_case": {
+            "model_calls": 3,
+            "sql_queries": 1,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "totals": {
+            "model_calls": 162,
+            "sql_queries": 54,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "model_calls_with_usage": 162,
+          "usage": {
+            "prompt_tokens": 44874,
+            "completion_tokens": 1458,
+            "total_tokens": 46332
+          },
+          "estimated_cost_usd": 0.023848704000000023,
+          "cost_bases": {
+            "deepseek_v4_pro_peak": 54
+          },
+          "routes": {
+            "react": 54
+          },
+          "tool_status_counts": {
+            "ok": 162
+          },
+          "stop_reasons": {
+            "finish": 54
+          },
+          "budget_stops": 0,
+          "failed_cases": [],
+          "error_types": {}
+        },
+        "mixed": {
+          "attempts": 72,
+          "passed": 72,
+          "correct_by_round": [
+            24,
+            24,
+            24
+          ],
+          "questions_per_round": 24,
+          "median_ms": 3193.154,
+          "p95_ms": 3760.662,
+          "p95_ms_by_round": [
+            3821.303,
+            3673.374,
+            3713.803
+          ],
+          "stats_per_case": {
+            "model_calls": 4,
+            "sql_queries": 2,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "totals": {
+            "model_calls": 288,
+            "sql_queries": 144,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "model_calls_with_usage": 288,
+          "usage": {
+            "prompt_tokens": 96264,
+            "completion_tokens": 2952,
+            "total_tokens": 99216
+          },
+          "estimated_cost_usd": 0.04843801599999996,
+          "cost_bases": {
+            "deepseek_v4_pro_peak": 72
+          },
+          "routes": {
+            "react": 72
+          },
+          "tool_status_counts": {
+            "ok": 288
+          },
+          "stop_reasons": {
+            "finish": 72
+          },
+          "budget_stops": 0,
+          "failed_cases": [],
+          "error_types": {}
+        },
+        "guard": {
+          "attempts": 54,
+          "passed": 54,
+          "correct_by_round": [
+            18,
+            18,
+            18
+          ],
+          "questions_per_round": 18,
+          "median_ms": 593.7265,
+          "p95_ms": 1146.325,
+          "p95_ms_by_round": [
+            943.362,
+            1437.72,
+            1289.881
+          ],
+          "stats_per_case": {
+            "model_calls": 0.667,
+            "sql_queries": 0,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "totals": {
+            "model_calls": 36,
+            "sql_queries": 0,
+            "invalid_actions": 0,
+            "duplicate_actions": 0
+          },
+          "model_calls_with_usage": 36,
+          "usage": {
+            "prompt_tokens": 7848,
+            "completion_tokens": 252,
+            "total_tokens": 8100
+          },
+          "estimated_cost_usd": 0.005477472,
+          "cost_bases": {
+            "deepseek_v4_pro_peak": 36,
+            "no_model_calls": 18
+          },
+          "routes": {
+            "react": 36,
+            "fixed": 18
+          },
+          "tool_status_counts": {
+            "error": 36
+          },
+          "stop_reasons": {
+            "policy_gap": 36,
+            "missing_dates": 9,
+            "invalid_period": 9
+          },
+          "budget_stops": 0,
+          "failed_cases": [],
+          "error_types": {}
+        }
+      }
+    }
+  },
+  "paired_against_fixed": {
+    "hybrid": {
+      "simple": {
+        "gains": 0,
+        "regressions": 0,
+        "both_correct": 54,
+        "both_wrong": 0
+      },
+      "mixed": {
+        "gains": 0,
+        "regressions": 0,
+        "both_correct": 72,
+        "both_wrong": 0
+      },
+      "guard": {
+        "gains": 0,
+        "regressions": 0,
+        "both_correct": 54,
+        "both_wrong": 0
+      }
+    },
+    "react": {
+      "simple": {
+        "gains": 0,
+        "regressions": 0,
+        "both_correct": 54,
+        "both_wrong": 0
+      },
+      "mixed": {
+        "gains": 0,
+        "regressions": 0,
+        "both_correct": 72,
+        "both_wrong": 0
+      },
+      "guard": {
+        "gains": 0,
+        "regressions": 0,
+        "both_correct": 54,
+        "both_wrong": 0
+      }
+    }
+  }
+}

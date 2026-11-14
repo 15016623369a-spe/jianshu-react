@@ -1,0 +1,29 @@
+{
+  "suite": "versioned-policy-revenue-holdout-expanded-v1",
+  "started_at_utc": "20261114T202309293413Z",
+  "model": "deepseek-v4-pro",
+  "provider_host": "api.deepseek.com",
+  "temperature": 0,
+  "workers": 5,
+  "modes": [
+    "fixed",
+    "hybrid",
+    "react"
+  ],
+  "repeats": 3,
+  "order_seed": 918274,
+  "source_sha256": {
+    "app/commerce_demo.py": "e6fde5c9c9931c683ee5adcab4ba9536e94e2a4caea731d84fd9c4d97d908ac0",
+    "app/llm.py": "a81fa1e64d81a4f60935c515e1ff3de5242ea970db6b0b33519fe9a92ebe8ee1",
+    "app/policy_workflow.py": "1c354f5acb42c9be42afb86cc492ac978b4e87a576d349e81e40de4afce5ec16",
+    "app/policy_react.py": "c4dde1cd20fb681da8a2fe513a0bc1d05b142ccc0fbeae91b2aafa1f274dac29",
+    "app/tools/db.py": "e49d303eb54ecaba0db7506b3eca064e2991f0f1dc86c56eacaf0d098fbec9e5",
+    "evaluation/react_holdout_expanded.json": "46e64df5ab1a50cbe40a2ef1d762d010fa895e631d46dbb5c90a1f849841c2f1",
+    "evaluation/run_policy_comparison.py": "bbc44a4a679b63e277e9729fed754f7ee64d9af34d91087a04ae290a2695c2ea",
+    "app/policy_corpus/refund-2026-10-a.md": "6bc99963007003dbda308fd435b7acc78e3552c7ca5290cce3d314c7ec9b7830",
+    "app/policy_corpus/refund-2026-10-b.md": "01df28c42d7760a6177b77faa27cc5531c6f1f63032fea8c92162892ae8f2d66"
+  },
+  "case_count": 60,
+  "score_definition": "exact expected outcome, scope, cited evidence, SQL query counts, and actual treatment route",
+  "latency_method": "measured around local application call, excluding queue time; P95 nearest rank"
+}
