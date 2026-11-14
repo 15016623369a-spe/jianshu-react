@@ -1,0 +1,750 @@
+{
+  "methods": {
+    "fixed": {
+      "overall": {
+        "attempts": 90,
+        "passed": 90,
+        "correct_by_round": [
+          30,
+          30,
+          30
+        ],
+        "median_ms": 1.7365,
+        "p95_ms": 6.441,
+        "p95_ms_by_round": [
+          3.464,
+          8.461,
+          6.648
+        ],
+        "model_calls": 0,
+        "model_calls_with_usage": 0,
+        "usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "sql_queries": 180,
+        "invalid_actions": 0,
+        "duplicate_actions": 0,
+        "tools_ok": {
+          "discover_groups": 81,
+          "lookup_policies": 63,
+          "aggregate_groups": 57,
+          "finish": 66,
+          "lookup_bulletins": 57
+        },
+        "evidence_counts": {
+          "discovery": 96,
+          "documents": 159,
+          "queries": 96
+        },
+        "failures": []
+      },
+      "by_group": {
+        "abstained": {
+          "attempts": 18,
+          "passed": 18,
+          "correct_by_round": [
+            6,
+            6,
+            6
+          ],
+          "median_ms": 1.4449999999999998,
+          "p95_ms": 4.05,
+          "p95_ms_by_round": [
+            3.263,
+            1.847,
+            4.05
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 18,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 6
+          },
+          "evidence_counts": {},
+          "failures": []
+        },
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "correct_by_round": [
+            2,
+            2,
+            2
+          ],
+          "median_ms": 0.0745,
+          "p95_ms": 0.255,
+          "p95_ms_by_round": [
+            0.053,
+            0.255,
+            0.13
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {},
+          "evidence_counts": {},
+          "failures": []
+        },
+        "direct": {
+          "attempts": 21,
+          "passed": 21,
+          "correct_by_round": [
+            7,
+            7,
+            7
+          ],
+          "median_ms": 1.928,
+          "p95_ms": 2.944,
+          "p95_ms_by_round": [
+            3.464,
+            2.869,
+            2.944
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 45,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 21,
+            "lookup_policies": 21,
+            "aggregate_groups": 21,
+            "finish": 21
+          },
+          "evidence_counts": {
+            "discovery": 24,
+            "documents": 24,
+            "queries": 24
+          },
+          "failures": []
+        },
+        "one_referral": {
+          "attempts": 15,
+          "passed": 15,
+          "correct_by_round": [
+            5,
+            5,
+            5
+          ],
+          "median_ms": 2.572,
+          "p95_ms": 8.461,
+          "p95_ms_by_round": [
+            3.078,
+            8.461,
+            6.441
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 42,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 15,
+            "lookup_bulletins": 15,
+            "aggregate_groups": 15,
+            "finish": 15
+          },
+          "evidence_counts": {
+            "discovery": 27,
+            "documents": 42,
+            "queries": 27
+          },
+          "failures": []
+        },
+        "two_referrals": {
+          "attempts": 21,
+          "passed": 21,
+          "correct_by_round": [
+            7,
+            7,
+            7
+          ],
+          "median_ms": 1.933,
+          "p95_ms": 7.713,
+          "p95_ms_by_round": [
+            3.99,
+            13.244,
+            7.713
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 66,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 21,
+            "lookup_policies": 21,
+            "lookup_bulletins": 42,
+            "aggregate_groups": 21,
+            "finish": 21
+          },
+          "evidence_counts": {
+            "discovery": 45,
+            "documents": 93,
+            "queries": 45
+          },
+          "failures": []
+        },
+        "zero": {
+          "attempts": 9,
+          "passed": 9,
+          "correct_by_round": [
+            3,
+            3,
+            3
+          ],
+          "median_ms": 0.848,
+          "p95_ms": 1.56,
+          "p95_ms_by_round": [
+            1.414,
+            1.56,
+            0.933
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 9,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 9,
+            "finish": 9
+          },
+          "evidence_counts": {},
+          "failures": []
+        }
+      },
+      "by_expected_outcome": {
+        "abstained": {
+          "attempts": 18,
+          "passed": 18,
+          "correct_by_round": [
+            6,
+            6,
+            6
+          ],
+          "median_ms": 1.4449999999999998,
+          "p95_ms": 4.05,
+          "p95_ms_by_round": [
+            3.263,
+            1.847,
+            4.05
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 18,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 6
+          },
+          "evidence_counts": {},
+          "failures": []
+        },
+        "answer": {
+          "attempts": 66,
+          "passed": 66,
+          "correct_by_round": [
+            22,
+            22,
+            22
+          ],
+          "median_ms": 1.864,
+          "p95_ms": 6.648,
+          "p95_ms_by_round": [
+            3.464,
+            8.461,
+            6.648
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 162,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 66,
+            "lookup_policies": 57,
+            "aggregate_groups": 57,
+            "finish": 66,
+            "lookup_bulletins": 57
+          },
+          "evidence_counts": {
+            "discovery": 96,
+            "documents": 159,
+            "queries": 96
+          },
+          "failures": []
+        },
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "correct_by_round": [
+            2,
+            2,
+            2
+          ],
+          "median_ms": 0.0745,
+          "p95_ms": 0.255,
+          "p95_ms_by_round": [
+            0.053,
+            0.255,
+            0.13
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {},
+          "evidence_counts": {},
+          "failures": []
+        }
+      }
+    },
+    "react": {
+      "overall": {
+        "attempts": 90,
+        "passed": 90,
+        "correct_by_round": [
+          30,
+          30,
+          30
+        ],
+        "median_ms": 2979.902,
+        "p95_ms": 4816.141,
+        "p95_ms_by_round": [
+          4505.301,
+          5395.796,
+          4967.942
+        ],
+        "model_calls": 342,
+        "model_calls_with_usage": 342,
+        "usage": {
+          "prompt_tokens": 158814,
+          "completion_tokens": 4966,
+          "total_tokens": 163780
+        },
+        "sql_queries": 180,
+        "invalid_actions": 0,
+        "duplicate_actions": 0,
+        "tools_ok": {
+          "discover_groups": 81,
+          "finish": 66,
+          "lookup_policies": 63,
+          "aggregate_groups": 57,
+          "lookup_bulletins": 57
+        },
+        "evidence_counts": {
+          "discovery": 96,
+          "documents": 159,
+          "queries": 96
+        },
+        "failures": []
+      },
+      "by_group": {
+        "abstained": {
+          "attempts": 18,
+          "passed": 18,
+          "correct_by_round": [
+            6,
+            6,
+            6
+          ],
+          "median_ms": 1625.345,
+          "p95_ms": 2850.218,
+          "p95_ms_by_round": [
+            2850.218,
+            2421.305,
+            2712.76
+          ],
+          "model_calls": 39,
+          "model_calls_with_usage": 39,
+          "usage": {
+            "prompt_tokens": 16182,
+            "completion_tokens": 618,
+            "total_tokens": 16800
+          },
+          "sql_queries": 18,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 6
+          },
+          "evidence_counts": {},
+          "failures": []
+        },
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "correct_by_round": [
+            2,
+            2,
+            2
+          ],
+          "median_ms": 0.11649999999999999,
+          "p95_ms": 0.141,
+          "p95_ms_by_round": [
+            0.141,
+            0.134,
+            0.128
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {},
+          "evidence_counts": {},
+          "failures": []
+        },
+        "direct": {
+          "attempts": 21,
+          "passed": 21,
+          "correct_by_round": [
+            7,
+            7,
+            7
+          ],
+          "median_ms": 2953.57,
+          "p95_ms": 3707.21,
+          "p95_ms_by_round": [
+            3140.959,
+            3756.24,
+            3336.98
+          ],
+          "model_calls": 84,
+          "model_calls_with_usage": 84,
+          "usage": {
+            "prompt_tokens": 35703,
+            "completion_tokens": 990,
+            "total_tokens": 36693
+          },
+          "sql_queries": 45,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 21,
+            "lookup_policies": 21,
+            "aggregate_groups": 21,
+            "finish": 21
+          },
+          "evidence_counts": {
+            "discovery": 24,
+            "documents": 24,
+            "queries": 24
+          },
+          "failures": []
+        },
+        "one_referral": {
+          "attempts": 15,
+          "passed": 15,
+          "correct_by_round": [
+            5,
+            5,
+            5
+          ],
+          "median_ms": 3992.765,
+          "p95_ms": 4315.085,
+          "p95_ms_by_round": [
+            4315.085,
+            4034.732,
+            4105.632
+          ],
+          "model_calls": 75,
+          "model_calls_with_usage": 75,
+          "usage": {
+            "prompt_tokens": 35274,
+            "completion_tokens": 1134,
+            "total_tokens": 36408
+          },
+          "sql_queries": 42,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 15,
+            "lookup_bulletins": 15,
+            "aggregate_groups": 15,
+            "finish": 15
+          },
+          "evidence_counts": {
+            "discovery": 27,
+            "documents": 42,
+            "queries": 27
+          },
+          "failures": []
+        },
+        "two_referrals": {
+          "attempts": 21,
+          "passed": 21,
+          "correct_by_round": [
+            7,
+            7,
+            7
+          ],
+          "median_ms": 4416.847,
+          "p95_ms": 5395.796,
+          "p95_ms_by_round": [
+            4657.779,
+            5496.643,
+            5222.649
+          ],
+          "model_calls": 126,
+          "model_calls_with_usage": 126,
+          "usage": {
+            "prompt_tokens": 64851,
+            "completion_tokens": 2098,
+            "total_tokens": 66949
+          },
+          "sql_queries": 66,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 21,
+            "lookup_policies": 21,
+            "lookup_bulletins": 42,
+            "aggregate_groups": 21,
+            "finish": 21
+          },
+          "evidence_counts": {
+            "discovery": 45,
+            "documents": 93,
+            "queries": 45
+          },
+          "failures": []
+        },
+        "zero": {
+          "attempts": 9,
+          "passed": 9,
+          "correct_by_round": [
+            3,
+            3,
+            3
+          ],
+          "median_ms": 1521.787,
+          "p95_ms": 2112.214,
+          "p95_ms_by_round": [
+            2112.214,
+            1799.167,
+            1693.004
+          ],
+          "model_calls": 18,
+          "model_calls_with_usage": 18,
+          "usage": {
+            "prompt_tokens": 6804,
+            "completion_tokens": 126,
+            "total_tokens": 6930
+          },
+          "sql_queries": 9,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 9,
+            "finish": 9
+          },
+          "evidence_counts": {},
+          "failures": []
+        }
+      },
+      "by_expected_outcome": {
+        "abstained": {
+          "attempts": 18,
+          "passed": 18,
+          "correct_by_round": [
+            6,
+            6,
+            6
+          ],
+          "median_ms": 1625.345,
+          "p95_ms": 2850.218,
+          "p95_ms_by_round": [
+            2850.218,
+            2421.305,
+            2712.76
+          ],
+          "model_calls": 39,
+          "model_calls_with_usage": 39,
+          "usage": {
+            "prompt_tokens": 16182,
+            "completion_tokens": 618,
+            "total_tokens": 16800
+          },
+          "sql_queries": 18,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 6
+          },
+          "evidence_counts": {},
+          "failures": []
+        },
+        "answer": {
+          "attempts": 66,
+          "passed": 66,
+          "correct_by_round": [
+            22,
+            22,
+            22
+          ],
+          "median_ms": 3567.374,
+          "p95_ms": 4967.942,
+          "p95_ms_by_round": [
+            4505.301,
+            5395.796,
+            4967.942
+          ],
+          "model_calls": 303,
+          "model_calls_with_usage": 303,
+          "usage": {
+            "prompt_tokens": 142632,
+            "completion_tokens": 4348,
+            "total_tokens": 146980
+          },
+          "sql_queries": 162,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 66,
+            "finish": 66,
+            "lookup_policies": 57,
+            "aggregate_groups": 57,
+            "lookup_bulletins": 57
+          },
+          "evidence_counts": {
+            "discovery": 96,
+            "documents": 159,
+            "queries": 96
+          },
+          "failures": []
+        },
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "correct_by_round": [
+            2,
+            2,
+            2
+          ],
+          "median_ms": 0.11649999999999999,
+          "p95_ms": 0.141,
+          "p95_ms_by_round": [
+            0.141,
+            0.134,
+            0.128
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {},
+          "evidence_counts": {},
+          "failures": []
+        }
+      }
+    }
+  },
+  "paired_react_vs_fixed": {
+    "abstained": {
+      "gains": 0,
+      "losses": 0,
+      "both_pass": 18,
+      "both_fail": 0
+    },
+    "clarification": {
+      "gains": 0,
+      "losses": 0,
+      "both_pass": 6,
+      "both_fail": 0
+    },
+    "direct": {
+      "gains": 0,
+      "losses": 0,
+      "both_pass": 21,
+      "both_fail": 0
+    },
+    "one_referral": {
+      "gains": 0,
+      "losses": 0,
+      "both_pass": 15,
+      "both_fail": 0
+    },
+    "two_referrals": {
+      "gains": 0,
+      "losses": 0,
+      "both_pass": 21,
+      "both_fail": 0
+    },
+    "zero": {
+      "gains": 0,
+      "losses": 0,
+      "both_pass": 9,
+      "both_fail": 0
+    }
+  }
+}

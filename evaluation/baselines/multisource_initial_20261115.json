@@ -1,0 +1,2573 @@
+{
+  "methods": {
+    "fixed": {
+      "overall": {
+        "attempts": 90,
+        "passed": 90,
+        "correct_by_round": [
+          30,
+          30,
+          30
+        ],
+        "median_ms": 1.468,
+        "p95_ms": 4.49,
+        "p95_ms_by_round": [
+          3.042,
+          4.49,
+          5.91
+        ],
+        "model_calls": 0,
+        "model_calls_with_usage": 0,
+        "usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "sql_queries": 180,
+        "invalid_actions": 0,
+        "duplicate_actions": 0,
+        "tools_ok": {
+          "discover_groups": 81,
+          "lookup_policies": 63,
+          "aggregate_groups": 57,
+          "finish": 66,
+          "lookup_bulletins": 57
+        },
+        "evidence_counts": {
+          "discovery": 96,
+          "documents": 159,
+          "queries": 96
+        },
+        "failures": []
+      },
+      "by_group": {
+        "abstained": {
+          "attempts": 18,
+          "passed": 18,
+          "correct_by_round": [
+            6,
+            6,
+            6
+          ],
+          "median_ms": 1.443,
+          "p95_ms": 3.761,
+          "p95_ms_by_round": [
+            2.77,
+            2.496,
+            3.761
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 18,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 6
+          },
+          "evidence_counts": {},
+          "failures": []
+        },
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "correct_by_round": [
+            2,
+            2,
+            2
+          ],
+          "median_ms": 0.0545,
+          "p95_ms": 0.18,
+          "p95_ms_by_round": [
+            0.034,
+            0.146,
+            0.18
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {},
+          "evidence_counts": {},
+          "failures": []
+        },
+        "direct": {
+          "attempts": 21,
+          "passed": 21,
+          "correct_by_round": [
+            7,
+            7,
+            7
+          ],
+          "median_ms": 1.524,
+          "p95_ms": 13.464,
+          "p95_ms_by_round": [
+            15.783,
+            3.095,
+            13.464
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 45,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 21,
+            "lookup_policies": 21,
+            "aggregate_groups": 21,
+            "finish": 21
+          },
+          "evidence_counts": {
+            "discovery": 24,
+            "documents": 24,
+            "queries": 24
+          },
+          "failures": []
+        },
+        "one_referral": {
+          "attempts": 15,
+          "passed": 15,
+          "correct_by_round": [
+            5,
+            5,
+            5
+          ],
+          "median_ms": 1.9,
+          "p95_ms": 4.49,
+          "p95_ms_by_round": [
+            1.841,
+            4.49,
+            3.65
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 42,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 15,
+            "lookup_bulletins": 15,
+            "aggregate_groups": 15,
+            "finish": 15
+          },
+          "evidence_counts": {
+            "discovery": 27,
+            "documents": 42,
+            "queries": 27
+          },
+          "failures": []
+        },
+        "two_referrals": {
+          "attempts": 21,
+          "passed": 21,
+          "correct_by_round": [
+            7,
+            7,
+            7
+          ],
+          "median_ms": 2.113,
+          "p95_ms": 4.387,
+          "p95_ms_by_round": [
+            2.613,
+            7.213,
+            4.387
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 66,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 21,
+            "lookup_policies": 21,
+            "lookup_bulletins": 42,
+            "aggregate_groups": 21,
+            "finish": 21
+          },
+          "evidence_counts": {
+            "discovery": 45,
+            "documents": 93,
+            "queries": 45
+          },
+          "failures": []
+        },
+        "zero": {
+          "attempts": 9,
+          "passed": 9,
+          "correct_by_round": [
+            3,
+            3,
+            3
+          ],
+          "median_ms": 0.577,
+          "p95_ms": 5.91,
+          "p95_ms_by_round": [
+            0.513,
+            1.222,
+            5.91
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 9,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 9,
+            "finish": 9
+          },
+          "evidence_counts": {},
+          "failures": []
+        }
+      },
+      "by_expected_outcome": {
+        "abstained": {
+          "attempts": 18,
+          "passed": 18,
+          "correct_by_round": [
+            6,
+            6,
+            6
+          ],
+          "median_ms": 1.443,
+          "p95_ms": 3.761,
+          "p95_ms_by_round": [
+            2.77,
+            2.496,
+            3.761
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 18,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 6
+          },
+          "evidence_counts": {},
+          "failures": []
+        },
+        "answer": {
+          "attempts": 66,
+          "passed": 66,
+          "correct_by_round": [
+            22,
+            22,
+            22
+          ],
+          "median_ms": 1.641,
+          "p95_ms": 5.91,
+          "p95_ms_by_round": [
+            3.042,
+            4.49,
+            5.91
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 162,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 66,
+            "lookup_policies": 57,
+            "aggregate_groups": 57,
+            "finish": 66,
+            "lookup_bulletins": 57
+          },
+          "evidence_counts": {
+            "discovery": 96,
+            "documents": 159,
+            "queries": 96
+          },
+          "failures": []
+        },
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "correct_by_round": [
+            2,
+            2,
+            2
+          ],
+          "median_ms": 0.0545,
+          "p95_ms": 0.18,
+          "p95_ms_by_round": [
+            0.034,
+            0.146,
+            0.18
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {},
+          "evidence_counts": {},
+          "failures": []
+        }
+      }
+    },
+    "react": {
+      "overall": {
+        "attempts": 90,
+        "passed": 52,
+        "correct_by_round": [
+          18,
+          17,
+          17
+        ],
+        "median_ms": 2375.728,
+        "p95_ms": 4738.667,
+        "p95_ms_by_round": [
+          4384.807,
+          4749.535,
+          4738.667
+        ],
+        "model_calls": 304,
+        "model_calls_with_usage": 304,
+        "usage": {
+          "prompt_tokens": 117436,
+          "completion_tokens": 4431,
+          "total_tokens": 121867
+        },
+        "sql_queries": 133,
+        "invalid_actions": 0,
+        "duplicate_actions": 0,
+        "tools_ok": {
+          "discover_groups": 81,
+          "finish": 28,
+          "lookup_policies": 63,
+          "lookup_bulletins": 57,
+          "aggregate_groups": 19
+        },
+        "evidence_counts": {
+          "discovery": 49,
+          "documents": 80,
+          "queries": 49
+        },
+        "failures": [
+          {
+            "id": "direct-cap-below-empty-and-zero",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-and-direct-same-region",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-quick-gift-only",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-entire-supported-south",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-zero-companion",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-cap-tie-stop",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-cap-and-below",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-inclusive-last-covered-day",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-same-product-different-region",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-cap-above",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-unlimited-two-refunds",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-all-three-seed-regions",
+            "round": 1,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-cap-below-empty-and-zero",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-cap-above",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-cap-and-below",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-cap-tie-stop",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-zero-companion",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "single-referral-zero-refund-companion",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-entire-supported-south",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-unlimited-two-refunds",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-inclusive-last-covered-day",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-quick-gift-only",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-same-product-different-region",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-all-three-seed-regions",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-and-direct-same-region",
+            "round": 2,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-cap-above",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-cap-and-below",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-cap-tie-stop",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-inclusive-last-covered-day",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-unlimited-two-refunds",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-same-product-different-region",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-zero-companion",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-entire-supported-south",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "single-referral-capped-first-row-only",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-all-three-seed-regions",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-quick-gift-only",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "direct-cap-below-empty-and-zero",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          },
+          {
+            "id": "two-referrals-and-direct-same-region",
+            "round": 3,
+            "reason": "verification_failed",
+            "checks": [
+              "outcome",
+              "total",
+              "groups",
+              "discovery",
+              "cited_policies",
+              "cited_sql",
+              "sql_queries",
+              "aggregate_tool"
+            ],
+            "error_type": null
+          }
+        ]
+      },
+      "by_group": {
+        "abstained": {
+          "attempts": 18,
+          "passed": 18,
+          "correct_by_round": [
+            6,
+            6,
+            6
+          ],
+          "median_ms": 1678.2604999999999,
+          "p95_ms": 3076.439,
+          "p95_ms_by_round": [
+            2470.505,
+            3076.439,
+            2658.666
+          ],
+          "model_calls": 39,
+          "model_calls_with_usage": 39,
+          "usage": {
+            "prompt_tokens": 13425,
+            "completion_tokens": 636,
+            "total_tokens": 14061
+          },
+          "sql_queries": 18,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 6
+          },
+          "evidence_counts": {},
+          "failures": []
+        },
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "correct_by_round": [
+            2,
+            2,
+            2
+          ],
+          "median_ms": 0.11249999999999999,
+          "p95_ms": 0.224,
+          "p95_ms_by_round": [
+            0.034,
+            0.224,
+            0.174
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {},
+          "evidence_counts": {},
+          "failures": []
+        },
+        "direct": {
+          "attempts": 21,
+          "passed": 0,
+          "correct_by_round": [
+            0,
+            0,
+            0
+          ],
+          "median_ms": 2222.129,
+          "p95_ms": 2682.187,
+          "p95_ms_by_round": [
+            2682.187,
+            2791.469,
+            2661.035
+          ],
+          "model_calls": 63,
+          "model_calls_with_usage": 63,
+          "usage": {
+            "prompt_tokens": 21459,
+            "completion_tokens": 656,
+            "total_tokens": 22115
+          },
+          "sql_queries": 21,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 21,
+            "lookup_policies": 21
+          },
+          "evidence_counts": {},
+          "failures": [
+            {
+              "id": "direct-cap-below-empty-and-zero",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-tie-stop",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-inclusive-last-covered-day",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-same-product-different-region",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-above",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-unlimited-two-refunds",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-all-three-seed-regions",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-below-empty-and-zero",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-above",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-tie-stop",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-unlimited-two-refunds",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-inclusive-last-covered-day",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-same-product-different-region",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-all-three-seed-regions",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-above",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-tie-stop",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-inclusive-last-covered-day",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-unlimited-two-refunds",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-same-product-different-region",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-all-three-seed-regions",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-below-empty-and-zero",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            }
+          ]
+        },
+        "one_referral": {
+          "attempts": 15,
+          "passed": 13,
+          "correct_by_round": [
+            5,
+            4,
+            4
+          ],
+          "median_ms": 3610.606,
+          "p95_ms": 4749.535,
+          "p95_ms_by_round": [
+            3939.166,
+            4749.535,
+            4270.287
+          ],
+          "model_calls": 73,
+          "model_calls_with_usage": 73,
+          "usage": {
+            "prompt_tokens": 29110,
+            "completion_tokens": 1145,
+            "total_tokens": 30255
+          },
+          "sql_queries": 40,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 15,
+            "lookup_bulletins": 15,
+            "aggregate_groups": 13,
+            "finish": 13
+          },
+          "evidence_counts": {
+            "discovery": 25,
+            "documents": 38,
+            "queries": 25
+          },
+          "failures": [
+            {
+              "id": "single-referral-zero-refund-companion",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "single-referral-capped-first-row-only",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            }
+          ]
+        },
+        "two_referrals": {
+          "attempts": 21,
+          "passed": 6,
+          "correct_by_round": [
+            2,
+            2,
+            2
+          ],
+          "median_ms": 4123.149,
+          "p95_ms": 5117.936,
+          "p95_ms_by_round": [
+            5116.327,
+            5382.487,
+            5117.936
+          ],
+          "model_calls": 111,
+          "model_calls_with_usage": 111,
+          "usage": {
+            "prompt_tokens": 47808,
+            "completion_tokens": 1860,
+            "total_tokens": 49668
+          },
+          "sql_queries": 45,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 21,
+            "lookup_policies": 21,
+            "lookup_bulletins": 42,
+            "aggregate_groups": 6,
+            "finish": 6
+          },
+          "evidence_counts": {
+            "discovery": 24,
+            "documents": 42,
+            "queries": 24
+          },
+          "failures": [
+            {
+              "id": "two-referrals-and-direct-same-region",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-quick-gift-only",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-entire-supported-south",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-zero-companion",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-cap-and-below",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-cap-and-below",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-zero-companion",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-entire-supported-south",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-quick-gift-only",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-and-direct-same-region",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-cap-and-below",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-zero-companion",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-entire-supported-south",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-quick-gift-only",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-and-direct-same-region",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            }
+          ]
+        },
+        "zero": {
+          "attempts": 9,
+          "passed": 9,
+          "correct_by_round": [
+            3,
+            3,
+            3
+          ],
+          "median_ms": 1350.235,
+          "p95_ms": 1650.225,
+          "p95_ms_by_round": [
+            1472.524,
+            1650.225,
+            1504.454
+          ],
+          "model_calls": 18,
+          "model_calls_with_usage": 18,
+          "usage": {
+            "prompt_tokens": 5634,
+            "completion_tokens": 134,
+            "total_tokens": 5768
+          },
+          "sql_queries": 9,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 9,
+            "finish": 9
+          },
+          "evidence_counts": {},
+          "failures": []
+        }
+      },
+      "by_expected_outcome": {
+        "abstained": {
+          "attempts": 18,
+          "passed": 18,
+          "correct_by_round": [
+            6,
+            6,
+            6
+          ],
+          "median_ms": 1678.2604999999999,
+          "p95_ms": 3076.439,
+          "p95_ms_by_round": [
+            2470.505,
+            3076.439,
+            2658.666
+          ],
+          "model_calls": 39,
+          "model_calls_with_usage": 39,
+          "usage": {
+            "prompt_tokens": 13425,
+            "completion_tokens": 636,
+            "total_tokens": 14061
+          },
+          "sql_queries": 18,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 15,
+            "lookup_policies": 6
+          },
+          "evidence_counts": {},
+          "failures": []
+        },
+        "answer": {
+          "attempts": 66,
+          "passed": 28,
+          "correct_by_round": [
+            10,
+            9,
+            9
+          ],
+          "median_ms": 3220.2475000000004,
+          "p95_ms": 4749.535,
+          "p95_ms_by_round": [
+            4384.807,
+            4749.535,
+            4738.667
+          ],
+          "model_calls": 265,
+          "model_calls_with_usage": 265,
+          "usage": {
+            "prompt_tokens": 104011,
+            "completion_tokens": 3795,
+            "total_tokens": 107806
+          },
+          "sql_queries": 115,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {
+            "discover_groups": 66,
+            "finish": 28,
+            "lookup_policies": 57,
+            "lookup_bulletins": 57,
+            "aggregate_groups": 19
+          },
+          "evidence_counts": {
+            "discovery": 49,
+            "documents": 80,
+            "queries": 49
+          },
+          "failures": [
+            {
+              "id": "direct-cap-below-empty-and-zero",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-and-direct-same-region",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-quick-gift-only",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-entire-supported-south",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-zero-companion",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-tie-stop",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-cap-and-below",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-inclusive-last-covered-day",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-same-product-different-region",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-above",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-unlimited-two-refunds",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-all-three-seed-regions",
+              "round": 1,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-below-empty-and-zero",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-above",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-cap-and-below",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-tie-stop",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-zero-companion",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "single-referral-zero-refund-companion",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-entire-supported-south",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-unlimited-two-refunds",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-inclusive-last-covered-day",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-quick-gift-only",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-same-product-different-region",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-all-three-seed-regions",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-and-direct-same-region",
+              "round": 2,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-above",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-cap-and-below",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-tie-stop",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-inclusive-last-covered-day",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-unlimited-two-refunds",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-same-product-different-region",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-zero-companion",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-entire-supported-south",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "single-referral-capped-first-row-only",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-all-three-seed-regions",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-quick-gift-only",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "direct-cap-below-empty-and-zero",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            },
+            {
+              "id": "two-referrals-and-direct-same-region",
+              "round": 3,
+              "reason": "verification_failed",
+              "checks": [
+                "outcome",
+                "total",
+                "groups",
+                "discovery",
+                "cited_policies",
+                "cited_sql",
+                "sql_queries",
+                "aggregate_tool"
+              ],
+              "error_type": null
+            }
+          ]
+        },
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "correct_by_round": [
+            2,
+            2,
+            2
+          ],
+          "median_ms": 0.11249999999999999,
+          "p95_ms": 0.224,
+          "p95_ms_by_round": [
+            0.034,
+            0.224,
+            0.174
+          ],
+          "model_calls": 0,
+          "model_calls_with_usage": 0,
+          "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "invalid_actions": 0,
+          "duplicate_actions": 0,
+          "tools_ok": {},
+          "evidence_counts": {},
+          "failures": []
+        }
+      }
+    }
+  },
+  "paired_react_vs_fixed": {
+    "abstained": {
+      "gains": 0,
+      "losses": 0,
+      "both_pass": 18,
+      "both_fail": 0
+    },
+    "clarification": {
+      "gains": 0,
+      "losses": 0,
+      "both_pass": 6,
+      "both_fail": 0
+    },
+    "direct": {
+      "gains": 0,
+      "losses": 21,
+      "both_pass": 0,
+      "both_fail": 0
+    },
+    "one_referral": {
+      "gains": 0,
+      "losses": 2,
+      "both_pass": 13,
+      "both_fail": 0
+    },
+    "two_referrals": {
+      "gains": 0,
+      "losses": 15,
+      "both_pass": 6,
+      "both_fail": 0
+    },
+    "zero": {
+      "gains": 0,
+      "losses": 0,
+      "both_pass": 9,
+      "both_fail": 0
+    }
+  }
+}
