@@ -20,6 +20,7 @@ from app.gateway_identity import KEY_HEADER, USER_HEADER, configured_key, gatewa
 from app.hard_policy_ui import render_hard_policy_workspace
 from app.multisource_ui import render_multisource_workspace
 from app.policy_investigation_ui import render_policy_investigation
+from app.policy_library_ui import read_policy_library, render_policy_library
 
 API = os.getenv("RAG_API_URL", "http://127.0.0.1:8000")
 STAGES = {
@@ -45,12 +46,13 @@ DEMO_QUESTIONS = (
     ("上月退款总额", "上月退款总额是多少？"),
 )
 WORKSPACES = {
-    "对话": ("", "和数据对话", "用自然语言查数据库，继续追问，并核对结果背后的 SQL。"),
-    "文件分析": ("file", "文件分析", "上传 CSV 或 Excel，确认表头，再做排名、图表与公式核对。"),
-    "政策问数": ("policy", "政策问数", "按政策生效日期分段计算净营收，核对每段的政策条款和查询结果。"),
-    "多源实验": ("multisource", "多源问数实验", "从退款订单识别产品和地区，再查政策与补充公告，按适用口径计算净营收。"),
-    "政策探索": ("policy-exploration", "政策探索实验", "检索适用政策和公告，确认退款账本，再核对引用和净营收。"),
+    "对话": ("chat", "和数据对话", "用自然语言查数据库，继续追问，并核对结果背后的 SQL。"),
+    "文件分析": ("files", "文件分析", "上传 CSV 或 Excel，确认表头，再做排名、图表与公式核对。"),
+    "政策调查": ("policy-exploration", "政策调查", "用自然语言比较政策口径，核对每笔汇总背后的文档版本和账本。"),
 }
+_POLICY_WORKSPACE = WORKSPACES["政策调查"][0]
+_POLICY_TABS = ("自然语言调查", "文档库", "按条件查口径", "日期分段", "多源实验")
+_LEGACY_POLICY_VIEWS = {"policy": "日期分段", "multisource": "多源实验"}
 POLICY_STAGES = {
     "resolve_scope": "确认日期和地区",
     "load_policies": "读取适用政策",
@@ -580,26 +582,42 @@ except (httpx.HTTPError, ValueError):
     st.stop()
 
 workspace = st.query_params.get("workspace", "")
+legacy_view = _LEGACY_POLICY_VIEWS.get(workspace)
 workspace_ids = [entry[0] for entry in WORKSPACES.values()]
+selected_workspace = {"": _POLICY_WORKSPACE, "file": "files"}.get(workspace, workspace)
+if legacy_view:
+    selected_workspace = _POLICY_WORKSPACE
 mode = st.sidebar.radio("工作区", list(WORKSPACES),
-                        index=workspace_ids.index(workspace) if workspace in workspace_ids else 0,
+                        index=workspace_ids.index(selected_workspace) if selected_workspace in workspace_ids else 0,
                         key="workspace-mode")
 render_workspace_header(mode)
 mode_id = WORKSPACES[mode][0]
-if mode_id and workspace != mode_id:
+if workspace != mode_id:
     st.query_params["workspace"] = mode_id
-elif not mode_id and "workspace" in st.query_params:
-    del st.query_params["workspace"]
-if mode == "政策问数":
-    render_policy_workspace(session_id, capabilities["model_configured"])
-elif mode == "多源实验":
-    render_multisource_workspace(API, GATEWAY_HEADERS, session_id, capabilities["model_configured"])
-elif mode == "政策探索":
-    investigation, structured = st.tabs(["自然语言调查", "按条件查口径"])
-    with investigation:
-        render_policy_investigation(API, GATEWAY_HEADERS, session_id, capabilities["model_configured"])
-    with structured:
-        render_hard_policy_workspace(API, GATEWAY_HEADERS, session_id, capabilities["model_configured"])
+if mode_id == _POLICY_WORKSPACE:
+    if legacy_view:
+        st.session_state["policy_view"] = legacy_view
+    investigation, library, structured, classic, multisource = st.tabs(
+        _POLICY_TABS, key="policy_view", bind="query-params",
+    )
+    model_configured = capabilities["model_configured"]
+    if investigation.open:
+        with investigation:
+            registry = read_policy_library(API, GATEWAY_HEADERS)
+            render_policy_investigation(API, GATEWAY_HEADERS, session_id, model_configured, registry)
+    if library.open:
+        with library:
+            registry = read_policy_library(API, GATEWAY_HEADERS)
+            render_policy_library(API, GATEWAY_HEADERS, session_id, registry)
+    if structured.open:
+        with structured:
+            render_hard_policy_workspace(API, GATEWAY_HEADERS, session_id, model_configured)
+    if classic.open:
+        with classic:
+            render_policy_workspace(session_id, model_configured)
+    if multisource.open:
+        with multisource:
+            render_multisource_workspace(API, GATEWAY_HEADERS, session_id, model_configured)
 elif mode == "文件分析":
     render_file_workspace(session_id, capabilities["model_configured"])
 else:

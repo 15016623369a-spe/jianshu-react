@@ -1,12 +1,13 @@
 """Chromium smoke test for policy, chat, durable approvals, and file analysis."""
 import os
+from pathlib import Path
 from uuid import uuid4
 
 from playwright.sync_api import Page, expect, sync_playwright
 
 
 def check_policy_investigation(page: Page, origin: str) -> None:
-    page.goto(f"{origin}/?session={uuid4()}&workspace=policy-exploration", wait_until="domcontentloaded")
+    page.goto(f"{origin}/?session={uuid4()}", wait_until="domcontentloaded")
     panel = page.get_by_role("tabpanel", name="自然语言调查")
     submit = panel.get_by_role("button", name="开始调查")
     expect(submit).to_be_visible(timeout=20000)
@@ -41,22 +42,23 @@ def check_policy_investigation(page: Page, origin: str) -> None:
     expect(question).to_have_value(
         "华南电水壶 2026 年 11 月和 12 月的净营收差了多少？如果两个月都按 11 月口径重算，差额又是多少？"
     )
-    mode = page.get_by_role("combobox", name="调查方式")
-    panel.get_by_test_id("stSelectbox").filter(has=mode).get_by_role("button", name="Open").click()
-    page.get_by_role("option", name="确定性检索 + 词面补查", exact=True).click()
+    expect(panel.get_by_role("combobox", name="调查方式")).to_have_value("自动 · 词面优先")
     submit.click()
     expect(metrics).to_have_text(["−¥186.40", "−¥190.40", "+¥4.00"], timeout=20000)
     investigation = panel.get_by_test_id("stExpander").filter(has_text="查看调查过程")
-    if not investigation.get_by_text("寻找补充证据 · 已找到", exact=True).is_visible():
+    if not investigation.get_by_text("按正文词面补查 · 已找到", exact=True).is_visible():
         investigation.get_by_text("查看调查过程", exact=True).click()
-    expect(investigation.get_by_text("寻找补充证据 · 已找到", exact=True)).to_be_visible()
+    expect(investigation.get_by_text("按正文词面补查 · 已找到", exact=True)).to_be_visible()
     expect(investigation.get_by_text("0 次模型调用", exact=False)).to_be_visible()
     print("PASS natural language policy comparison, cited counterfactual, clarification, and lexical recovery", flush=True)
 
 
 def check_policy_exploration(page: Page, origin: str) -> None:
     page.goto(f"{origin}/?session={uuid4()}&workspace=policy-exploration", wait_until="domcontentloaded")
-    expect(page.get_by_role("heading", name="政策探索实验")).to_be_visible(timeout=20000)
+    expect(page.get_by_role("heading", name="政策调查")).to_be_visible(timeout=20000)
+    expect(page.get_by_role("radio", name="政策调查", exact=True)).to_have_count(1)
+    expect(page.get_by_role("radio", name="政策问数", exact=True)).to_have_count(0)
+    expect(page.get_by_role("radio", name="多源实验", exact=True)).to_have_count(0)
     page.get_by_role("tab", name="按条件查口径").click()
     panel = page.get_by_role("tabpanel", name="按条件查口径")
 
@@ -102,6 +104,63 @@ def check_policy_exploration(page: Page, origin: str) -> None:
     print("PASS cited multi-hop policy retrieval, original fixed-flow boundary, and cyclic-referral refusal", flush=True)
 
 
+def check_policy_document_library(page: Page, origin: str) -> None:
+    page.goto(f"{origin}/?session={uuid4()}&workspace=policy-exploration", wait_until="domcontentloaded")
+    page.get_by_role("tab", name="文档库").click(timeout=20000)
+    library = page.get_by_role("tabpanel", name="文档库")
+    evidence = Path(__file__).resolve().parents[2] / "examples" / "demo"
+    unique = str(uuid4())[:8]
+
+    def upload(region, version: int) -> None:
+        file = {"name": f"policy-{unique}-v{version}.md", "mimeType": "text/markdown",
+                "buffer": (evidence / f"policy-upload-v{version}.md").read_bytes()}
+        region.locator('input[type="file"]').set_input_files(file)
+
+    upload(library.get_by_test_id("stForm").first, 1)
+    library.get_by_role("button", name="上传文档", exact=True).click()
+    expect(library.get_by_text("已上传第 1 版。", exact=True)).to_be_visible(timeout=20000)
+    expect(library.get_by_text(f"policy-{unique}-v1.md", exact=True).last).to_be_visible()
+    expect(library.get_by_text("本机模式下文档仅此环境可见。", exact=False)).to_be_visible()
+
+    def investigate(amount: str, version: int, *, choose_doc: bool) -> None:
+        page.get_by_role("tab", name="自然语言调查").click()
+        panel = page.get_by_role("tabpanel", name="自然语言调查")
+        panel.get_by_text("文档库", exact=True).filter(visible=True).last.click()
+        form = panel.get_by_test_id("stMultiSelect")
+        expect(form).to_be_visible(timeout=20000)
+        if choose_doc:
+            form.get_by_role("button", name="Open").click()
+            page.get_by_role("option", name=f"policy-{unique}-v{version}.md", exact=False).click()
+            form.get_by_role("combobox").press("Escape")
+        panel.get_by_role("textbox", name="你想核对什么？").fill("2026年10月华南电水壶净营收是多少？")
+        panel.get_by_role("button", name="开始调查").click()
+        expect(panel.get_by_test_id("stMetricValue")).to_have_text(amount, timeout=20000)
+        evidence_panel = panel.get_by_test_id("stExpander").filter(has_text="核对实际口径的条款和 SQL")
+        citation = evidence_panel.get_by_text(f"文档库 · 第 {version} 版", exact=True)
+        if not citation.is_visible():
+            evidence_panel.get_by_text("核对实际口径的条款和 SQL", exact=True).click()
+        expect(citation).to_be_visible()
+        expect(evidence_panel.get_by_text(f"policy-{unique}-v{version}.md", exact=False)).to_be_visible()
+
+    investigate("¥292.80", 1, choose_doc=True)
+    page.get_by_role("tab", name="文档库").click()
+    library.get_by_text("上传新版本", exact=True).click()
+    upload(library.get_by_test_id("stForm").last, 2)
+    library.get_by_role("button", name="保存新版本").click()
+    expect(library.get_by_text("已保存第 2 版。", exact=True)).to_be_visible(timeout=20000)
+    expect(library.get_by_role("combobox", name="查看版本")).to_have_value("第 2 版")
+    version = library.get_by_role("combobox", name="查看版本")
+    expect(library.get_by_text(f"policy-{unique}-v2.md", exact=True).last).to_be_visible()
+    version.scroll_into_view_if_needed()
+    version.press("ArrowDown")
+    version.press("End")
+    version.press("Enter")
+    expect(version).to_have_value("第 1 版")
+    expect(library.get_by_text(f"policy-{unique}-v1.md", exact=True).last).to_be_visible()
+    investigate("¥294.80", 2, choose_doc=False)
+    print("PASS Markdown upload, history, and cited evidence follows the new revision", flush=True)
+
+
 def main():
     session = uuid4()
     origin = os.getenv("RAG_TEST_UI_URL", "http://127.0.0.1:8501")
@@ -111,11 +170,13 @@ def main():
             exploration = browser.new_page(viewport={"width": 1280, "height": 900})
             check_policy_investigation(exploration, origin)
             check_policy_exploration(exploration, origin)
+            check_policy_document_library(exploration, origin)
             exploration.close()
 
             policy = browser.new_page(viewport={"width": 1280, "height": 900})
             policy.goto(f"{origin}/?session={uuid4()}&workspace=policy", wait_until="domcontentloaded")
-            expect(policy.get_by_role("heading", name="政策问数")).to_be_visible(timeout=20000)
+            expect(policy.get_by_role("heading", name="政策调查")).to_be_visible(timeout=20000)
+            expect(policy.get_by_role("tab", name="日期分段")).to_have_attribute("aria-selected", "true")
             policy.get_by_role("button", name="按政策计算净营收").click()
             expect(policy.get_by_text("¥477.00", exact=True)).to_be_visible(timeout=20000)
             first = policy.get_by_text("2026-10-01 至 2026-10-15 · ¥350.00", exact=True)
@@ -125,11 +186,16 @@ def main():
             second.click()
             expect(policy.get_by_text("退款政策 · 2026 年 10 月修订版", exact=False)).to_be_visible()
             expect(policy.get_by_text("绑定参数 [300,", exact=False)).to_be_visible()
+            policy.reload(wait_until="domcontentloaded")
+            expect(policy.get_by_role("tab", name="日期分段")).to_have_attribute("aria-selected", "true", timeout=20000)
+            policy.goto(f"{origin}/?session={uuid4()}&workspace=multisource", wait_until="domcontentloaded")
+            multi = policy.get_by_role("tabpanel", name="多源实验")
+            expect(multi.get_by_role("button", name="运行多源问数")).to_be_visible(timeout=20000)
             policy.close()
-            print("PASS cross-version policy revenue and cited SQL", flush=True)
+            print("PASS canonical policy entry and preserved classic and multisource deep links", flush=True)
 
             starter = browser.new_page(viewport={"width": 1280, "height": 900})
-            starter.goto(f"{origin}/?session={uuid4()}", wait_until="domcontentloaded")
+            starter.goto(f"{origin}/?session={uuid4()}&workspace=chat", wait_until="domcontentloaded")
             expect(starter.get_by_role("heading", name="和数据对话")).to_be_visible(timeout=20000)
             starter_messages = starter.get_by_test_id("stChatMessage")
             expect(starter_messages).to_have_count(0)
@@ -142,7 +208,7 @@ def main():
             print("PASS suggested question and durable answer", flush=True)
 
             page = browser.new_page(viewport={"width": 1280, "height": 900})
-            page.goto(f"{origin}/?session={session}", wait_until="domcontentloaded")
+            page.goto(f"{origin}/?session={session}&workspace=chat", wait_until="domcontentloaded")
             expect(page.get_by_role("heading", name="和数据对话")).to_be_visible(timeout=20000)
             expect(page.get_by_test_id("stAppDeployButton")).to_have_count(0)
             composer = page.get_by_placeholder("输入你的问题")

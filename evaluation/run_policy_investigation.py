@@ -181,7 +181,7 @@ def _score(case: dict, result: dict, mode: str, document_text: dict[str, list[st
     checks["deltas"] = all(type(result.get(key)) is type(expected[key]) and result.get(key) == expected[key]
                           for key in _DELTAS)
     if case.get("needs_recovery") and mode == "auto":
-        checks["recovery_observed"] = bool(metrics.get("rewrites"))
+        checks["recovery_observed"] = bool(metrics.get("lexical_hits") or metrics.get("rewrites"))
     return {"passed": all(checks.values()), "checks": checks, "numeric_output": numeric_output,
             "incorrect_numeric_output": numeric_output and not all(checks[key] for key in ("scope", "amount", "evidence", "sql", "deltas"))}
 

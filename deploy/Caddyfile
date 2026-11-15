@@ -23,9 +23,25 @@ https://{$RAG_DOMAIN} {
 
 	@api_json {
 		method POST
-		path /api/v1/chat /api/v1/approvals /api/v1/query /api/v2/policy-revenue /api/v2/multisource /api/v2/policy-exploration
+		path /api/v1/chat /api/v1/approvals /api/v1/query /api/v2/policy-revenue /api/v2/multisource /api/v2/policy-exploration /api/v2/policy-investigation
 	}
 	request_body @api_json {
+		max_size 16KiB
+	}
+
+	@policy_doc_upload {
+		method POST
+		path /api/v2/policy-documents /api/v2/policy-documents/*/versions
+	}
+	request_body @policy_doc_upload {
+		max_size 64KiB
+	}
+
+	@policy_acl {
+		method PUT
+		path /api/v2/policy-documents/*/readers
+	}
+	request_body @policy_acl {
 		max_size 16KiB
 	}
 

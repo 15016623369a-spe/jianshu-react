@@ -15,7 +15,12 @@ _SUPPLEMENT = Path(__file__).with_name("investigation_corpus")
 _MAX_REFERENCES = 4
 _MAX_SEGMENTS = 16
 _MAX_QUERY_LENGTH = 120
-_ALIAS = re.compile(r"^本(?:通知|公告|文件)(?:过去|此前)也称《([^《》\n]{2,70})》。$", re.MULTILINE)
+RETRIEVAL_TOP_K = 5
+_ALIAS = re.compile(
+    r"^本(?:通知|公告|文件)(?:(?:过去|此前)也称|接续旧规|承接旧规|取代旧规)"
+    r"《([^《》\n]{2,70})》(。|，[^\n]{1,100}。)$",
+    re.MULTILINE,
+)
 _NATURAL_REFERENCE = re.compile(r"(?:请查|参见|请参照)(?:此前|过去)称为「([^「」\n]{2,70})」的(?:通知|公告|文件)")
 _EFFECTIVE_DATES = re.compile(
     rf"有效期为(?P<start>{rules._CHINESE_DATE})至(?P<end>{rules._CHINESE_DATE})（含首尾日期）"
@@ -168,27 +173,55 @@ def _matching(
         raise RetrievalStop(conflict) from exc
 
 
+def _citation(value: rules.TextPassage | dict) -> dict:
+    if isinstance(value, dict):
+        return {field: value[field] for field in ("id", "title", "file", "line_start")}
+    number = rules._DOCUMENT_NUMBER.search(value.quote)
+    return {"id": number["id"] if number else None, "title": value.title, "file": value.file,
+            "line_start": value.line_start}
+
+
+def _log_retrieval(
+    track: Callable[[dict], None] | None, stage: str, source: rules.DocumentSource,
+    reference: dict | None, start: date, end: date, query: str,
+    matches: list[rules.TextPassage], selected: dict | None,
+) -> None:
+    if track is not None:
+        track({
+            "stage": stage, "source": source, "referrer_id": reference["id"] if reference else None,
+            "scope": {"start": start.isoformat(), "end_exclusive": end.isoformat()},
+            "query": query, "candidates": [_citation(passage) for passage in matches[:RETRIEVAL_TOP_K]],
+            "selected": _citation(selected) if selected else None,
+        })
+
+
 def _find_rule(
     snapshot: rules.DocumentSnapshot, product: str, category: str, region: str,
-    start: date, end_exclusive: date, *, reference: dict | None = None,
+    start: date, end_exclusive: date, *, reference: dict | None = None, track: Callable[[dict], None] | None = None,
 ) -> dict | None:
-    source = "bulletin" if reference else "policy"
+    source: rules.DocumentSource = "bulletin" if reference else "policy"
     title = reference["ref_title"] if reference else None
     topic = reference["ref_topic"] if reference else None
-    matches = rules._rank_passages(snapshot.passages, source, f"{title or topic or ''} {product} {category} {region} 退款")
+    query = f"{title or topic or ''} {product} {category} {region} 退款".strip()
+    matches = rules._rank_passages(snapshot.passages, source, query)
     filtered = [
         match for match in matches
         if (title is None or rules._normalize(match.title) == rules._normalize(title))
         and (topic is None or rules._normalize(topic) in rules._normalize(match.title))
     ]
     conflict = "bulletin_conflict" if reference else "policy_conflict"
-    return _select(_matching(filtered, product, category, region, start, end_exclusive, conflict), conflict)
+    verified = None
+    try:
+        verified = _select(_matching(filtered, product, category, region, start, end_exclusive, conflict), conflict)
+        return verified
+    finally:
+        _log_retrieval(track, "exact", source, reference, start, end_exclusive, query, matches, verified)
 
 
 def _recover_title(
     snapshot: rules.DocumentSnapshot, reference: dict, product: str, category: str, region: str,
-    start: date, end_exclusive: date, rewrite: Callable[[EvidenceGap], str | None],
-    observe: Callable[[str, str, str], None],
+    start: date, end_exclusive: date, *, lexical: bool, rewrite: Callable[[EvidenceGap], str | None] | None,
+    observe: Callable[[str, str, str], None], track: Callable[[dict], None] | None,
 ) -> dict | None:
     title = reference["ref_title"]
     if not title:
@@ -197,43 +230,54 @@ def _recover_title(
     candidates = _matching(
         [
             passage for passage in snapshot.passages if passage.source == "bulletin"
-            and original in {rules._normalize(alias) for alias in _ALIAS.findall(passage.quote)}
+            and any(rules._normalize(match[1]) == original for match in _ALIAS.finditer(passage.quote))
         ],
         product, category, region, start, end_exclusive, "bulletin_conflict",
     )
+    # Check all explicitly linked, applicable candidates for conflicts before accepting any ranked result.
     verified = _select(candidates, "bulletin_conflict")
-    if verified is None:
-        return None
+    if lexical:
+        matches = rules._rank_passages(snapshot.passages, "bulletin", title)
+        identity = _citation(verified) if verified else None
+        selected = verified if identity is not None and any(
+            _citation(match) == identity for match in matches[:RETRIEVAL_TOP_K]
+        ) else None
+        _log_retrieval(track, "lexical", "bulletin", reference, start, end_exclusive, title, matches, selected)
+        observe("retrieve_lexical", "found" if selected else "miss", selected["title"] if selected else title)
+        if selected:
+            return selected
 
+    if verified is None or rewrite is None:
+        return None
     gap = EvidenceGap(
         start=start, end_exclusive=end_exclusive, product=product, region=region, category=category,
         referring=reference, query=title,
-        candidates=tuple({"title": candidate.passage.title, "quote": candidate.passage.quote[:380]} for candidate in candidates[:5]),
+        candidates=tuple({"title": candidate.passage.title, "quote": candidate.passage.quote[:380]} for candidate in candidates[:6]),
     )
     edited_query = rewrite(gap)
     if not isinstance(edited_query, str) or not 1 <= len(edited_query) <= _MAX_QUERY_LENGTH:
-        observe("retrieve_rewritten", "miss", title)
         return None
 
-    # Search the proposed wording, but publish only a date/scope/authority-checked source that proves the original link.
     matches = rules._rank_passages(snapshot.passages, "bulletin", edited_query)
+    # In the model tier the rewritten query must independently retrieve the same source
+    # whose applicability and textual link were checked above.
     title_terms = rules._terms(verified["title"])
     query_terms = rules._terms(edited_query)
-    unchanged_alias = rules._normalize(edited_query) == original
+    is_alias = rules._normalize(edited_query) == original
     enough_title_overlap = len(title_terms & query_terms) >= min(2, len(title_terms)) and bool(title_terms)
-    if (not unchanged_alias and not enough_title_overlap) or not any(
-        match.file == verified["file"] and match.line_start == verified["line_start"] for match in matches
-    ):
-        observe("retrieve_rewritten", "miss", title)
-        return None
-    observe("retrieve_rewritten", "found", verified["title"])
-    return verified
+    identity = _citation(verified)
+    selected = verified if (is_alias or enough_title_overlap) and any(
+        _citation(match) == identity for match in matches[:RETRIEVAL_TOP_K]
+    ) else None
+    _log_retrieval(track, "model", "bulletin", reference, start, end_exclusive, edited_query, matches, selected)
+    observe("retrieve_rewritten", "found" if selected else "miss", selected["title"] if selected else title)
+    return selected
 
 
 def resolve_policy_window(
     snapshot: rules.DocumentSnapshot, product: str, region: str, start: date, end_exclusive: date, *,
-    rewrite: Callable[[EvidenceGap], str | None] | None = None,
-    observe: Callable[[str, str, str], None] | None = None,
+    lexical: bool = False, rewrite: Callable[[EvidenceGap], str | None] | None = None,
+    observe: Callable[[str, str, str], None] | None = None, track: Callable[[dict], None] | None = None,
 ) -> tuple[ResolvedPolicy, ...]:
     """Require applicable evidence for a complete date range before returning executable rules."""
     if start >= end_exclusive:
@@ -248,7 +292,7 @@ def resolve_policy_window(
     boundaries = _date_boundaries(snapshot, product, category, region, start, end_exclusive)
     resolved = []
     for first, last in zip(boundaries, boundaries[1:]):
-        policy = _find_rule(snapshot, product, category, region, first, last)
+        policy = _find_rule(snapshot, product, category, region, first, last, track=track)
         observe("retrieve_policy", "found" if policy else "miss", policy["title"] if policy else f"{first} 至 {last}")
         if policy is None:
             raise RetrievalStop("policy_missing")
@@ -257,13 +301,16 @@ def resolve_policy_window(
         while current["ref_kind"]:
             if len(bulletins) >= _MAX_REFERENCES:
                 raise RetrievalStop("referral_limit")
-            bulletin = _find_rule(snapshot, product, category, region, first, last, reference=current)
+            bulletin = _find_rule(snapshot, product, category, region, first, last, reference=current, track=track)
             observe(
                 "retrieve_bulletin", "found" if bulletin else "miss",
                 bulletin["title"] if bulletin else current["ref_title"] or current["ref_topic"] or current["title"],
             )
-            if bulletin is None and rewrite is not None:
-                bulletin = _recover_title(snapshot, current, product, category, region, first, last, rewrite, observe)
+            if bulletin is None and (lexical or rewrite is not None):
+                bulletin = _recover_title(
+                    snapshot, current, product, category, region, first, last,
+                    lexical=lexical, rewrite=rewrite, observe=observe, track=track,
+                )
             if bulletin is None:
                 raise RetrievalStop("bulletin_missing")
             if bulletin["id"] in {policy["id"], *(document["id"] for document in bulletins)}:

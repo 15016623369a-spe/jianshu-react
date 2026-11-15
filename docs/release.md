@@ -1,6 +1,6 @@
 # 单机受控上线
 
-这个部署配置供已知账号的小范围试用。部署方负责选择主机、域名、允许上传的数据范围、模型服务和备份保管人。所有账号可访问同一份已挂载的只读 BIRD 数据。每个账号拥有独立的演示库、会话、审批和追踪。
+这个部署配置供已知账号的小范围试用。部署方负责选择主机、域名、允许上传的数据范围、模型服务和备份保管人。所有账号可访问同一份已挂载的只读 BIRD 数据。每个账号拥有独立的演示库、会话、审批和追踪。政策文档默认仅上传者可访问，上传者可按账号授予只读权限。
 
 ## 入口与配置
 
@@ -11,7 +11,7 @@
 5. 构建需要访问 Docker Hub、PyPI 和 Debian 安全更新源。发布时保留已验收的镜像标识，以便复现和回退。
 6. 如需远程模型，填入经批准的 HTTPS 地址和凭据。数据库问答会向该模型提交相关表结构、问题、证据及可能用到的类别线索。文件分析可由用户显式开启远程规划，发送问题和表结构，计算留在分析容器内。
 
-账号文件只存密码哈希。TLS 入口覆写内部身份头，应用验证入口密钥后才读取用户状态。API 和界面不单独发布端口。Streamlit 保持 XSRF 防护。默认最多并行执行四个工作流，单账号最多两个；上传为 10 MiB，结构化 API 请求为 16 KiB。
+账号文件只存密码哈希。TLS 入口覆写内部身份头，应用验证入口密钥后才读取用户状态。API 和界面不单独发布端口。Streamlit 保持 XSRF 防护。默认最多并行执行四个工作流，单账号最多两个；表格上传为 10 MiB，政策 Markdown 上传为 64 KiB，结构化 API 请求为 16 KiB。
 
 在项目目录执行下面的命令。
 
@@ -20,7 +20,7 @@ docker compose --env-file .env.production.local \
   -p rag-prod -f compose.yaml -f compose.production.yaml up -d --build --wait
 ```
 
-需要只读数据库时增加 `-f compose.bird.yaml`，并在同一环境文件中指定 `RAG_BIRD_DATA_DIR`。入口地址采用相应域名和 HTTPS 端口。网关提供受保护的 `/api/v1/` 接口。本机内部证书仅用于验收。
+需要只读数据库时增加 `-f compose.bird.yaml`，并在同一环境文件中指定 `RAG_BIRD_DATA_DIR`。入口地址采用相应域名和 HTTPS 端口。网关提供受保护的 `/api/v1/` 和 `/api/v2/` 接口。本机内部证书仅用于验收。
 
 ## 发布前检查
 
@@ -31,6 +31,12 @@ docker compose --env-file .env.production.local \
 - 验证真实域名证书、外部访问范围、备份可恢复和运维告警。监控磁盘、容器重启、HTTP 5xx、模型配额及响应时间，并按数据保留政策清理状态卷。
 - 接入外部 PostgreSQL 时，以独立 reader 账号验证 `verify-full`、查询权限与写入拒绝。[PostgreSQL 部署检查](postgres.md#配置实际数据源)
 - 依赖审计、镜像扫描和目标环境容量验收通过后再放开访问。当前方案使用单实例 SQLite，适合受控试用。
+
+## 政策调查发布验收
+
+`bash scripts/policy_release_smoke.sh` 启动一个仅绑定本机的独立生产配置。脚本生成临时账号，使用 Caddy 本地 CA 验证 HTTPS，并以两个账号检查上传、历史版本、分享、只读、撤权和身份头覆盖。重启 API 后再验证版本和撤权是否持久化。退出时清理该次测试创建的项目和状态卷。
+
+上传资料存入 API 状态卷的 `policy_documents.sqlite`。备份状态卷前停止 API，完整保留 SQLite 和相应状态文件。账号权限与可信网关传入的用户名绑定。授权覆盖现有和未来版本，撤销后新的列表、版本读取和调查均受限。正在执行的调查使用受理时已固定的权限和版本快照。上传政策只在本机解析，上传内容保持在部署内。生产部署的正式域名、受信任证书和外部访问范围仍须在目标环境确认。[政策调查演示](policy-product-demo.md)
 
 ## 错误和追踪
 
@@ -55,7 +61,7 @@ dc up -d --wait
 
 使用独立 Compose 项目和空状态卷演练恢复。校验备份后，使用目标项目的 `docker compose run --rm --no-deps -T --entrypoint tar api -C /state -xzf - < rag-state.tar.gz` 恢复。然后用测试账号验证会话、审批和追踪。镜像、配置和账号资料需与状态备份配套保管。出现故障时，将已验证的前一版镜像与其对应的备份恢复到独立项目，通过冒烟验证后切换入口。
 
-状态卷包含已保存的文件分析和对应原文件。备份按同样的数据保留政策保护和清理。
+状态卷包含已保存的文件分析、对应原文件和政策文档版本及授权。备份按同样的数据保留政策保护和清理。
 
 参考 [Docker Compose 合并规则](https://docs.docker.com/reference/compose-file/merge/)、[Caddy Basic Auth](https://caddyserver.com/docs/caddyfile/directives/basic_auth) 和 [Docker rootless 模式](https://docs.docker.com/engine/security/rootless/)。
 

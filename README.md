@@ -1,16 +1,12 @@
-# 见数 V2 · 政策问数
+# 见数 V2 · 政策调查
 
-这个仓库从 [见数 Text2SQL Agent `43b151a`](https://github.com/15016623369a-spe/text2sql-agent/commit/43b151aa4505e3bb98acdfa19a30e8b6fceb2ccb) 派生。V2 的「政策问数」提供固定流程、ReAct + 快路径和纯 ReAct 三种执行方式。固定流程是默认。对同一批 18 道留出题各跑三轮，三组都通过 54/54，固定流程延迟最低。[ReAct 对照实验](docs/v2-react-experiment.md)
+见数把政策正文和只读账本接到同一个调查入口。用自然语言比较两个月的净营收，可按其中一个月的退款口径重算，并核对每段生效规则、引用、SQL 和绑定参数。
 
-运行 `bash scripts/demo.sh` 后打开 [政策问数工作区](http://127.0.0.1:28501/?workspace=policy)。保留表单默认的 **2026-10-01 至 2026-10-31（含当天）** 和「全部地区」，执行后可以核对 **¥477.00** 的构成。10 月 15 日前扣除实际退款，10 月 15 日起每笔最多扣 ¥3。界面提供分段统计、政策原文、实际 SQL 和绑定参数。政策覆盖有缺口时，流程在执行 SQL 前停止。
+调查先查精确标题和生效期，再用词面补查。只有正式来源被排在候选之外、且正文存在可验证的转引时，才向模型请求新检索词。检索和金额都保留证据。政策资料可上传 Markdown，版本保留历史，生产环境支持按账号授予和撤回只读权限。[产品演示](docs/policy-product-demo.md) · [独立文档与检索评测](docs/policy-grounding-evaluation.md)
 
-首版接受结构化日期与地区，使用两份合成政策和独立的演示订单库，全程无需模型密钥。[工作机制、验收和基线复跑](docs/v2-policy-workflow.md)
+运行 `bash scripts/demo.sh` 后打开[政策调查](http://127.0.0.1:28501/?workspace=policy-exploration)。用默认问题验收华南电水壶 2026 年 10 月和 11 月的净营收，实际差额 **−¥46.40**，统一 10 月口径后的差额 **−¥40.80**。
 
-[多源问数实验](http://127.0.0.1:28501/?workspace=multisource)默认使用固定流程，可手动切换 ReAct 或 Plan-and-Execute。它从订单发现产品和地区，逐层跟进政策引用，再回库汇总，可核对每个分组的政策、公告与 SQL。[多源 ReAct 测试报告](docs/v2-multisource-test-report.md) · [Plan-and-Execute 对照报告](docs/v2-plan-execute-test-report.md)
-
-政策探索从 Markdown 正文检索政策和多层公告，按实际适用条款选择账本。默认先走固定快路径，复杂任务复用当前文档版本的已核验计划，必要时重规划。界面展示引用链、文件行号和只读 SQL。试试「先找指定标题，再找当期公告」。[政策探索实验](http://127.0.0.1:28501/?workspace=policy-exploration) · [正文检索与多跳评测](docs/v2-text-policy-test-report.md)
-
-「政策探索」的自然语言调查可以比较同一商品两个月的净营收，并指定某月退款口径重算。在正式公告标题缺失时按证据补查，结果显示政策原文、账本、逐段计算和只读 SQL。试试「华南电水壶 2026 年 10 月和 11 月的净营收差了多少？如果两个月都按 10 月口径重算呢？」。[调查案例与评测](docs/policy-investigation-agentic-rag.md)
+从 [见数 Text2SQL Agent `43b151a`](https://github.com/15016623369a-spe/text2sql-agent/commit/43b151aa4505e3bb98acdfa19a30e8b6fceb2ccb) 派生。原日期分段、多源实验、结构化口径入口现集中在政策调查的次级标签中。[ReAct 对照实验](docs/v2-react-experiment.md) · [Plan-and-Execute 对照报告](docs/v2-plan-execute-test-report.md) · [正文多跳历史评测](docs/v2-text-policy-test-report.md)
 
 用自然语言查询数据库，或上传一份 Excel 直接做分析。见数会在问题缺少时间、地区或指标口径时先确认条件，然后执行查询，给出可核对的 SQL、统计表和图表。也可以在同一会话里继续追问、调整筛选条件或下载结果。
 
@@ -47,7 +43,7 @@ bash scripts/demo.sh
 
 打开 [演示界面](http://127.0.0.1:28501) 或 [演示 API 文档](http://127.0.0.1:28000/docs)。演示使用独立端口和状态卷，内置 6 条合成订单，参考日期为 2026-11-10。示例营收、多级表头 Top N 和公式核对均可在服务启动后离线完成。用 `bash scripts/demo.sh stop` 停止演示。
 
-配置模型后，可以用 `bash scripts/demo.sh live` 启动在线演示。问「列出订单编号、地区和下单日期，按订单编号升序排列」，展开「本次追踪」查看模型调用、SQL 试跑和 token。固定营收案例由本地逻辑执行，模型调用次数和 token 均为 0。[演示脚本与预期结果](docs/demo.md)
+配置模型后，可以用 `bash scripts/demo.sh live` 启动在线演示。打开[对话](http://127.0.0.1:28501/?workspace=chat)，问「列出订单编号、地区和下单日期，按订单编号升序排列」，展开「本次追踪」查看模型调用、SQL 试跑和 token。固定营收案例由本地逻辑执行，模型调用次数和 token 均为 0。[演示脚本与预期结果](docs/demo.md)
 
 ## 技术栈
 
@@ -164,7 +160,8 @@ RAG_BIRD_DATA_DIR=/absolute/path/to/dev_databases \
 
 ## API 索引
 
-- `POST /api/v2/policy-investigation` 接收 `question`，支持实际口径与统一口径对比，并返回文档、计算和检索轨迹。
+- `POST /api/v2/policy-investigation` 接收 `question` 和可选的 `document_ids`，返回计算、出处与各阶段检索轨迹。
+- `/api/v2/policy-documents` 提供上传、版本历史和读取授权。选择上传资料调查时，只检索已选且有权读取的版本。
 - `POST /api/v2/policy-revenue` 按实际生效的退款政策查询净营收，并返回可核对的文档与 SQL 证据。
 - `POST /api/v1/chat` 处理对话、澄清和审批申请，`GET /api/v1/sessions/{id}` 读取会话状态，`GET /api/v1/sessions/{id}/messages` 分页读取历史。
 - `GET /api/v1/databases` 列出数据源，`GET /api/v1/databases/postgres/schema` 浏览结构，`POST /api/v1/query` 直接提交只读问数。

@@ -2,7 +2,7 @@
 
 在项目根目录运行 `bash scripts/demo.sh`。容器就绪后打开 [演示界面](http://127.0.0.1:28501)，准备 [零售演示工作簿](../examples/demo/retail-demo.xlsx)。示例订单和工作簿均为合成数据。[三分钟演示视频](../examples/demo/jianshu-demo.mp4)
 
-新启动时可以从侧栏切换到「对话」，再按下方视频步骤操作。政策问数的新演示见 [V2 工作流](v2-policy-workflow.md)。
+新启动时可以从侧栏切换到「对话」，再按下方视频步骤操作。政策调查是首页入口，章末步骤仍可从「对话」验收。[政策调查与上传演示](policy-product-demo.md)
 
 ## 0:00–1:06 · 多轮澄清与追问
 

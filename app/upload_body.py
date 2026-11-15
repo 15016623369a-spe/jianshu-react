@@ -43,7 +43,11 @@ class BoundedJSON:
         self.app = app
 
     async def __call__(self, scope, receive, send):
-        if scope["type"] != "http" or scope["method"] != "POST" or scope["path"] not in _JSON_PATHS:
+        if scope["type"] != "http":
+            return await self.app(scope, receive, send)
+        method, path = scope["method"], scope["path"]
+        reader_acl = method == "PUT" and path.startswith("/api/v2/policy-documents/") and path.endswith("/readers")
+        if not ((method == "POST" and path in _JSON_PATHS) or reader_acl):
             return await self.app(scope, receive, send)
         request = Request(scope, receive)
         try:
