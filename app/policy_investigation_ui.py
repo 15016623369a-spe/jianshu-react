@@ -197,10 +197,11 @@ def render_policy_investigation(
             available = [doc_id for doc_id in previous if doc_id in docs]
             if available != previous:
                 st.session_state[documents_key] = available
-            selected = st.multiselect(
+            chosen = st.multiselect(
                 "选择调查文档", list(docs), format_func=lambda key: document_label(docs[key]),
-                max_selections=8, key=documents_key, persist_state="session",
+                max_selections=8, select_all=False, key=documents_key, persist_state="session",
             )
+            selected = [doc_id for doc_id in chosen if doc_id in docs]
             st.caption("使用所选文档的最新可读版本。文档仅在本地检索，金额按演示订单计算。")
         else:
             st.info("请先在「文档库」上传文档，或请文档所有者授予读取权限。")

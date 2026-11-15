@@ -588,17 +588,27 @@ selected_workspace = {"": _POLICY_WORKSPACE, "file": "files"}.get(workspace, wor
 if legacy_view:
     selected_workspace = _POLICY_WORKSPACE
 mode = st.sidebar.radio("工作区", list(WORKSPACES),
-                        index=workspace_ids.index(selected_workspace) if selected_workspace in workspace_ids else 0,
+                        index=workspace_ids.index(selected_workspace if selected_workspace in workspace_ids else _POLICY_WORKSPACE),
                         key="workspace-mode")
 render_workspace_header(mode)
 mode_id = WORKSPACES[mode][0]
-if workspace != mode_id:
+if legacy_view and mode_id == _POLICY_WORKSPACE:
+    st.query_params.from_dict({**st.query_params.to_dict(), "workspace": mode_id, "policy_view": legacy_view})
+elif workspace != mode_id:
     st.query_params["workspace"] = mode_id
 if mode_id == _POLICY_WORKSPACE:
-    if legacy_view:
-        st.session_state["policy_view"] = legacy_view
+    policy_view = legacy_view or st.query_params.get("policy_view")
+
+    def remember_policy_view() -> None:
+        active = st.session_state["policy-view-tab"]
+        if active != _POLICY_TABS[0]:
+            st.query_params["policy_view"] = active
+        elif "policy_view" in st.query_params:
+            del st.query_params["policy_view"]
+
     investigation, library, structured, classic, multisource = st.tabs(
-        _POLICY_TABS, key="policy_view", bind="query-params",
+        _POLICY_TABS, default=policy_view if policy_view in _POLICY_TABS else None,
+        key="policy-view-tab", on_change=remember_policy_view,
     )
     model_configured = capabilities["model_configured"]
     if investigation.open:
