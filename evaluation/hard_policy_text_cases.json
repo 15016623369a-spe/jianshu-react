@@ -1,0 +1,767 @@
+{
+  "suite": "hard-policy-text-referrals-20261115-v1",
+  "development": [
+    {
+      "id": "warm-south-title-latest",
+      "group": "multi_hop",
+      "request": {
+        "product": "电水壶",
+        "region": "华南",
+        "start": "2027-01-12",
+        "end_exclusive": "2027-01-13"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-south-appliances-jan",
+        "bulletin_ids": [
+          "bulletin-south-appliances-jan-index",
+          "bulletin-south-appliances-jan-final"
+        ],
+        "cap_cents": 700,
+        "ledger": "chargebacks",
+        "tool_path": [
+          "find_titled_bulletin",
+          "find_latest_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 0,
+        "gross_cents": 0,
+        "deducted_cents": 0,
+        "total_cents": 0
+      }
+    },
+    {
+      "id": "warm-north-latest-title",
+      "group": "multi_hop",
+      "request": {
+        "product": "帐篷",
+        "region": "华北",
+        "start": "2027-01-13",
+        "end_exclusive": "2027-01-14"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "户外",
+        "policy_id": "policy-north-outdoor-jan",
+        "bulletin_ids": [
+          "bulletin-north-outdoor-jan-index",
+          "bulletin-north-outdoor-jan-final"
+        ],
+        "cap_cents": 1200,
+        "ledger": "refunds",
+        "tool_path": [
+          "find_latest_bulletin",
+          "find_titled_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 0,
+        "gross_cents": 0,
+        "deducted_cents": 0,
+        "total_cents": 0
+      }
+    }
+  ],
+  "holdout": [
+    {
+      "id": "control-direct-south",
+      "group": "direct",
+      "request": {
+        "product": "登山杖",
+        "region": "华南",
+        "start": "2026-10-01",
+        "end_exclusive": "2026-11-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "户外",
+        "policy_id": "policy-south-outdoor",
+        "bulletin_ids": [],
+        "cap_cents": null,
+        "ledger": "orders",
+        "tool_path": [
+          "query"
+        ],
+        "order_count": 1,
+        "gross_cents": 11000,
+        "deducted_cents": 300,
+        "total_cents": 10700
+      }
+    },
+    {
+      "id": "control-title-orders",
+      "group": "one_hop",
+      "request": {
+        "product": "电水壶",
+        "region": "华东",
+        "start": "2026-10-01",
+        "end_exclusive": "2026-12-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-east-appliances",
+        "bulletin_ids": [
+          "bulletin-east-appliances"
+        ],
+        "cap_cents": 1000,
+        "ledger": "orders",
+        "tool_path": [
+          "find_titled_bulletin",
+          "query"
+        ],
+        "order_count": 4,
+        "gross_cents": 64900,
+        "deducted_cents": 2080,
+        "total_cents": 62820
+      }
+    },
+    {
+      "id": "control-title-item",
+      "group": "one_hop",
+      "request": {
+        "product": "空气炸锅",
+        "region": "华东",
+        "start": "2026-10-01",
+        "end_exclusive": "2026-11-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-east-airfryer",
+        "bulletin_ids": [
+          "bulletin-east-airfryer"
+        ],
+        "cap_cents": 700,
+        "ledger": "chargebacks",
+        "tool_path": [
+          "find_titled_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 1,
+        "gross_cents": 30500,
+        "deducted_cents": 700,
+        "total_cents": 29800
+      }
+    },
+    {
+      "id": "control-latest-oct",
+      "group": "one_hop",
+      "request": {
+        "product": "电水壶",
+        "region": "华南",
+        "start": "2026-10-01",
+        "end_exclusive": "2026-10-04"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-south-appliances",
+        "bulletin_ids": [
+          "bulletin-south-appliances-oct"
+        ],
+        "cap_cents": 500,
+        "ledger": "refunds",
+        "tool_path": [
+          "find_latest_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 1,
+        "gross_cents": 10000,
+        "deducted_cents": 500,
+        "total_cents": 9500
+      }
+    },
+    {
+      "id": "control-latest-nov",
+      "group": "one_hop",
+      "request": {
+        "product": "空气炸锅",
+        "region": "华南",
+        "start": "2026-11-01",
+        "end_exclusive": "2026-12-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-south-appliances",
+        "bulletin_ids": [
+          "bulletin-south-appliances-nov"
+        ],
+        "cap_cents": 800,
+        "ledger": "chargebacks",
+        "tool_path": [
+          "find_latest_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 2,
+        "gross_cents": 72800,
+        "deducted_cents": 1550,
+        "total_cents": 71250
+      }
+    },
+    {
+      "id": "south-title-latest-full-month",
+      "group": "multi_hop",
+      "request": {
+        "product": "电水壶",
+        "region": "华南",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-02-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-south-appliances-jan",
+        "bulletin_ids": [
+          "bulletin-south-appliances-jan-index",
+          "bulletin-south-appliances-jan-final"
+        ],
+        "cap_cents": 700,
+        "ledger": "chargebacks",
+        "tool_path": [
+          "find_titled_bulletin",
+          "find_latest_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 2,
+        "gross_cents": 22000,
+        "deducted_cents": 900,
+        "total_cents": 21100
+      }
+    },
+    {
+      "id": "south-cap-over-events-exclusive-end",
+      "group": "multi_hop",
+      "request": {
+        "product": "电水壶",
+        "region": "华南",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-01-18"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-south-appliances-jan",
+        "bulletin_ids": [
+          "bulletin-south-appliances-jan-index",
+          "bulletin-south-appliances-jan-final"
+        ],
+        "cap_cents": 700,
+        "ledger": "chargebacks",
+        "tool_path": [
+          "find_titled_bulletin",
+          "find_latest_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 1,
+        "gross_cents": 10000,
+        "deducted_cents": 700,
+        "total_cents": 9300
+      }
+    },
+    {
+      "id": "south-next-order-inclusive-start",
+      "group": "multi_hop",
+      "request": {
+        "product": "电水壶",
+        "region": "华南",
+        "start": "2027-01-18",
+        "end_exclusive": "2027-02-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-south-appliances-jan",
+        "bulletin_ids": [
+          "bulletin-south-appliances-jan-index",
+          "bulletin-south-appliances-jan-final"
+        ],
+        "cap_cents": 700,
+        "ledger": "chargebacks",
+        "tool_path": [
+          "find_titled_bulletin",
+          "find_latest_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 1,
+        "gross_cents": 12000,
+        "deducted_cents": 200,
+        "total_cents": 11800
+      }
+    },
+    {
+      "id": "south-zero-valid-authority",
+      "group": "multi_hop_zero",
+      "request": {
+        "product": "电水壶",
+        "region": "华南",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-01-05"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-south-appliances-jan",
+        "bulletin_ids": [
+          "bulletin-south-appliances-jan-index",
+          "bulletin-south-appliances-jan-final"
+        ],
+        "cap_cents": 700,
+        "ledger": "chargebacks",
+        "tool_path": [
+          "find_titled_bulletin",
+          "find_latest_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 0,
+        "gross_cents": 0,
+        "deducted_cents": 0,
+        "total_cents": 0
+      }
+    },
+    {
+      "id": "south-new-product-cache-key",
+      "group": "multi_hop_zero",
+      "request": {
+        "product": "空气炸锅",
+        "region": "华南",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-02-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-south-appliances-jan",
+        "bulletin_ids": [
+          "bulletin-south-appliances-jan-index",
+          "bulletin-south-appliances-jan-final"
+        ],
+        "cap_cents": 700,
+        "ledger": "chargebacks",
+        "tool_path": [
+          "find_titled_bulletin",
+          "find_latest_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 0,
+        "gross_cents": 0,
+        "deducted_cents": 0,
+        "total_cents": 0
+      }
+    },
+    {
+      "id": "north-latest-title-full-month",
+      "group": "multi_hop",
+      "request": {
+        "product": "帐篷",
+        "region": "华北",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-02-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "户外",
+        "policy_id": "policy-north-outdoor-jan",
+        "bulletin_ids": [
+          "bulletin-north-outdoor-jan-index",
+          "bulletin-north-outdoor-jan-final"
+        ],
+        "cap_cents": 1200,
+        "ledger": "refunds",
+        "tool_path": [
+          "find_latest_bulletin",
+          "find_titled_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 2,
+        "gross_cents": 51000,
+        "deducted_cents": 1700,
+        "total_cents": 49300
+      }
+    },
+    {
+      "id": "north-cap-over-events-exclusive-end",
+      "group": "multi_hop",
+      "request": {
+        "product": "帐篷",
+        "region": "华北",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-01-20"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "户外",
+        "policy_id": "policy-north-outdoor-jan",
+        "bulletin_ids": [
+          "bulletin-north-outdoor-jan-index",
+          "bulletin-north-outdoor-jan-final"
+        ],
+        "cap_cents": 1200,
+        "ledger": "refunds",
+        "tool_path": [
+          "find_latest_bulletin",
+          "find_titled_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 1,
+        "gross_cents": 23000,
+        "deducted_cents": 1200,
+        "total_cents": 21800
+      }
+    },
+    {
+      "id": "north-next-order-inclusive-start",
+      "group": "multi_hop",
+      "request": {
+        "product": "帐篷",
+        "region": "华北",
+        "start": "2027-01-20",
+        "end_exclusive": "2027-02-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "户外",
+        "policy_id": "policy-north-outdoor-jan",
+        "bulletin_ids": [
+          "bulletin-north-outdoor-jan-index",
+          "bulletin-north-outdoor-jan-final"
+        ],
+        "cap_cents": 1200,
+        "ledger": "refunds",
+        "tool_path": [
+          "find_latest_bulletin",
+          "find_titled_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 1,
+        "gross_cents": 28000,
+        "deducted_cents": 500,
+        "total_cents": 27500
+      }
+    },
+    {
+      "id": "north-zero-valid-authority",
+      "group": "multi_hop_zero",
+      "request": {
+        "product": "帐篷",
+        "region": "华北",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-01-08"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "户外",
+        "policy_id": "policy-north-outdoor-jan",
+        "bulletin_ids": [
+          "bulletin-north-outdoor-jan-index",
+          "bulletin-north-outdoor-jan-final"
+        ],
+        "cap_cents": 1200,
+        "ledger": "refunds",
+        "tool_path": [
+          "find_latest_bulletin",
+          "find_titled_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 0,
+        "gross_cents": 0,
+        "deducted_cents": 0,
+        "total_cents": 0
+      }
+    },
+    {
+      "id": "north-new-product-cache-key",
+      "group": "multi_hop_zero",
+      "request": {
+        "product": "登山杖",
+        "region": "华北",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-02-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "户外",
+        "policy_id": "policy-north-outdoor-jan",
+        "bulletin_ids": [
+          "bulletin-north-outdoor-jan-index",
+          "bulletin-north-outdoor-jan-final"
+        ],
+        "cap_cents": 1200,
+        "ledger": "refunds",
+        "tool_path": [
+          "find_latest_bulletin",
+          "find_titled_bulletin",
+          "inspect_ledger",
+          "query"
+        ],
+        "order_count": 0,
+        "gross_cents": 0,
+        "deducted_cents": 0,
+        "total_cents": 0
+      }
+    },
+    {
+      "id": "east-three-referrals-full-month",
+      "group": "multi_hop",
+      "request": {
+        "product": "空气炸锅",
+        "region": "华东",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-02-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-east-airfryer-jan",
+        "bulletin_ids": [
+          "bulletin-east-airfryer-jan-index",
+          "bulletin-east-airfryer-jan-channel",
+          "bulletin-east-airfryer-jan-final"
+        ],
+        "cap_cents": 650,
+        "ledger": "orders",
+        "tool_path": [
+          "find_titled_bulletin",
+          "find_latest_bulletin",
+          "find_titled_bulletin",
+          "query"
+        ],
+        "order_count": 2,
+        "gross_cents": 34200,
+        "deducted_cents": 910,
+        "total_cents": 33290
+      }
+    },
+    {
+      "id": "east-three-referrals-cap-exclusive-end",
+      "group": "multi_hop",
+      "request": {
+        "product": "空气炸锅",
+        "region": "华东",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-01-23"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-east-airfryer-jan",
+        "bulletin_ids": [
+          "bulletin-east-airfryer-jan-index",
+          "bulletin-east-airfryer-jan-channel",
+          "bulletin-east-airfryer-jan-final"
+        ],
+        "cap_cents": 650,
+        "ledger": "orders",
+        "tool_path": [
+          "find_titled_bulletin",
+          "find_latest_bulletin",
+          "find_titled_bulletin",
+          "query"
+        ],
+        "order_count": 1,
+        "gross_cents": 16800,
+        "deducted_cents": 650,
+        "total_cents": 16150
+      }
+    },
+    {
+      "id": "east-three-referrals-original-order-inclusive-start",
+      "group": "multi_hop",
+      "request": {
+        "product": "空气炸锅",
+        "region": "华东",
+        "start": "2027-01-23",
+        "end_exclusive": "2027-02-01"
+      },
+      "expected": {
+        "kind": "answer",
+        "reason": null,
+        "category": "家电",
+        "policy_id": "policy-east-airfryer-jan",
+        "bulletin_ids": [
+          "bulletin-east-airfryer-jan-index",
+          "bulletin-east-airfryer-jan-channel",
+          "bulletin-east-airfryer-jan-final"
+        ],
+        "cap_cents": 650,
+        "ledger": "orders",
+        "tool_path": [
+          "find_titled_bulletin",
+          "find_latest_bulletin",
+          "find_titled_bulletin",
+          "query"
+        ],
+        "order_count": 1,
+        "gross_cents": 17400,
+        "deducted_cents": 260,
+        "total_cents": 17140
+      }
+    },
+    {
+      "id": "cycle-self-referral",
+      "group": "evidence_gap",
+      "request": {
+        "product": "蓝牙耳机",
+        "region": "华东",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-02-01"
+      },
+      "expected": {
+        "kind": "abstained",
+        "reason": "referral_cycle",
+        "bulletin_ids": [
+          "bulletin-east-audio-jan-loop"
+        ],
+        "tool_path": [
+          "find_titled_bulletin"
+        ]
+      }
+    },
+    {
+      "id": "ambiguous-bulletin-authority",
+      "group": "evidence_gap",
+      "request": {
+        "product": "登山杖",
+        "region": "华东",
+        "start": "2026-10-01",
+        "end_exclusive": "2026-12-01"
+      },
+      "expected": {
+        "kind": "abstained",
+        "reason": "bulletin_conflict",
+        "bulletin_ids": [],
+        "tool_path": []
+      }
+    },
+    {
+      "id": "latest-cannot-mix-two-versions",
+      "group": "evidence_gap",
+      "request": {
+        "product": "空气炸锅",
+        "region": "华南",
+        "start": "2026-10-31",
+        "end_exclusive": "2026-11-02"
+      },
+      "expected": {
+        "kind": "abstained",
+        "reason": "bulletin_missing",
+        "bulletin_ids": [],
+        "tool_path": []
+      }
+    },
+    {
+      "id": "title-reference-with-faq-only",
+      "group": "evidence_gap",
+      "request": {
+        "product": "蓝牙耳机",
+        "region": "华东",
+        "start": "2026-11-01",
+        "end_exclusive": "2026-12-01"
+      },
+      "expected": {
+        "kind": "abstained",
+        "reason": "bulletin_missing",
+        "bulletin_ids": [],
+        "tool_path": []
+      }
+    },
+    {
+      "id": "january-policy-incomplete-window",
+      "group": "evidence_gap",
+      "request": {
+        "product": "电水壶",
+        "region": "华南",
+        "start": "2027-01-31",
+        "end_exclusive": "2027-02-02"
+      },
+      "expected": {
+        "kind": "abstained",
+        "reason": "policy_missing",
+        "bulletin_ids": [],
+        "tool_path": []
+      }
+    },
+    {
+      "id": "unknown-product-fuzzy-lookalike",
+      "group": "evidence_gap",
+      "request": {
+        "product": "无牌蓝牙耳机",
+        "region": "华东",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-01-02"
+      },
+      "expected": {
+        "kind": "abstained",
+        "reason": "product_unknown",
+        "bulletin_ids": [],
+        "tool_path": []
+      }
+    },
+    {
+      "id": "missing-region",
+      "group": "clarification",
+      "request": {
+        "product": "电水壶",
+        "region": null,
+        "start": "2027-01-01",
+        "end_exclusive": "2027-01-02"
+      },
+      "expected": {
+        "kind": "clarification",
+        "reason": "missing_scope",
+        "bulletin_ids": [],
+        "tool_path": []
+      }
+    },
+    {
+      "id": "zero-length-time-window",
+      "group": "clarification",
+      "request": {
+        "product": "帐篷",
+        "region": "华北",
+        "start": "2027-01-01",
+        "end_exclusive": "2027-01-01"
+      },
+      "expected": {
+        "kind": "clarification",
+        "reason": "invalid_period",
+        "bulletin_ids": [],
+        "tool_path": []
+      }
+    }
+  ]
+}

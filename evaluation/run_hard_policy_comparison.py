@@ -1,4 +1,4 @@
-"""Compare fixed retrieval, live planning, and validated-plan reuse."""
+"""Compare bounded document traversal with live planning and validated-plan reuse."""
 from __future__ import annotations
 
 import argparse
@@ -20,12 +20,17 @@ from langsmith import tracing_context
 
 from app.config import PROJECT_ROOT, _load_dotenv, load_settings
 from app.telemetry import Trace
-from evaluation.hard_policy_reference import CORPUS, SCOPE_FIELDS, expected_result, read_fixture
+from evaluation.hard_policy_reference import CORPUS, SCOPE_FIELDS, read_fixture, validate_expected
 from evaluation.run_policy_comparison import _known_total, _p95
 
-SUITE_PATH = Path(__file__).with_name("hard_policy_cases.json")
-MODES = ("fixed", "uncached", "plan")
-MODEL_STOP = {"model_error", "model_unconfigured", "timeout", "workflow_error"}
+SUITES = {"legacy": "hard_policy_cases.json", "text": "hard_policy_text_cases.json"}
+MODES = ("fixed", "uniform", "uncached", "plan", "auto")
+DEFAULT_MODES = {"legacy": ("fixed", "uncached", "plan"), "text": ("fixed", "uniform", "uncached", "auto")}
+CACHED_MODES = {"auto", "plan"}
+DETERMINISTIC_MODES = {"fixed", "uniform"}
+MODEL_STOP = {"model_error", "model_unconfigured", "timeout", "workflow_error", "source_unavailable"}
+DOCUMENT_FILES = {f"app/hard_policy_corpus/{name}.md" for name in ("policies", "bulletins")}
+REFERRAL_TOOLS = {"find_latest_bulletin", "find_titled_bulletin"}
 OBSERVED_TOOLS = {"find_latest_bulletin", "find_titled_bulletin", "inspect_ledger", "query"}
 PLANNER_EVENTS = {"plan", "replan", "cache_hit"}
 TOKEN_FIELDS = ("prompt_tokens", "completion_tokens", "total_tokens")
@@ -36,21 +41,21 @@ def _request_key(case: dict) -> tuple:
     return tuple(case["request"].get(field) for field in SCOPE_FIELDS)
 
 
-def _load_suite() -> dict:
-    suite = json.loads(SUITE_PATH.read_text(encoding="utf-8"))
+def _load_suite(path: Path) -> dict:
+    suite = json.loads(path.read_text(encoding="utf-8"))
     dataset = read_fixture()
     cases = suite["development"] + suite["holdout"]
     if len({_request_key(case) for case in cases}) != len(cases) or len({case["id"] for case in cases}) != len(cases):
         raise ValueError("Every development and holdout case must have a distinct scope and ID")
     for case in cases:
-        if expected_result(case["request"], dataset) != case["expected"]:
-            raise ValueError(f"Independent reference changed for {case['id']}")
+        if not validate_expected(case["request"], case["expected"], dataset):
+            raise ValueError(f"Frozen arithmetic or request outcome changed for {case['id']}")
     return suite
 
 
-def _fingerprints() -> dict[str, str]:
+def _fingerprints(suite_path: Path) -> dict[str, str]:
     files = [
-        *sorted(CORPUS.iterdir()), *sorted((PROJECT_ROOT / "app").glob("hard_policy*.py")), SUITE_PATH,
+        *sorted(CORPUS.iterdir()), *sorted((PROJECT_ROOT / "app").glob("hard_policy*.py")), suite_path,
         Path(__file__), Path(__file__).with_name("hard_policy_reference.py"),
         PROJECT_ROOT / "app/llm.py", PROJECT_ROOT / "app/tools/db.py", PROJECT_ROOT / "app/multisource_workflow.py",
     ]
@@ -60,6 +65,28 @@ def _fingerprints() -> dict[str, str]:
 
 def _doc_id(document) -> str | None:
     return document.get("id") if isinstance(document, dict) else None
+
+
+def _citation_matches_text(document: dict) -> bool:
+    path = document.get("file")
+    start, end = document.get("line_start"), document.get("line_end")
+    quote, title, doc_id = (document.get(field) for field in ("quote", "title", "id"))
+    if (path not in DOCUMENT_FILES or type(start) is not int or type(end) is not int
+            or not all(isinstance(value, str) and value for value in (quote, title, doc_id))):
+        return False
+    lines = (PROJECT_ROOT / path).read_text(encoding="utf-8").splitlines()
+    if not 1 <= start <= end <= len(lines):
+        return False
+    if lines[start - 1].strip() != f"## {title}" or not lines[end - 1].strip():
+        return False
+    body = lines[start:end]
+    next_line = next((line for line in lines[end:] if line.strip()), "## ")
+    return (
+        f"文号：{doc_id}。" in body
+        and not any(line.startswith("## ") for line in body)
+        and "\n".join(body).lstrip("\n") == quote
+        and next_line.startswith("## ")
+    )
 
 
 def _observation_signature(trace: list[dict]) -> list[str]:
@@ -77,7 +104,12 @@ def _score(result: dict, case: dict, mode: str) -> dict[str, bool]:
     expected, evidence, metrics = case["expected"], result["evidence"], result["metrics"]
     trace = result["tool_trace"]
     model_calls = metrics["model_calls"]
-    requires_tools = expected["kind"] == "answer" or expected.get("policy_id") is not None
+    policy_found = any(event["tool"] == "find_policy" and event.get("status") == "ok" for event in trace)
+    expected_path = expected.get("bulletin_ids", [expected["bulletin_id"]] if expected.get("bulletin_id") else [])
+    resolved_path = [
+        doc_id for event in trace if event["tool"] in REFERRAL_TOOLS and event.get("status") == "ok"
+        for doc_id in event["ids"]
+    ]
     checks = {
         "outcome": (result["kind"], result["reason"]) == (expected["kind"], expected["reason"]),
         "scope": all(result["scope"].get(field) == value for field, value in zip(
@@ -85,15 +117,23 @@ def _score(result: dict, case: dict, mode: str) -> dict[str, bool]:
         )),
         "treatment": result["mode"] == mode,
     }
-    if mode == "fixed" or not requires_tools:
+    if mode in DETERMINISTIC_MODES or not policy_found:
         checks["treatment"] &= model_calls == 0
     elif mode == "uncached":
         checks["treatment"] &= model_calls >= 1 and not metrics.get("cache_hits")
-    else:
+    elif mode == "plan":
         checks["treatment"] &= bool(model_calls or metrics.get("cache_hits"))
+    elif expected["kind"] == "answer":
+        if len(expected_path) > 1:
+            checks["treatment"] &= bool(model_calls or metrics.get("cache_hits"))
+        else:
+            checks["treatment"] &= model_calls == 0 and not metrics.get("cache_hits")
     if expected["kind"] != "answer":
         checks["no_partial_amount"] = result["total_cents"] is None and not evidence.get("query")
-        checks["no_query_execution"] = "query" not in _observation_signature(trace)
+        checks["no_query_execution"] = not metrics["sql_queries"] and "query" not in _observation_signature(trace)
+        if "tool_path" in expected:
+            checks["tool_choices"] = _observation_signature(trace) == expected["tool_path"]
+            checks["reference_choices"] = resolved_path == expected_path
         return checks
 
     category = evidence.get("category")
@@ -109,11 +149,23 @@ def _score(result: dict, case: dict, mode: str) -> dict[str, bool]:
     cap = expected["cap_cents"]
     if cap is not None:
         expected_bindings += (cap,)
+    cited_policy = evidence.get("policy")
+    cited_bulletins = evidence.get("bulletins") or []
     checks.update(
         total=type(result["total_cents"]) is int and result["total_cents"] == expected["total_cents"],
         category=category == expected["category"],
-        citations=(_doc_id(evidence.get("policy")), _doc_id(evidence.get("bulletin")))
-        == (expected["policy_id"], expected["bulletin_id"]),
+        citations=(
+            _doc_id(cited_policy) == expected["policy_id"]
+            and [_doc_id(document) for document in cited_bulletins] == expected_path
+            and _doc_id(evidence.get("bulletin")) == (expected_path[-1] if expected_path else None)
+        ),
+        citation_text=(
+            isinstance(cited_policy, dict) and all(
+                isinstance(document, dict) and _citation_matches_text(document)
+                for document in [cited_policy, *cited_bulletins]
+            )
+        ),
+        document_version=bool(result.get("document_version")) and result["document_version"] == evidence.get("document_version"),
         ledger=query.get("ledger") == expected["ledger"] and required_tables <= quoted_tables
         and not (quoted_tables & {"orders", "refunds", "chargebacks"}) - required_tables,
         sql_bindings=bindings == expected_bindings,
@@ -121,6 +173,12 @@ def _score(result: dict, case: dict, mode: str) -> dict[str, bool]:
                       and all(type(query.get(key)) is int and query[key] == expected[key]
                               for key in ("order_count", "gross_cents", "deducted_cents"))),
         tool_choices=_observation_signature(trace) == expected["tool_path"],
+        reference_choices=resolved_path == expected_path,
+        verified_authority=any(
+            event["tool"] == "verify" and event.get("status") == "ok"
+            and event["ids"] == [expected_path[-1] if expected_path else expected["policy_id"]]
+            for event in trace
+        ),
         one_read_only_query=metrics.get("sql_queries") == 1,
         has_expected_schema=(not schema if expected["ledger"] == "orders"
                              else isinstance(schema, dict) and schema.get("ledger") == expected["ledger"]),
@@ -152,12 +210,20 @@ def _run_case(database: Path, case: dict, mode: str, number: int, choose, cache)
     return {
         "id": case["id"], "group": case["group"], "round": number, "mode": mode, "request": case["request"],
         "expected": case["expected"], "passed": all(checks.values()), "checks": checks,
-        "observed": {key: response.get(key) for key in ("kind", "reason", "total_cents", "evidence")},
+        "observed": {
+            key: response.get(key) for key in ("kind", "reason", "total_cents", "evidence", "route", "document_version")
+        },
         "model_calls": calls, "metered_model_calls": usage["model_calls_with_usage"],
         "tokens": {key: usage["usage"][key] if usage["model_calls_with_usage"] == calls else None
                    for key in TOKEN_FIELDS},
         "sql_queries": metrics.get("sql_queries", 0), "replans": metrics.get("replans", 0),
-        "cache_hits": metrics.get("cache_hits", 0), "latency_ms": elapsed, "error_type": error,
+        "cache_hits": metrics.get("cache_hits", 0), "cache_invalidated": metrics.get("cache_invalidated", 0),
+        "latency_ms": elapsed, "error_type": error,
+        "safe_unsupported": (
+            mode == "fixed" and response.get("reason") == "workflow_unsupported"
+            and checks.get("scope", False) and checks.get("treatment", False)
+            and response.get("total_cents") is None and not metrics.get("sql_queries")
+        ),
         "observed_tool_path": _observation_signature(events), "plans": _plans(events),
         "tool_trace": events,
     }
@@ -179,27 +245,42 @@ def _score_summary(rows: list[dict]) -> dict:
         "metered_model_calls": sum(row["metered_model_calls"] for row in rows),
         "tokens": {key: _known_total(row["tokens"][key] for row in rows) for key in TOKEN_FIELDS},
         "sql_queries": sum(row["sql_queries"] for row in rows), "cache_hits": sum(row["cache_hits"] for row in rows),
+        "cache_invalidated": sum(row["cache_invalidated"] for row in rows),
+        "routes": dict(Counter(row["observed"]["route"] for row in rows if row["observed"]["route"] is not None)),
+        "safe_unsupported": sum(row["safe_unsupported"] for row in rows),
         "replans": sum(row["replans"] for row in rows), "validated_model_plan_sequences": dict(plans),
         "validated_model_plan_diversity": len(plans), "successful_observed_tool_sequences": dict(paths),
         "successful_observed_tool_diversity": len(paths),
         "tool_sequence_correct": sum(tool_checks), "tool_sequence_applicable": len(tool_checks),
         "amount_attempts": sum(row["expected"]["kind"] == "answer" for row in rows),
         "verified_amount_answers": sum(row["passed"] and row["expected"]["kind"] == "answer" for row in rows),
+        "unexpected_amount_answers": sum(
+            not row["passed"] and row["observed"]["total_cents"] is not None for row in rows
+        ),
         "failed_cases": [row["id"] for row in rows if not row["passed"]],
     }
 
 
 def _summarize(rows: list[dict], modes: list[str]) -> dict:
-    return {
-        mode: {
-            "overall": _score_summary([row for row in rows if row["mode"] == mode]),
+    summary = {}
+    for mode in modes:
+        current = [row for row in rows if row["mode"] == mode]
+        summary[mode] = {
+            "overall": _score_summary(current),
+            "by_round": {
+                number: _score_summary([row for row in current if row["round"] == number])
+                for number in sorted({row["round"] for row in current})
+            },
             "by_group": {
-                group: _score_summary([row for row in rows if row["mode"] == mode and row["group"] == group])
-                for group in sorted({row["group"] for row in rows})
+                group: _score_summary([row for row in current if row["group"] == group])
+                for group in sorted({row["group"] for row in current})
+            },
+            "by_route": {
+                route: _score_summary([row for row in current if row["observed"]["route"] == route])
+                for route in sorted({row["observed"]["route"] for row in current if row["observed"]["route"]})
             },
         }
-        for mode in modes
-    }
+    return summary
 
 
 def main() -> int:
@@ -208,17 +289,19 @@ def main() -> int:
     from app.multisource_workflow import multisource_selector
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--modes", nargs="+", choices=MODES, default=list(MODES))
+    parser.add_argument("--suite", choices=SUITES, default="legacy")
+    parser.add_argument("--modes", nargs="+", choices=MODES)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--workers", type=int, default=5)
     parser.add_argument("--env-file", type=Path)
     parser.add_argument("--model", default="deepseek-v4-pro")
     parser.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args()
+    args.modes = args.modes or list(DEFAULT_MODES[args.suite])
     if not 1 <= args.repeats <= 10 or not 1 <= args.workers <= 8 or len(set(args.modes)) != len(args.modes):
         parser.error("Use 1–10 repeats, 1–8 workers and distinct modes")
     selector = settings = None
-    if any(mode != "fixed" for mode in args.modes):
+    if set(args.modes) - DETERMINISTIC_MODES:
         if args.env_file:
             if not args.env_file.is_file():
                 parser.error("--env-file must be an existing file")
@@ -230,16 +313,22 @@ def main() -> int:
         ):
             parser.error("Live model modes require an HTTPS model configuration")
         selector = multisource_selector(settings)
-    suite = _load_suite()
+    suite_path = Path(__file__).with_name(SUITES[args.suite])
+    suite = _load_suite(suite_path)
     args.output_dir.mkdir(parents=True, exist_ok=False)
     metadata = {
         "suite": suite["suite"], "holdout_cases": len(suite["holdout"]), "development_cases": len(suite["development"]),
         "modes": args.modes, "started_at_utc": datetime.now(timezone.utc).isoformat(), "order_seed": ORDER_SEED,
         "model": settings.llm_model if settings else None, "temperature": 0 if settings else None,
         "provider_host": urlsplit(settings.llm_base_url).hostname if settings else None,
-        "workers": args.workers, "repeats": args.repeats, "source_sha256": _fingerprints(),
+        "workers": args.workers, "repeats": args.repeats, "source_sha256": _fingerprints(suite_path),
         "latency_method": "application call excluding verifier scoring and executor queue; P95 nearest rank",
-        "cache_method": "new cache per round; prime only on distinct development scopes; report warm-up separately",
+        "cache_method": "new cache per cached mode and round; prime on development scopes; report warm-up separately",
+        "comparators": {
+            "fixed": "one-referral fixed workflow", "uniform": "deterministic bounded traversal",
+            "uncached": "live plan for each valid policy", "plan": "planning with validated-plan cache",
+            "auto": "fixed fast path, cached validated plan, or live planning for further referrals",
+        },
     }
     (args.output_dir / "run.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     rows, warmup = [], []
@@ -248,19 +337,19 @@ def main() -> int:
     ).open("x", encoding="utf-8") as log:
         database = prepare_hard_policy_database(Path(temporary))
         for number in range(1, args.repeats + 1):
-            cache = HardPlanCache()
-            if "plan" in args.modes:
+            caches = {mode: HardPlanCache() for mode in args.modes if mode in CACHED_MODES}
+            for mode, cache in caches.items():
                 for case in suite["development"]:
-                    row = _run_case(database, case, "plan", number, selector, cache)
+                    row = _run_case(database, case, mode, number, selector, cache)
                     warmup.append(row)
-                    print(f"{number} warmup {case['id']} {'PASS' if row['passed'] else 'FAIL'}", flush=True)
+                    print(f"{number} warmup {mode} {case['id']} {'PASS' if row['passed'] else 'FAIL'}", flush=True)
             tasks = [(case, mode) for case in suite["holdout"] for mode in args.modes]
             random.Random(ORDER_SEED + number).shuffle(tasks)
             # Sequential cached requests avoid nondeterministic first-fill races for new plan keys.
             track = []
             for case, mode in tasks:
-                if mode == "plan":
-                    track.append(_run_case(database, case, mode, number, selector, cache))
+                if mode in caches:
+                    track.append(_run_case(database, case, mode, number, selector, caches[mode]))
                 else:
                     track.append(pool.submit(_run_case, database, case, mode, number, selector, None))
             for entry in track:
@@ -269,7 +358,13 @@ def main() -> int:
                 log.write(json.dumps(row, ensure_ascii=False, allow_nan=False) + "\n")
                 log.flush()
                 print(f"{number} {row['mode']} {row['id']} {'PASS' if row['passed'] else 'FAIL'}", flush=True)
-    summary = {"methods": _summarize(rows, args.modes), "cache_warmup": _score_summary(warmup) if warmup else None}
+    summary = {
+        "methods": _summarize(rows, args.modes),
+        "cache_warmup": {
+            mode: _score_summary([row for row in warmup if row["mode"] == mode])
+            for mode in args.modes if any(row["mode"] == mode for row in warmup)
+        },
+    }
     (args.output_dir / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if warmup:
         (args.output_dir / "warmup.jsonl").write_text("".join(

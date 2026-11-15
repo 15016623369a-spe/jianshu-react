@@ -1,0 +1,44 @@
+{
+  "suite": "hard-policy-text-referrals-20261115-v1",
+  "holdout_cases": 26,
+  "development_cases": 2,
+  "modes": [
+    "fixed",
+    "uniform",
+    "uncached",
+    "auto"
+  ],
+  "started_at_utc": "2026-11-15T07:13:15.140080+00:00",
+  "order_seed": 102317,
+  "model": "deepseek-v4-pro",
+  "temperature": 0,
+  "provider_host": "api.deepseek.com",
+  "workers": 5,
+  "repeats": 3,
+  "source_sha256": {
+    "app/hard_policy_corpus/bulletins.md": "2f01f0be9071cc19be32259c21baeadce61faabb63b1f6f977584405bdec42a6",
+    "app/hard_policy_corpus/catalog.json": "b218a8850f608b6868d1520820f8c9560f80417f9f2634f293b275b6fbf1b1d5",
+    "app/hard_policy_corpus/chargebacks.json": "ed0f1bf71a4a4032bece661eb0621b7f1067844797f546a67f6059350304d711",
+    "app/hard_policy_corpus/orders.json": "d7b75827e18387b5f9881c28865d8e56104c6bd87ce516d9f648170e6065e6ca",
+    "app/hard_policy_corpus/policies.md": "90abfd395c4238628948806b03b8889ee267c00276e2a94294c8de7c197eabdf",
+    "app/hard_policy_corpus/refunds.json": "e441f4462e729190182f42c32c77dc02a0510f2556b81e5f7ca5064855a9c38a",
+    "app/hard_policy_data.py": "5be527f05364392df6610984640264fd8dce8a3694533d5cc834603e85a40738",
+    "app/hard_policy_ui.py": "c363d40de32234f626b8e51132524d77d0b6d36ccf87a6031903a40e37e5b184",
+    "app/hard_policy_workflow.py": "04d52294107f9f8a572849dfff6aee9f4a6136222b3017c810c003e69d1d3576",
+    "evaluation/hard_policy_text_cases.json": "55dcd5f3a9688b3b57f9410bf2639e9610cb985bcfc8f9332bb18431fb3336ac",
+    "evaluation/run_hard_policy_comparison.py": "ce5c812110dc37a8796ee13cae61dd256e8f79f8d389d806b63da7d32d07bb4b",
+    "evaluation/hard_policy_reference.py": "101de6ca10ca8254480e261798778c9facb752a1d002ac0df0d0db70b3ca0ff4",
+    "app/llm.py": "a81fa1e64d81a4f60935c515e1ff3de5242ea970db6b0b33519fe9a92ebe8ee1",
+    "app/tools/db.py": "e49d303eb54ecaba0db7506b3eca064e2991f0f1dc86c56eacaf0d098fbec9e5",
+    "app/multisource_workflow.py": "a076c78ff89a63634906cd2e650a413baa0351589e84c2004b1e33cf3ffe737b"
+  },
+  "latency_method": "application call excluding verifier scoring and executor queue; P95 nearest rank",
+  "cache_method": "new cache per cached mode and round; prime on development scopes; report warm-up separately",
+  "comparators": {
+    "fixed": "one-referral fixed workflow",
+    "uniform": "deterministic bounded traversal",
+    "uncached": "live plan for each valid policy",
+    "plan": "planning with validated-plan cache",
+    "auto": "fixed fast path, cached validated plan, or live planning for further referrals"
+  }
+}

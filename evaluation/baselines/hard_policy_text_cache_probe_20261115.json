@@ -1,0 +1,526 @@
+{
+  "model": "deepseek-v4-pro",
+  "scope": {
+    "start": "2027-01-01",
+    "end_exclusive": "2027-02-01",
+    "region": "华南",
+    "product": "电水壶"
+  },
+  "temperature": 0,
+  "mutation": "Temporarily changed the final cited bulletin per-order cap from 7 CNY to 6 CNY.",
+  "fault_injection": "Replaced the verified plan with a one-hop sequence at the same version and scope.",
+  "scenarios": {
+    "cold": {
+      "kind": "answer",
+      "reason": null,
+      "route": "planned",
+      "document_version": "5071bdf050b654e87e5628a6a742b7d46cec792f0932939929736203b9a2e2e0",
+      "total_cents": 21100,
+      "metrics": {
+        "prompt_tokens": 295,
+        "completion_tokens": 17,
+        "total_tokens": 312,
+        "model_calls": 1,
+        "sql_queries": 1,
+        "replans": 0,
+        "cache_hits": 0,
+        "cache_invalidated": 0,
+        "invalid_plans": 0,
+        "usage_complete": true,
+        "latency_ms": 1402.394
+      },
+      "tool_trace": [
+        {
+          "step": 1,
+          "tool": "identify_product",
+          "status": "ok",
+          "ids": [
+            "电水壶",
+            "家电"
+          ],
+          "reason": null
+        },
+        {
+          "step": 2,
+          "tool": "find_policy",
+          "status": "ok",
+          "ids": [
+            "policy-south-appliances-jan"
+          ],
+          "reason": null
+        },
+        {
+          "step": 3,
+          "tool": "find_titled_bulletin",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-index"
+          ],
+          "reason": null
+        },
+        {
+          "step": 4,
+          "tool": "plan",
+          "status": "ok",
+          "ids": [
+            "follow_references",
+            "inspect_ledger",
+            "query"
+          ],
+          "reason": null
+        },
+        {
+          "step": 5,
+          "tool": "find_latest_bulletin",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-final"
+          ],
+          "reason": null
+        },
+        {
+          "step": 6,
+          "tool": "inspect_ledger",
+          "status": "ok",
+          "ids": [
+            "chargebacks"
+          ],
+          "reason": null
+        },
+        {
+          "step": 7,
+          "tool": "query",
+          "status": "ok",
+          "ids": [
+            "chargebacks"
+          ],
+          "reason": null
+        },
+        {
+          "step": 8,
+          "tool": "verify",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-final"
+          ],
+          "reason": null
+        }
+      ]
+    },
+    "cache_hit": {
+      "kind": "answer",
+      "reason": null,
+      "route": "cache",
+      "document_version": "5071bdf050b654e87e5628a6a742b7d46cec792f0932939929736203b9a2e2e0",
+      "total_cents": 21100,
+      "metrics": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "model_calls": 0,
+        "sql_queries": 1,
+        "replans": 0,
+        "cache_hits": 1,
+        "cache_invalidated": 0,
+        "invalid_plans": 0,
+        "usage_complete": true,
+        "latency_ms": 7.482
+      },
+      "tool_trace": [
+        {
+          "step": 1,
+          "tool": "identify_product",
+          "status": "ok",
+          "ids": [
+            "电水壶",
+            "家电"
+          ],
+          "reason": null
+        },
+        {
+          "step": 2,
+          "tool": "find_policy",
+          "status": "ok",
+          "ids": [
+            "policy-south-appliances-jan"
+          ],
+          "reason": null
+        },
+        {
+          "step": 3,
+          "tool": "find_titled_bulletin",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-index"
+          ],
+          "reason": null
+        },
+        {
+          "step": 4,
+          "tool": "cache_hit",
+          "status": "ok",
+          "ids": [
+            "find_titled_bulletin",
+            "find_latest_bulletin",
+            "inspect_ledger",
+            "query"
+          ],
+          "reason": null
+        },
+        {
+          "step": 5,
+          "tool": "find_latest_bulletin",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-final"
+          ],
+          "reason": null
+        },
+        {
+          "step": 6,
+          "tool": "inspect_ledger",
+          "status": "ok",
+          "ids": [
+            "chargebacks"
+          ],
+          "reason": null
+        },
+        {
+          "step": 7,
+          "tool": "query",
+          "status": "ok",
+          "ids": [
+            "chargebacks"
+          ],
+          "reason": null
+        },
+        {
+          "step": 8,
+          "tool": "verify",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-final"
+          ],
+          "reason": null
+        }
+      ]
+    },
+    "replan_from_cached_prefix": {
+      "kind": "answer",
+      "reason": null,
+      "route": "replan",
+      "document_version": "5071bdf050b654e87e5628a6a742b7d46cec792f0932939929736203b9a2e2e0",
+      "total_cents": 21100,
+      "metrics": {
+        "prompt_tokens": 298,
+        "completion_tokens": 17,
+        "total_tokens": 315,
+        "model_calls": 1,
+        "sql_queries": 1,
+        "replans": 1,
+        "cache_hits": 1,
+        "cache_invalidated": 1,
+        "invalid_plans": 0,
+        "usage_complete": true,
+        "latency_ms": 1266.482
+      },
+      "tool_trace": [
+        {
+          "step": 1,
+          "tool": "identify_product",
+          "status": "ok",
+          "ids": [
+            "电水壶",
+            "家电"
+          ],
+          "reason": null
+        },
+        {
+          "step": 2,
+          "tool": "find_policy",
+          "status": "ok",
+          "ids": [
+            "policy-south-appliances-jan"
+          ],
+          "reason": null
+        },
+        {
+          "step": 3,
+          "tool": "find_titled_bulletin",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-index"
+          ],
+          "reason": null
+        },
+        {
+          "step": 4,
+          "tool": "cache_hit",
+          "status": "ok",
+          "ids": [
+            "find_titled_bulletin",
+            "inspect_ledger",
+            "query"
+          ],
+          "reason": null
+        },
+        {
+          "step": 5,
+          "tool": "cache_invalidated",
+          "status": "skipped",
+          "ids": [],
+          "reason": "evidence_path_changed"
+        },
+        {
+          "step": 6,
+          "tool": "replan",
+          "status": "ok",
+          "ids": [
+            "follow_references",
+            "inspect_ledger",
+            "query"
+          ],
+          "reason": null
+        },
+        {
+          "step": 7,
+          "tool": "find_latest_bulletin",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-final"
+          ],
+          "reason": null
+        },
+        {
+          "step": 8,
+          "tool": "inspect_ledger",
+          "status": "ok",
+          "ids": [
+            "chargebacks"
+          ],
+          "reason": null
+        },
+        {
+          "step": 9,
+          "tool": "query",
+          "status": "ok",
+          "ids": [
+            "chargebacks"
+          ],
+          "reason": null
+        },
+        {
+          "step": 10,
+          "tool": "verify",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-final"
+          ],
+          "reason": null
+        }
+      ]
+    },
+    "new_version": {
+      "kind": "answer",
+      "reason": null,
+      "route": "planned",
+      "document_version": "d3d9e8116b5a98a50d7ede8c238b0043983d178acb0ec1788359c83636a556d4",
+      "total_cents": 21200,
+      "metrics": {
+        "prompt_tokens": 295,
+        "completion_tokens": 17,
+        "total_tokens": 312,
+        "model_calls": 1,
+        "sql_queries": 1,
+        "replans": 0,
+        "cache_hits": 0,
+        "cache_invalidated": 1,
+        "invalid_plans": 0,
+        "usage_complete": true,
+        "latency_ms": 1265.51
+      },
+      "tool_trace": [
+        {
+          "step": 1,
+          "tool": "identify_product",
+          "status": "ok",
+          "ids": [
+            "电水壶",
+            "家电"
+          ],
+          "reason": null
+        },
+        {
+          "step": 2,
+          "tool": "find_policy",
+          "status": "ok",
+          "ids": [
+            "policy-south-appliances-jan"
+          ],
+          "reason": null
+        },
+        {
+          "step": 3,
+          "tool": "cache_invalidated",
+          "status": "skipped",
+          "ids": [],
+          "reason": "document_version_changed"
+        },
+        {
+          "step": 4,
+          "tool": "find_titled_bulletin",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-index"
+          ],
+          "reason": null
+        },
+        {
+          "step": 5,
+          "tool": "plan",
+          "status": "ok",
+          "ids": [
+            "follow_references",
+            "inspect_ledger",
+            "query"
+          ],
+          "reason": null
+        },
+        {
+          "step": 6,
+          "tool": "find_latest_bulletin",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-final"
+          ],
+          "reason": null
+        },
+        {
+          "step": 7,
+          "tool": "inspect_ledger",
+          "status": "ok",
+          "ids": [
+            "chargebacks"
+          ],
+          "reason": null
+        },
+        {
+          "step": 8,
+          "tool": "query",
+          "status": "ok",
+          "ids": [
+            "chargebacks"
+          ],
+          "reason": null
+        },
+        {
+          "step": 9,
+          "tool": "verify",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-final"
+          ],
+          "reason": null
+        }
+      ]
+    },
+    "new_version_cache_hit": {
+      "kind": "answer",
+      "reason": null,
+      "route": "cache",
+      "document_version": "d3d9e8116b5a98a50d7ede8c238b0043983d178acb0ec1788359c83636a556d4",
+      "total_cents": 21200,
+      "metrics": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "model_calls": 0,
+        "sql_queries": 1,
+        "replans": 0,
+        "cache_hits": 1,
+        "cache_invalidated": 0,
+        "invalid_plans": 0,
+        "usage_complete": true,
+        "latency_ms": 7.377
+      },
+      "tool_trace": [
+        {
+          "step": 1,
+          "tool": "identify_product",
+          "status": "ok",
+          "ids": [
+            "电水壶",
+            "家电"
+          ],
+          "reason": null
+        },
+        {
+          "step": 2,
+          "tool": "find_policy",
+          "status": "ok",
+          "ids": [
+            "policy-south-appliances-jan"
+          ],
+          "reason": null
+        },
+        {
+          "step": 3,
+          "tool": "find_titled_bulletin",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-index"
+          ],
+          "reason": null
+        },
+        {
+          "step": 4,
+          "tool": "cache_hit",
+          "status": "ok",
+          "ids": [
+            "find_titled_bulletin",
+            "find_latest_bulletin",
+            "inspect_ledger",
+            "query"
+          ],
+          "reason": null
+        },
+        {
+          "step": 5,
+          "tool": "find_latest_bulletin",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-final"
+          ],
+          "reason": null
+        },
+        {
+          "step": 6,
+          "tool": "inspect_ledger",
+          "status": "ok",
+          "ids": [
+            "chargebacks"
+          ],
+          "reason": null
+        },
+        {
+          "step": 7,
+          "tool": "query",
+          "status": "ok",
+          "ids": [
+            "chargebacks"
+          ],
+          "reason": null
+        },
+        {
+          "step": 8,
+          "tool": "verify",
+          "status": "ok",
+          "ids": [
+            "bulletin-south-appliances-jan-final"
+          ],
+          "reason": null
+        }
+      ]
+    }
+  }
+}

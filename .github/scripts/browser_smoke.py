@@ -1,8 +1,54 @@
-"""Chromium smoke test for chat, durable approvals, and file analysis."""
+"""Chromium smoke test for policy, chat, durable approvals, and file analysis."""
 import os
 from uuid import uuid4
 
-from playwright.sync_api import expect, sync_playwright
+from playwright.sync_api import Page, expect, sync_playwright
+
+
+def check_policy_exploration(page: Page, origin: str) -> None:
+    page.goto(f"{origin}/?session={uuid4()}&workspace=policy-exploration", wait_until="domcontentloaded")
+    expect(page.get_by_role("heading", name="政策探索实验")).to_be_visible(timeout=20000)
+
+    def select(field: str, label: str) -> None:
+        control = page.get_by_role("combobox", name=field)
+        selectbox = page.get_by_test_id("stSelectbox").filter(has=control)
+        selectbox.scroll_into_view_if_needed()
+        selectbox.get_by_role("button", name="Open").click()
+        page.get_by_role("option", name=label, exact=True).click()
+        expect(control).to_have_value(label)
+
+    run = page.get_by_role("button", name="运行政策探索")
+    amount = page.get_by_test_id("stMetricValue")
+    expect(page.get_by_role("combobox", name="执行方式")).to_have_value("自动 · 固定快路径 + 缓存计划 + 重规划")
+    run.click()
+    expect(amount).to_have_text("¥292.80", timeout=20000)
+    page.get_by_text("查看计划与执行", exact=True).click()
+    expect(page.get_by_text("实际路径 · 固定快路径", exact=True)).to_be_visible()
+    expect(page.get_by_text("0 次模型调用", exact=False)).to_be_visible()
+
+    select("选择示例", "先找指定标题，再找当期公告")
+    expect(page.get_by_role("spinbutton", name="year, 起始日期")).to_have_text("2027")
+    select("执行方式", "原固定流程 · 最多查一份公告")
+    run.click()
+    expect(page.get_by_text("可切换到自动模式，或用确定性遍历继续核查多层引用。", exact=True)).to_be_visible()
+    expect(amount).to_have_count(0)
+
+    select("执行方式", "确定性遍历 · 支持多层公告")
+    run.click()
+    expect(amount).to_have_text("¥211.00", timeout=20000)
+    page.get_by_text("查看政策、公告和 SQL 证据", exact=True).click()
+    expect(page.get_by_text("第 2 层引用", exact=True)).to_be_visible()
+    expect(page.get_by_text("华南家电一月结算指引", exact=True)).to_be_visible()
+    expect(page.get_by_text("家电一月争议清算执行公告", exact=True)).to_be_visible()
+    expect(page.get_by_text("数据表 · 支付冲正（chargebacks）", exact=True)).to_be_visible()
+    expect(page.get_by_text("出处 app/hard_policy_corpus/bulletins.md", exact=False)).to_have_count(2)
+
+    select("选择示例", "公告循环引用 · 检查拒答")
+    expect(page.get_by_role("textbox", name="产品")).to_have_value("蓝牙耳机")
+    run.click()
+    expect(page.get_by_text("公告引用形成循环，无法确认最终口径。", exact=True)).to_be_visible()
+    expect(amount).to_have_count(0)
+    print("PASS cited multi-hop policy retrieval, original fixed-flow boundary, and cyclic-referral refusal", flush=True)
 
 
 def main():
@@ -11,6 +57,10 @@ def main():
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(executable_path=os.getenv("CHROMIUM_EXECUTABLE"))
         try:
+            exploration = browser.new_page(viewport={"width": 1280, "height": 900})
+            check_policy_exploration(exploration, origin)
+            exploration.close()
+
             policy = browser.new_page(viewport={"width": 1280, "height": 900})
             policy.goto(f"{origin}/?session={uuid4()}&workspace=policy", wait_until="domcontentloaded")
             expect(policy.get_by_role("heading", name="政策问数")).to_be_visible(timeout=20000)
