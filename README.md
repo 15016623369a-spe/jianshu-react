@@ -10,6 +10,8 @@
 
 政策探索从 Markdown 正文检索政策和多层公告，按实际适用条款选择账本。默认先走固定快路径，复杂任务复用当前文档版本的已核验计划，必要时重规划。界面展示引用链、文件行号和只读 SQL。试试「先找指定标题，再找当期公告」。[政策探索实验](http://127.0.0.1:28501/?workspace=policy-exploration) · [正文检索与多跳评测](docs/v2-text-policy-test-report.md)
 
+「政策探索」的自然语言调查可以比较同一商品两个月的净营收，并指定某月退款口径重算。在正式公告标题缺失时按证据补查，结果显示政策原文、账本、逐段计算和只读 SQL。试试「华南电水壶 2026 年 10 月和 11 月的净营收差了多少？如果两个月都按 10 月口径重算呢？」。[调查案例与评测](docs/policy-investigation-agentic-rag.md)
+
 用自然语言查询数据库，或上传一份 Excel 直接做分析。见数会在问题缺少时间、地区或指标口径时先确认条件，然后执行查询，给出可核对的 SQL、统计表和图表。也可以在同一会话里继续追问、调整筛选条件或下载结果。
 
 [三分钟演示视频](examples/demo/jianshu-demo.mp4) · [示例工作簿](examples/demo/retail-demo.xlsx) · [逐步演示](docs/demo.md) · [快速启动](#快速启动) · [评测与复现](#评测与复现)
@@ -162,6 +164,7 @@ RAG_BIRD_DATA_DIR=/absolute/path/to/dev_databases \
 
 ## API 索引
 
+- `POST /api/v2/policy-investigation` 接收 `question`，支持实际口径与统一口径对比，并返回文档、计算和检索轨迹。
 - `POST /api/v2/policy-revenue` 按实际生效的退款政策查询净营收，并返回可核对的文档与 SQL 证据。
 - `POST /api/v1/chat` 处理对话、澄清和审批申请，`GET /api/v1/sessions/{id}` 读取会话状态，`GET /api/v1/sessions/{id}/messages` 分页读取历史。
 - `GET /api/v1/databases` 列出数据源，`GET /api/v1/databases/postgres/schema` 浏览结构，`POST /api/v1/query` 直接提交只读问数。

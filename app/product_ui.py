@@ -19,6 +19,7 @@ from app.file_preview_ui import choose_layout
 from app.gateway_identity import KEY_HEADER, USER_HEADER, configured_key, gateway_user
 from app.hard_policy_ui import render_hard_policy_workspace
 from app.multisource_ui import render_multisource_workspace
+from app.policy_investigation_ui import render_policy_investigation
 
 API = os.getenv("RAG_API_URL", "http://127.0.0.1:8000")
 STAGES = {
@@ -594,7 +595,11 @@ if mode == "政策问数":
 elif mode == "多源实验":
     render_multisource_workspace(API, GATEWAY_HEADERS, session_id, capabilities["model_configured"])
 elif mode == "政策探索":
-    render_hard_policy_workspace(API, GATEWAY_HEADERS, session_id, capabilities["model_configured"])
+    investigation, structured = st.tabs(["自然语言调查", "按条件查口径"])
+    with investigation:
+        render_policy_investigation(API, GATEWAY_HEADERS, session_id, capabilities["model_configured"])
+    with structured:
+        render_hard_policy_workspace(API, GATEWAY_HEADERS, session_id, capabilities["model_configured"])
 elif mode == "文件分析":
     render_file_workspace(session_id, capabilities["model_configured"])
 else:

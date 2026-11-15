@@ -5,48 +5,99 @@ from uuid import uuid4
 from playwright.sync_api import Page, expect, sync_playwright
 
 
+def check_policy_investigation(page: Page, origin: str) -> None:
+    page.goto(f"{origin}/?session={uuid4()}&workspace=policy-exploration", wait_until="domcontentloaded")
+    panel = page.get_by_role("tabpanel", name="自然语言调查")
+    submit = panel.get_by_role("button", name="开始调查")
+    expect(submit).to_be_visible(timeout=20000)
+    submit.click()
+
+    metrics = panel.get_by_test_id("stMetricValue")
+    expect(metrics).to_have_text(["−¥46.40", "−¥40.80", "−¥5.60"], timeout=20000)
+    expect(panel.get_by_text("¥246.40", exact=True)).to_be_visible()
+    expect(panel.get_by_text("¥252.00", exact=True)).to_be_visible()
+    expect(panel.get_by_text("统一口径沿用 2026 年 10 月的退款规则重算同一批订单。", exact=False)).to_be_visible()
+    panel.get_by_text("核对实际口径的条款和 SQL", exact=True).click()
+    expect(panel.get_by_text("出处 app/hard_policy_corpus/bulletins.md", exact=False).first).to_be_visible()
+    expect(panel.get_by_text("绑定参数", exact=False).first).to_be_visible()
+    panel.get_by_text("核对统一口径的条款和 SQL", exact=True).click()
+    calculation = panel.get_by_test_id("stExpander").filter(has_text="核对统一口径的条款和 SQL")
+    expect(calculation.get_by_text("绑定参数", exact=False).last).to_be_visible()
+    panel.get_by_text("查看调查过程", exact=True).click()
+    expect(panel.get_by_text("0 次模型调用", exact=False)).to_be_visible()
+
+    question = panel.get_by_role("textbox", name="你想核对什么？")
+    question.fill("华南电水壶十月的净营收是多少？")
+    submit.click()
+    expect(metrics).to_have_text(["¥292.80"], timeout=20000)
+    expect(panel.get_by_text("问题中省略的查询年份按演示数据推断为 2026 年。", exact=True)).to_be_visible()
+
+    question.fill("华南电水壶净营收差了多少？")
+    submit.click()
+    expect(panel.get_by_test_id("stAlert")).to_be_visible(timeout=20000)
+    expect(metrics).to_have_count(0)
+
+    panel.get_by_role("button", name="载入证据补查示例").click()
+    expect(question).to_have_value(
+        "华南电水壶 2026 年 11 月和 12 月的净营收差了多少？如果两个月都按 11 月口径重算，差额又是多少？"
+    )
+    mode = page.get_by_role("combobox", name="调查方式")
+    panel.get_by_test_id("stSelectbox").filter(has=mode).get_by_role("button", name="Open").click()
+    page.get_by_role("option", name="确定性检索 + 词面补查", exact=True).click()
+    submit.click()
+    expect(metrics).to_have_text(["−¥186.40", "−¥190.40", "+¥4.00"], timeout=20000)
+    investigation = panel.get_by_test_id("stExpander").filter(has_text="查看调查过程")
+    if not investigation.get_by_text("寻找补充证据 · 已找到", exact=True).is_visible():
+        investigation.get_by_text("查看调查过程", exact=True).click()
+    expect(investigation.get_by_text("寻找补充证据 · 已找到", exact=True)).to_be_visible()
+    expect(investigation.get_by_text("0 次模型调用", exact=False)).to_be_visible()
+    print("PASS natural language policy comparison, cited counterfactual, clarification, and lexical recovery", flush=True)
+
+
 def check_policy_exploration(page: Page, origin: str) -> None:
     page.goto(f"{origin}/?session={uuid4()}&workspace=policy-exploration", wait_until="domcontentloaded")
     expect(page.get_by_role("heading", name="政策探索实验")).to_be_visible(timeout=20000)
+    page.get_by_role("tab", name="按条件查口径").click()
+    panel = page.get_by_role("tabpanel", name="按条件查口径")
 
     def select(field: str, label: str) -> None:
         control = page.get_by_role("combobox", name=field)
-        selectbox = page.get_by_test_id("stSelectbox").filter(has=control)
+        selectbox = panel.get_by_test_id("stSelectbox").filter(has=control)
         selectbox.scroll_into_view_if_needed()
         selectbox.get_by_role("button", name="Open").click()
         page.get_by_role("option", name=label, exact=True).click()
         expect(control).to_have_value(label)
 
-    run = page.get_by_role("button", name="运行政策探索")
-    amount = page.get_by_test_id("stMetricValue")
-    expect(page.get_by_role("combobox", name="执行方式")).to_have_value("自动 · 固定快路径 + 缓存计划 + 重规划")
+    run = panel.get_by_role("button", name="运行政策探索")
+    amount = panel.get_by_test_id("stMetricValue")
+    expect(panel.get_by_role("combobox", name="执行方式")).to_have_value("自动 · 固定快路径 + 缓存计划 + 重规划")
     run.click()
     expect(amount).to_have_text("¥292.80", timeout=20000)
-    page.get_by_text("查看计划与执行", exact=True).click()
-    expect(page.get_by_text("实际路径 · 固定快路径", exact=True)).to_be_visible()
-    expect(page.get_by_text("0 次模型调用", exact=False)).to_be_visible()
+    panel.get_by_text("查看计划与执行", exact=True).click()
+    expect(panel.get_by_text("实际路径 · 固定快路径", exact=True)).to_be_visible()
+    expect(panel.get_by_text("0 次模型调用", exact=False)).to_be_visible()
 
     select("选择示例", "先找指定标题，再找当期公告")
-    expect(page.get_by_role("spinbutton", name="year, 起始日期")).to_have_text("2027")
+    expect(panel.get_by_role("spinbutton", name="year, 起始日期")).to_have_text("2027")
     select("执行方式", "原固定流程 · 最多查一份公告")
     run.click()
-    expect(page.get_by_text("可切换到自动模式，或用确定性遍历继续核查多层引用。", exact=True)).to_be_visible()
+    expect(panel.get_by_text("可切换到自动模式，或用确定性遍历继续核查多层引用。", exact=True)).to_be_visible()
     expect(amount).to_have_count(0)
 
     select("执行方式", "确定性遍历 · 支持多层公告")
     run.click()
     expect(amount).to_have_text("¥211.00", timeout=20000)
-    page.get_by_text("查看政策、公告和 SQL 证据", exact=True).click()
-    expect(page.get_by_text("第 2 层引用", exact=True)).to_be_visible()
-    expect(page.get_by_text("华南家电一月结算指引", exact=True)).to_be_visible()
-    expect(page.get_by_text("家电一月争议清算执行公告", exact=True)).to_be_visible()
-    expect(page.get_by_text("数据表 · 支付冲正（chargebacks）", exact=True)).to_be_visible()
-    expect(page.get_by_text("出处 app/hard_policy_corpus/bulletins.md", exact=False)).to_have_count(2)
+    panel.get_by_text("查看政策、公告和 SQL 证据", exact=True).click()
+    expect(panel.get_by_text("第 2 层引用", exact=True)).to_be_visible()
+    expect(panel.get_by_text("华南家电一月结算指引", exact=True)).to_be_visible()
+    expect(panel.get_by_text("家电一月争议清算执行公告", exact=True)).to_be_visible()
+    expect(panel.get_by_text("数据表 · 支付冲正（chargebacks）", exact=True)).to_be_visible()
+    expect(panel.get_by_text("出处 app/hard_policy_corpus/bulletins.md", exact=False)).to_have_count(2)
 
     select("选择示例", "公告循环引用 · 检查拒答")
-    expect(page.get_by_role("textbox", name="产品")).to_have_value("蓝牙耳机")
+    expect(panel.get_by_role("textbox", name="产品")).to_have_value("蓝牙耳机")
     run.click()
-    expect(page.get_by_text("公告引用形成循环，无法确认最终口径。", exact=True)).to_be_visible()
+    expect(panel.get_by_text("公告引用形成循环，无法确认最终口径。", exact=True)).to_be_visible()
     expect(amount).to_have_count(0)
     print("PASS cited multi-hop policy retrieval, original fixed-flow boundary, and cyclic-referral refusal", flush=True)
 
@@ -58,6 +109,7 @@ def main():
         browser = playwright.chromium.launch(executable_path=os.getenv("CHROMIUM_EXECUTABLE"))
         try:
             exploration = browser.new_page(viewport={"width": 1280, "height": 900})
+            check_policy_investigation(exploration, origin)
             check_policy_exploration(exploration, origin)
             exploration.close()
 

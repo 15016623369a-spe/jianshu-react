@@ -33,6 +33,7 @@ from app.hard_policy_data import prepare_hard_policy_database
 from app.hard_policy_workflow import HardMode, HardPolicyRequest, run_hard_policy
 from app.multisource_data import prepare_multisource_database
 from app.multisource_workflow import MultiSourceMode, MultiSourceRequest, multisource_selector, run_multisource_workflow
+from app.policy_investigation import InvestigationMode, InvestigationRequest, run_policy_investigation
 from app.policy_react import deepseek_policy_selector
 from app.policy_workflow import PolicyMode, PolicyRevenueRequest, run_policy_workflow
 from app.product_assistant import answer_data_turn
@@ -232,6 +233,20 @@ async def hard_policy_revenue(
     with tracing_context(enabled=False):
         async with state.policy_slots:
             return await run_in_threadpool(run_hard_policy, state.hard_policy_database, body, mode=mode, choose=choose)
+
+
+@app.post("/api/v2/policy-investigation")
+async def policy_investigation(body: InvestigationRequest, request: Request, mode: InvestigationMode = "auto"):
+    state = request.app.state
+    if state.hard_policy_database is None:
+        raise HTTPException(503, "政策调查账本暂不可用，请检查服务状态。")
+    if state.policy_slots.locked():
+        raise HTTPException(503, "政策调查请求较多，请稍后重试。")
+    settings = state.settings
+    choose = multisource_selector(settings) if mode == "auto" and settings.llm_configured and settings.llm_base_url else None
+    with tracing_context(enabled=False):
+        async with state.policy_slots:
+            return await run_in_threadpool(run_policy_investigation, state.hard_policy_database, body, mode=mode, choose=choose)
 
 
 def _conversation_root(owner: str) -> Path:

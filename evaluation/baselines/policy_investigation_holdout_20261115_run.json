@@ -1,0 +1,45 @@
+{
+  "suite": "policy-investigation-independent-documents",
+  "started_at_utc": "2026-11-15T12:01:41.690526+00:00",
+  "mode_order": [
+    "fixed",
+    "lexical",
+    "auto"
+  ],
+  "case_count": 12,
+  "repeats": 3,
+  "calibration_cases": [
+    "missing-year"
+  ],
+  "document_families": [
+    "box",
+    "chair",
+    "headset",
+    "heater",
+    "lamp",
+    "suitcase"
+  ],
+  "order_seed": 710318,
+  "sequential_execution": true,
+  "source_sha256": {
+    "evaluation/policy_investigation_holdout/bulletins.md": "66275688f266af657e1948943c412771065c857137f3724b184f2c472278cff9",
+    "evaluation/policy_investigation_holdout/cases.json": "85cefa281241802cea2f9b6d163311bb15cabb46ac14d6c6d7d779ed04918276",
+    "evaluation/policy_investigation_holdout/catalog.json": "89b2318fca682dfcda6ec68526ac46c52876c1dbca2ab731f7d189709eae88ce",
+    "evaluation/policy_investigation_holdout/chargebacks.json": "ef1133193aee8bacb88a9523f6f9f82c127c6b82347ed4d42a8271fa29067e97",
+    "app/tools/db.py": "e49d303eb54ecaba0db7506b3eca064e2991f0f1dc86c56eacaf0d098fbec9e5",
+    "app/hard_policy_data.py": "5be527f05364392df6610984640264fd8dce8a3694533d5cc834603e85a40738",
+    "app/llm.py": "a81fa1e64d81a4f60935c515e1ff3de5242ea970db6b0b33519fe9a92ebe8ee1",
+    "app/multisource_workflow.py": "a076c78ff89a63634906cd2e650a413baa0351589e84c2004b1e33cf3ffe737b",
+    "evaluation/policy_investigation_holdout/orders.json": "e51effb3c372a42df44093383f97d9c56fc6a4f025b8cd204db1dcf9f65fdb99",
+    "evaluation/policy_investigation_holdout/policies.md": "37e217559a96eb649c1a302c29107a5069226b14ddf7a90ea073dcf4889f1b28",
+    "app/policy_investigation.py": "491303a120c86a41726da80c09f3346e1174965f9e2ef78fa1c3c40cbfb0e301",
+    "app/policy_investigation_retrieval.py": "82f62035f9d7d0f337dfc2e1bea7f0f597769cae251caa48ada5978bd9709dea",
+    "app/policy_investigation_ui.py": "804641d8a6afe18e670685fb4185ac7308904fd2e4aa854d7268fcb2c9352d46",
+    "evaluation/policy_investigation_holdout/refunds.json": "fe692ddbcf7554b1b0b5cd1640969ab174557be9dd972cb3b4d3b5f66874055a",
+    "evaluation/run_policy_investigation.py": "5c7580c251ff6e6dd50ce89ffdc54491533e25569d9ebf1d38f4bcc8e3482e9e"
+  },
+  "document_version": "ece17e7b20fb37e906107e5ec021ed3d326977a7fc6443a55ad384496183b63d",
+  "model": "deepseek-v4-pro",
+  "temperature": 0,
+  "latency_method": "application wall clock before independent scoring; nearest-rank P95"
+}

@@ -1,0 +1,719 @@
+{
+  "suite": "policy-investigation-independent-documents",
+  "cases": [
+    {
+      "id": "lamp-split",
+      "family": "lamp",
+      "group": "segmentation",
+      "question": "2027年2月和3月华东智能台灯的净营收相差多少？",
+      "needs_recovery": false,
+      "expected": {
+        "kind": "answer",
+        "region": "华东",
+        "product": "智能台灯",
+        "baseline_period": null,
+        "actual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-02-15"
+              },
+              "ledger": "orders",
+              "cap_cents": 300,
+              "document_ids": [
+                "hold-lamp-early"
+              ],
+              "order_count": 2,
+              "gross_cents": 20000,
+              "deducted_cents": 400,
+              "net_cents": 19600
+            },
+            {
+              "period": {
+                "start": "2027-02-15",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "refunds",
+              "cap_cents": 800,
+              "document_ids": [
+                "hold-lamp-late"
+              ],
+              "order_count": 2,
+              "gross_cents": 24000,
+              "deducted_cents": 1000,
+              "net_cents": 23000
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "refunds",
+              "cap_cents": 1000,
+              "document_ids": [
+                "hold-lamp-march"
+              ],
+              "order_count": 2,
+              "gross_cents": 35000,
+              "deducted_cents": 1700,
+              "net_cents": 33300
+            }
+          ]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": -9300,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "lamp-march-counterfactual",
+      "family": "lamp",
+      "group": "segmentation",
+      "question": "比较2027年2月和3月华东智能台灯的净营收，两个期间都按3月口径重算。",
+      "needs_recovery": false,
+      "expected": {
+        "kind": "answer",
+        "region": "华东",
+        "product": "智能台灯",
+        "baseline_period": 1,
+        "actual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-02-15"
+              },
+              "ledger": "orders",
+              "cap_cents": 300,
+              "document_ids": [
+                "hold-lamp-early"
+              ],
+              "order_count": 2,
+              "gross_cents": 20000,
+              "deducted_cents": 400,
+              "net_cents": 19600
+            },
+            {
+              "period": {
+                "start": "2027-02-15",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "refunds",
+              "cap_cents": 800,
+              "document_ids": [
+                "hold-lamp-late"
+              ],
+              "order_count": 2,
+              "gross_cents": 24000,
+              "deducted_cents": 1000,
+              "net_cents": 23000
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "refunds",
+              "cap_cents": 1000,
+              "document_ids": [
+                "hold-lamp-march"
+              ],
+              "order_count": 2,
+              "gross_cents": 35000,
+              "deducted_cents": 1700,
+              "net_cents": 33300
+            }
+          ]
+        ],
+        "counterfactual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "refunds",
+              "cap_cents": 1000,
+              "document_ids": [
+                "hold-lamp-march"
+              ],
+              "order_count": 4,
+              "gross_cents": 44000,
+              "deducted_cents": 3100,
+              "net_cents": 40900
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "refunds",
+              "cap_cents": 1000,
+              "document_ids": [
+                "hold-lamp-march"
+              ],
+              "order_count": 2,
+              "gross_cents": 35000,
+              "deducted_cents": 1700,
+              "net_cents": 33300
+            }
+          ]
+        ],
+        "actual_delta_cents": -9300,
+        "counterfactual_delta_cents": -7600,
+        "policy_effect_cents": -1700
+      }
+    },
+    {
+      "id": "lamp-ambiguous-month",
+      "family": "lamp",
+      "group": "clarification",
+      "question": "比较2027年2月和3月的华东智能台灯净营收，两个月都按2月规则重算。",
+      "expected": {
+        "kind": "clarification",
+        "reason": "baseline_ambiguous"
+      }
+    },
+    {
+      "id": "chair-old-alias-feb",
+      "family": "chair",
+      "group": "recovery",
+      "question": "2027年2月到3月华北露营椅净营收差了多少？如果两个月都按2月规则重算，差额是多少？",
+      "needs_recovery": true,
+      "expected": {
+        "kind": "answer",
+        "region": "华北",
+        "product": "露营椅",
+        "baseline_period": 0,
+        "actual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "refunds",
+              "cap_cents": 1200,
+              "document_ids": [
+                "hold-chair-feb",
+                "hold-chair-feb-official"
+              ],
+              "order_count": 2,
+              "gross_cents": 40000,
+              "deducted_cents": 1600,
+              "net_cents": 38400
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 1600,
+              "document_ids": [
+                "hold-chair-mar"
+              ],
+              "order_count": 2,
+              "gross_cents": 49000,
+              "deducted_cents": 3100,
+              "net_cents": 45900
+            }
+          ]
+        ],
+        "counterfactual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "refunds",
+              "cap_cents": 1200,
+              "document_ids": [
+                "hold-chair-feb",
+                "hold-chair-feb-official"
+              ],
+              "order_count": 2,
+              "gross_cents": 40000,
+              "deducted_cents": 1600,
+              "net_cents": 38400
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "refunds",
+              "cap_cents": 1200,
+              "document_ids": [
+                "hold-chair-feb",
+                "hold-chair-feb-official"
+              ],
+              "order_count": 2,
+              "gross_cents": 49000,
+              "deducted_cents": 2200,
+              "net_cents": 46800
+            }
+          ]
+        ],
+        "actual_delta_cents": 7500,
+        "counterfactual_delta_cents": 8400,
+        "policy_effect_cents": -900
+      }
+    },
+    {
+      "id": "chair-old-alias-march",
+      "family": "chair",
+      "group": "recovery",
+      "question": "比较2027年2月和3月华北露营椅净营收，两个期间都按3月口径重算。",
+      "needs_recovery": true,
+      "expected": {
+        "kind": "answer",
+        "region": "华北",
+        "product": "露营椅",
+        "baseline_period": 1,
+        "actual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "refunds",
+              "cap_cents": 1200,
+              "document_ids": [
+                "hold-chair-feb",
+                "hold-chair-feb-official"
+              ],
+              "order_count": 2,
+              "gross_cents": 40000,
+              "deducted_cents": 1600,
+              "net_cents": 38400
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 1600,
+              "document_ids": [
+                "hold-chair-mar"
+              ],
+              "order_count": 2,
+              "gross_cents": 49000,
+              "deducted_cents": 3100,
+              "net_cents": 45900
+            }
+          ]
+        ],
+        "counterfactual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 1600,
+              "document_ids": [
+                "hold-chair-mar"
+              ],
+              "order_count": 2,
+              "gross_cents": 40000,
+              "deducted_cents": 2400,
+              "net_cents": 37600
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 1600,
+              "document_ids": [
+                "hold-chair-mar"
+              ],
+              "order_count": 2,
+              "gross_cents": 49000,
+              "deducted_cents": 3100,
+              "net_cents": 45900
+            }
+          ]
+        ],
+        "actual_delta_cents": 7500,
+        "counterfactual_delta_cents": 8300,
+        "policy_effect_cents": -800
+      }
+    },
+    {
+      "id": "headset-help-only",
+      "family": "headset",
+      "group": "authority",
+      "question": "2027年2月和3月华东运动耳机净营收相差多少？",
+      "expected": {
+        "kind": "abstained",
+        "reason": "bulletin_missing"
+      }
+    },
+    {
+      "id": "box-normalize-zero",
+      "family": "box",
+      "group": "counterfactual",
+      "question": "比较2027年2月和3月华南收纳盒净营收，两个月都按2月规则重算。",
+      "needs_recovery": false,
+      "expected": {
+        "kind": "answer",
+        "region": "华南",
+        "product": "收纳盒",
+        "baseline_period": 0,
+        "actual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 0,
+              "document_ids": [
+                "hold-box-feb"
+              ],
+              "order_count": 2,
+              "gross_cents": 26000,
+              "deducted_cents": 0,
+              "net_cents": 26000
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "orders",
+              "cap_cents": 500,
+              "document_ids": [
+                "hold-box-mar"
+              ],
+              "order_count": 2,
+              "gross_cents": 35000,
+              "deducted_cents": 800,
+              "net_cents": 34200
+            }
+          ]
+        ],
+        "counterfactual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 0,
+              "document_ids": [
+                "hold-box-feb"
+              ],
+              "order_count": 2,
+              "gross_cents": 26000,
+              "deducted_cents": 0,
+              "net_cents": 26000
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 0,
+              "document_ids": [
+                "hold-box-feb"
+              ],
+              "order_count": 2,
+              "gross_cents": 35000,
+              "deducted_cents": 0,
+              "net_cents": 35000
+            }
+          ]
+        ],
+        "actual_delta_cents": 8200,
+        "counterfactual_delta_cents": 9000,
+        "policy_effect_cents": -800
+      }
+    },
+    {
+      "id": "box-mention-reversed",
+      "family": "box",
+      "group": "counterfactual",
+      "question": "比较2027年3月和2月华南收纳盒净营收，两个期间都按3月口径重算。",
+      "needs_recovery": false,
+      "expected": {
+        "kind": "answer",
+        "region": "华南",
+        "product": "收纳盒",
+        "baseline_period": 1,
+        "actual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 0,
+              "document_ids": [
+                "hold-box-feb"
+              ],
+              "order_count": 2,
+              "gross_cents": 26000,
+              "deducted_cents": 0,
+              "net_cents": 26000
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "orders",
+              "cap_cents": 500,
+              "document_ids": [
+                "hold-box-mar"
+              ],
+              "order_count": 2,
+              "gross_cents": 35000,
+              "deducted_cents": 800,
+              "net_cents": 34200
+            }
+          ]
+        ],
+        "counterfactual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "orders",
+              "cap_cents": 500,
+              "document_ids": [
+                "hold-box-mar"
+              ],
+              "order_count": 2,
+              "gross_cents": 26000,
+              "deducted_cents": 600,
+              "net_cents": 25400
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "orders",
+              "cap_cents": 500,
+              "document_ids": [
+                "hold-box-mar"
+              ],
+              "order_count": 2,
+              "gross_cents": 35000,
+              "deducted_cents": 800,
+              "net_cents": 34200
+            }
+          ]
+        ],
+        "actual_delta_cents": 8200,
+        "counterfactual_delta_cents": 8800,
+        "policy_effect_cents": -600
+      }
+    },
+    {
+      "id": "heater-indirect-actual",
+      "family": "heater",
+      "group": "recovery",
+      "question": "2027年2月到3月华南取暖器净营收差了多少？",
+      "needs_recovery": true,
+      "expected": {
+        "kind": "answer",
+        "region": "华南",
+        "product": "取暖器",
+        "baseline_period": null,
+        "actual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "orders",
+              "cap_cents": 900,
+              "document_ids": [
+                "hold-heater-feb",
+                "hold-heater-feb-official"
+              ],
+              "order_count": 2,
+              "gross_cents": 44500,
+              "deducted_cents": 1600,
+              "net_cents": 42900
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 1400,
+              "document_ids": [
+                "hold-heater-mar",
+                "hold-heater-mar-official"
+              ],
+              "order_count": 2,
+              "gross_cents": 50500,
+              "deducted_cents": 1700,
+              "net_cents": 48800
+            }
+          ]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": 5900,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "heater-indirect-counterfactual",
+      "family": "heater",
+      "group": "recovery",
+      "question": "2027年2月和3月华南取暖器净营收相差多少？两个期间都按3月规则重算。",
+      "needs_recovery": true,
+      "expected": {
+        "kind": "answer",
+        "region": "华南",
+        "product": "取暖器",
+        "baseline_period": 1,
+        "actual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "orders",
+              "cap_cents": 900,
+              "document_ids": [
+                "hold-heater-feb",
+                "hold-heater-feb-official"
+              ],
+              "order_count": 2,
+              "gross_cents": 44500,
+              "deducted_cents": 1600,
+              "net_cents": 42900
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 1400,
+              "document_ids": [
+                "hold-heater-mar",
+                "hold-heater-mar-official"
+              ],
+              "order_count": 2,
+              "gross_cents": 50500,
+              "deducted_cents": 1700,
+              "net_cents": 48800
+            }
+          ]
+        ],
+        "counterfactual": [
+          [
+            {
+              "period": {
+                "start": "2027-02-01",
+                "end_exclusive": "2027-03-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 1400,
+              "document_ids": [
+                "hold-heater-mar",
+                "hold-heater-mar-official"
+              ],
+              "order_count": 2,
+              "gross_cents": 44500,
+              "deducted_cents": 2000,
+              "net_cents": 42500
+            }
+          ],
+          [
+            {
+              "period": {
+                "start": "2027-03-01",
+                "end_exclusive": "2027-04-01"
+              },
+              "ledger": "chargebacks",
+              "cap_cents": 1400,
+              "document_ids": [
+                "hold-heater-mar",
+                "hold-heater-mar-official"
+              ],
+              "order_count": 2,
+              "gross_cents": 50500,
+              "deducted_cents": 1700,
+              "net_cents": 48800
+            }
+          ]
+        ],
+        "actual_delta_cents": 5900,
+        "counterfactual_delta_cents": 6300,
+        "policy_effect_cents": -400
+      }
+    },
+    {
+      "id": "suitcase-conflict",
+      "family": "suitcase",
+      "group": "authority",
+      "question": "2027年2月到3月华东旅行箱净营收差了多少？",
+      "expected": {
+        "kind": "abstained",
+        "reason": "bulletin_conflict"
+      }
+    },
+    {
+      "id": "missing-year",
+      "family": "request",
+      "group": "clarification",
+      "question": "比较2月和3月华南收纳盒净营收。",
+      "expected": {
+        "kind": "clarification"
+      },
+      "calibration": true
+    }
+  ]
+}
