@@ -1,4 +1,6 @@
-# 见数 V2 · 政策调查
+# 见数 · 政策调查与手册问答
+
+V3 从 [V2 冻结检查点](docs/v2.0.0-checkpoint.md) 延续开发。调查入口支持选择政策计算或手册问答，共用文档版本、访问控制和引用字段。[双域演示](docs/v3-dual-domain.md)
 
 见数把政策正文和只读账本接到同一个调查入口。用自然语言比较两个月的净营收，可按其中一个月的退款口径重算，并核对每段生效规则、引用、SQL 和绑定参数。
 
@@ -162,6 +164,8 @@ RAG_BIRD_DATA_DIR=/absolute/path/to/dev_databases \
 
 ## API 索引
 
+- `POST /api/v3/investigations` 按 `domain` 选择政策调查或手册问答，两种任务均返回版本化引用。
+- `/api/v3/manual-documents` 支持 Markdown 手册上传、历史版本读取及账号授权。
 - `POST /api/v2/policy-investigation` 接收 `question` 和可选的 `document_ids`，返回计算、出处与各阶段检索轨迹。
 - `/api/v2/policy-documents` 提供上传、版本历史和读取授权。选择上传资料调查时，只检索已选且有权读取的版本。
 - `POST /api/v2/policy-revenue` 按实际生效的退款政策查询净营收，并返回可核对的文档与 SQL 证据。

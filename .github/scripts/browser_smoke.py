@@ -53,6 +53,48 @@ def check_policy_investigation(page: Page, origin: str) -> None:
     print("PASS natural language policy comparison, cited counterfactual, clarification, and lexical recovery", flush=True)
 
 
+def check_manual_investigation(page: Page, origin: str) -> None:
+    page.goto(f"{origin}/?session={uuid4()}", wait_until="domcontentloaded")
+    panel = page.get_by_role("tabpanel", name="自然语言调查")
+    panel.get_by_text("手册问答", exact=True).click(timeout=20000)
+    submit = panel.get_by_role("button", name="查阅手册")
+    submit.click()
+    expect(panel.get_by_text("顶部指示灯会保持绿色", exact=False)).to_be_visible(timeout=20000)
+    panel.get_by_text("查看出处", exact=True).click()
+    expect(panel.get_by_text("guide-v2.md · 第 2 版", exact=False)).to_be_visible()
+
+    version = page.get_by_role("combobox", name="手册版本")
+    control = panel.get_by_test_id("stSelectbox").filter(has=version)
+    control.get_by_role("button", name="Open").click()
+    page.get_by_role("option", name="第 1 版", exact=True).click()
+    expect(version).to_have_value("第 1 版")
+    submit.click()
+    expect(panel.get_by_text("顶部指示灯会保持蓝色", exact=False)).to_be_visible(timeout=20000)
+
+    page.get_by_role("tab", name="文档库").click()
+    library = page.get_by_role("tabpanel", name="文档库")
+    library.get_by_text("产品手册", exact=True).click()
+    expect(library.get_by_role("radiogroup", name="文档类型")).to_have_count(0)
+    sample = Path(__file__).resolve().parents[2] / "app" / "manual_corpus" / "guide-v1.md"
+    library.get_by_test_id("stForm").first.locator('input[type="file"]').set_input_files(
+        {"name": "browser-manual-v1.md", "mimeType": "text/markdown", "buffer": sample.read_bytes()},
+    )
+    expect(library.get_by_text("browser-manual-v1.md", exact=True)).to_be_visible(timeout=15000)
+    library.get_by_role("button", name="上传文档", exact=True).click()
+    expect(library.get_by_text("已上传第 1 版。", exact=True)).to_be_visible(timeout=20000)
+    page.get_by_role("tab", name="自然语言调查").click()
+    panel.get_by_text("手册问答", exact=True).click()
+    panel.get_by_text("文档库手册", exact=True).click()
+    expect(panel.get_by_role("combobox", name="手册", exact=True)).to_be_visible(timeout=15000)
+    submit.click()
+    expect(panel.get_by_text("顶部指示灯会保持蓝色", exact=False)).to_be_visible(timeout=20000)
+    file = panel.get_by_text("browser-manual-v1.md · 第 1 版", exact=False)
+    if not file.is_visible():
+        panel.get_by_text("查看出处", exact=True).click()
+    expect(file).to_be_visible()
+    print("PASS manual Markdown upload, version-specific answers and cited source", flush=True)
+
+
 def check_policy_exploration(page: Page, origin: str) -> None:
     page.goto(f"{origin}/?session={uuid4()}&workspace=policy-exploration", wait_until="domcontentloaded")
     expect(page.get_by_role("heading", name="政策调查")).to_be_visible(timeout=20000)
@@ -169,6 +211,7 @@ def main():
         try:
             exploration = browser.new_page(viewport={"width": 1280, "height": 900})
             check_policy_investigation(exploration, origin)
+            check_manual_investigation(exploration, origin)
             check_policy_exploration(exploration, origin)
             check_policy_document_library(exploration, origin)
             exploration.close()

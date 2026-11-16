@@ -230,8 +230,8 @@ def render_policy_investigation(
         with st.spinner("正在检查适用规则和账本"):
             try:
                 response = httpx.post(
-                    api + "/api/v2/policy-investigation", headers=headers, params={"mode": mode},
-                    json={"question": question.strip(), "document_ids": selected}, timeout=45, trust_env=False,
+                    api + "/api/v3/investigations", headers=headers, params={"mode": mode},
+                    json={"domain": "policy", "question": question.strip(), "document_ids": selected}, timeout=45, trust_env=False,
                 )
                 response.raise_for_status()
                 st.session_state[result_key] = visible_scope, response.json()

@@ -10,7 +10,7 @@ from app.product_errors import chat_http_error, is_chat_request
 _JSON_PATHS = {
     "/api/v1/chat", "/api/v1/approvals", "/api/v1/query",
     "/api/v2/policy-revenue", "/api/v2/multisource", "/api/v2/policy-exploration",
-    "/api/v2/policy-investigation",
+    "/api/v2/policy-investigation", "/api/v3/investigations",
 }
 
 
@@ -46,7 +46,9 @@ class BoundedJSON:
         if scope["type"] != "http":
             return await self.app(scope, receive, send)
         method, path = scope["method"], scope["path"]
-        reader_acl = method == "PUT" and path.startswith("/api/v2/policy-documents/") and path.endswith("/readers")
+        reader_acl = method == "PUT" and path.startswith(
+            ("/api/v2/policy-documents/", "/api/v3/manual-documents/"),
+        ) and path.endswith("/readers")
         if not ((method == "POST" and path in _JSON_PATHS) or reader_acl):
             return await self.app(scope, receive, send)
         request = Request(scope, receive)

@@ -18,6 +18,7 @@ from app.file_downloads import csv_table, table_rows, xlsx_table
 from app.file_preview_ui import choose_layout
 from app.gateway_identity import KEY_HEADER, USER_HEADER, configured_key, gateway_user
 from app.hard_policy_ui import render_hard_policy_workspace
+from app.manual_investigation_ui import render_manual_investigation
 from app.multisource_ui import render_multisource_workspace
 from app.policy_investigation_ui import render_policy_investigation
 from app.policy_library_ui import read_policy_library, render_policy_library
@@ -548,7 +549,7 @@ def choose_postgres_tables(session_id: str, saved_tables: list[str]) -> list[str
     return selected
 
 
-st.set_page_config(page_title="见数 V2 · 数据 Agent", layout="wide")
+st.set_page_config(page_title="见数 · 调查工作台", layout="wide")
 GATEWAY_KEY = configured_key()
 GATEWAY_HEADERS = {}
 user = None
@@ -613,12 +614,19 @@ if mode_id == _POLICY_WORKSPACE:
     model_configured = capabilities["model_configured"]
     if investigation.open:
         with investigation:
-            registry = read_policy_library(API, GATEWAY_HEADERS)
-            render_policy_investigation(API, GATEWAY_HEADERS, session_id, model_configured, registry)
+            task = st.radio("调查任务", ["政策计算", "手册问答"], horizontal=True, key=f"investigation-domain-{session_id}")
+            if task == "手册问答":
+                registry = read_policy_library(API, GATEWAY_HEADERS, manual=True)
+                render_manual_investigation(API, GATEWAY_HEADERS, session_id, registry)
+            else:
+                registry = read_policy_library(API, GATEWAY_HEADERS)
+                render_policy_investigation(API, GATEWAY_HEADERS, session_id, model_configured, registry)
     if library.open:
         with library:
-            registry = read_policy_library(API, GATEWAY_HEADERS)
-            render_policy_library(API, GATEWAY_HEADERS, session_id, registry)
+            kind = st.radio("文档库类型", ["政策与公告", "产品手册"], horizontal=True, key=f"library-kind-{session_id}")
+            manual = kind == "产品手册"
+            registry = read_policy_library(API, GATEWAY_HEADERS, manual=manual)
+            render_policy_library(API, GATEWAY_HEADERS, session_id, registry, manual=manual)
     if structured.open:
         with structured:
             render_hard_policy_workspace(API, GATEWAY_HEADERS, session_id, model_configured)

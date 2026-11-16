@@ -7,6 +7,7 @@ import httpx
 import streamlit as st
 
 _PATH = "/api/v2/policy-documents"
+_MANUAL_PATH = "/api/v3/manual-documents"
 _SOURCES = {"policy": "政策", "bulletin": "公告"}
 _MAX_DOCUMENT_BYTES = 64 * 1024
 _ACCEPTED_TYPES = ("md", "markdown")
@@ -29,8 +30,11 @@ _ERRORS = {
 }
 
 
-def _document_request(method: str, api: str, headers: dict[str, str], path: str = "", **kwargs) -> dict:
-    response = httpx.request(method, api + _PATH + path, headers=headers, timeout=8, trust_env=False, **kwargs)
+def _document_request(
+    method: str, api: str, headers: dict[str, str], path: str = "", *, manual: bool = False, **kwargs,
+) -> dict:
+    prefix = _MANUAL_PATH if manual else _PATH
+    response = httpx.request(method, api + prefix + path, headers=headers, timeout=8, trust_env=False, **kwargs)
     response.raise_for_status()
     return response.json()
 
@@ -42,20 +46,21 @@ def _report_error(error: Exception, default: str) -> None:
         st.error(default)
 
 
-def read_policy_library(api: str, headers: dict[str, str]) -> dict | None:
+def read_policy_library(api: str, headers: dict[str, str], *, manual: bool = False) -> dict | None:
     try:
-        return _document_request("GET", api, headers)
+        return _document_request("GET", api, headers, manual=manual)
     except (httpx.HTTPError, ValueError):
         return None
 
 
 def document_label(document: dict) -> str:
     access = "我的文档" if document["owned"] else "共享给我"
-    return (f"{document['title']} · {document['filename']} · {_SOURCES[document['source']]} "
+    document_type = _SOURCES.get(document["source"], "手册")
+    return (f"{document['title']} · {document['filename']} · {document_type} "
             f"· 第 {document['version']} 版 · {access}")
 
 
-def _send_file(api: str, headers: dict[str, str], upload, path: str = "", **params) -> dict | None:
+def _send_file(api: str, headers: dict[str, str], upload, path: str = "", *, manual: bool = False, **params) -> dict | None:
     if upload is None:
         st.info("请先选择 Markdown 文件。")
         return None
@@ -65,7 +70,7 @@ def _send_file(api: str, headers: dict[str, str], upload, path: str = "", **para
     try:
         return _document_request(
             "POST", api, {**headers, "Content-Type": "text/markdown"}, path,
-            params={"filename": upload.name, **params}, content=upload.getvalue(),
+            manual=manual, params={"filename": upload.name, **params}, content=upload.getvalue(),
         )
     except (httpx.HTTPError, ValueError) as exc:
         _report_error(exc, "文档暂时无法保存，请稍后重试。")
@@ -73,7 +78,7 @@ def _send_file(api: str, headers: dict[str, str], upload, path: str = "", **para
 
 
 def render_policy_library(
-    api: str, headers: dict[str, str], session_id: str, registry: dict | None,
+    api: str, headers: dict[str, str], session_id: str, registry: dict | None, *, manual: bool = False,
 ) -> None:
     if registry is None:
         st.warning("暂时无法读取文档库。")
@@ -81,20 +86,25 @@ def render_policy_library(
 
     st.caption("上传和更新 UTF-8 Markdown，每版最多 64 KiB。调查时可选择最新可读版本，旧版本在此保留。")
     with st.expander("查看可用于调查的正文格式"):
-        st.code(_EXAMPLE, language="markdown", wrap_lines=True)
+        example = "# 设备手册\n\n## 连接 Wi-Fi\n\n打开设备应用并添加设备。" if manual else _EXAMPLE
+        st.code(example, language="markdown", wrap_lines=True)
 
-    selection_key = f"policy-library-document-{session_id}"
-    if message := st.session_state.pop("policy-library-feedback", None):
+    library = "manual-library" if manual else "policy-library"
+    selection_key = f"{library}-document-{session_id}"
+    feedback_key = f"{library}-feedback"
+    revision_key = f"{library}-version-next"
+    if message := st.session_state.pop(feedback_key, None):
         st.success(message)
-    with st.form(f"policy-library-upload-{session_id}", clear_on_submit=True, border=False):
-        source = st.radio("文档类型", list(_SOURCES), format_func=_SOURCES.__getitem__, horizontal=True)
+    with st.form(f"{library}-upload-{session_id}", clear_on_submit=True, border=False):
+        source = None if manual else st.radio("文档类型", list(_SOURCES), format_func=_SOURCES.__getitem__, horizontal=True)
         upload = st.file_uploader("新 Markdown 文档", type=_ACCEPTED_TYPES)
         create = st.form_submit_button("上传文档", type="primary")
     if create:
-        created = _send_file(api, headers, upload, source=source)
+        params = {"source": source} if source else {}
+        created = _send_file(api, headers, upload, manual=manual, **params)
         if created:
             st.session_state[selection_key] = created["id"]
-            st.session_state["policy-library-feedback"] = f"已上传第 {created['version']} 版。"
+            st.session_state[feedback_key] = f"已上传第 {created['version']} 版。"
             st.rerun()
 
     documents = {item["id"]: item for item in registry["documents"]}
@@ -108,14 +118,14 @@ def render_policy_library(
     selected = documents[document_id]
     path = f"/{document_id}"
     try:
-        versions = _document_request("GET", api, headers, path + "/versions")["versions"]
+        versions = _document_request("GET", api, headers, path + "/versions", manual=manual)["versions"]
         version_key = f"policy-library-version-{document_id}"
-        if pending := st.session_state.pop("policy-library-version-next", None):
+        if pending := st.session_state.pop(revision_key, None):
             if pending[0] == document_id:
                 st.session_state[version_key] = pending[1]
         numbers = sorted((item["version"] for item in versions), reverse=True)
         version = st.selectbox("查看版本", numbers, format_func=lambda number: f"第 {number} 版", key=version_key)
-        current = _document_request("GET", api, headers, f"{path}/versions/{version}")
+        current = _document_request("GET", api, headers, f"{path}/versions/{version}", manual=manual)
     except (httpx.HTTPError, ValueError) as exc:
         _report_error(exc, "暂时无法读取文档版本。")
         return
@@ -130,10 +140,10 @@ def render_policy_library(
             revision = st.file_uploader("新版本 Markdown 文档", type=_ACCEPTED_TYPES)
             save = st.form_submit_button("保存新版本", type="primary")
         if save:
-            revised = _send_file(api, headers, revision, path + "/versions")
+            revised = _send_file(api, headers, revision, path + "/versions", manual=manual)
             if revised:
-                st.session_state["policy-library-version-next"] = (document_id, revised["version"])
-                st.session_state["policy-library-feedback"] = f"已保存第 {revised['version']} 版。"
+                st.session_state[revision_key] = (document_id, revised["version"])
+                st.session_state[feedback_key] = f"已保存第 {revised['version']} 版。"
                 st.rerun()
     if not registry["sharing_enabled"]:
         st.caption("本机模式下文档仅此环境可见。通过已登录的部署入口可设置读者。")
@@ -149,9 +159,9 @@ def render_policy_library(
         if share:
             accounts = list(dict.fromkeys(re.split(r"[\s，,]+", readers.strip()))) if readers.strip() else []
             try:
-                _document_request("PUT", api, headers, path + "/readers", json={"users": accounts})
+                _document_request("PUT", api, headers, path + "/readers", manual=manual, json={"users": accounts})
             except (httpx.HTTPError, ValueError) as exc:
                 _report_error(exc, "暂时无法保存读者权限。")
             else:
-                st.session_state["policy-library-feedback"] = "读者权限已保存。"
+                st.session_state[feedback_key] = "读者权限已保存。"
                 st.rerun()

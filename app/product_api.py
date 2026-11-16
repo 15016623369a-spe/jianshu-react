@@ -14,7 +14,7 @@ from urllib.parse import urlsplit
 from typing import Annotated, Literal
 from uuid import UUID, uuid4
 
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import Body, FastAPI, HTTPException, Query, Request
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import Response, StreamingResponse
@@ -31,10 +31,13 @@ from app.file_analysis_history import FileAnalysisHistory
 from app.gateway_identity import configured_key, gateway_user, owner_id
 from app.hard_policy_data import prepare_hard_policy_database
 from app.hard_policy_workflow import HardMode, HardPolicyRequest, run_hard_policy
+from app.investigation_v3 import (
+    ManualInvestigationV3, PolicyInvestigationV3, investigation_result, policy_evidence, run_manual_investigation,
+)
 from app.multisource_data import prepare_multisource_database
 from app.multisource_workflow import MultiSourceMode, MultiSourceRequest, multisource_selector, run_multisource_workflow
 from app.policy_documents import PolicyDocumentInput, PolicyDocumentLimit, PolicyDocumentMissing, PolicyDocumentStore
-from app.policy_documents_api import router as policy_documents_router
+from app.policy_documents_api import manual_router, router as policy_documents_router
 from app.policy_investigation import InvestigationMode, InvestigationRequest, run_policy_investigation
 from app.policy_react import deepseek_policy_selector
 from app.policy_workflow import PolicyMode, PolicyRevenueRequest, run_policy_workflow
@@ -125,6 +128,7 @@ async def lifespan(app: FastAPI):
     app.state.file_history = FileAnalysisHistory(app.state.root / "file_analysis.sqlite")
     app.state.query_exports = QueryExportStore(app.state.root / "query_exports.sqlite")
     app.state.policy_documents = PolicyDocumentStore(app.state.root / "policy_documents.sqlite")
+    app.state.manual_documents = PolicyDocumentStore(app.state.root / "manual_documents.sqlite")
     bird = os.getenv("RAG_BIRD_ROOT")
     app.state.bird = Path(bird).resolve() if bird else None
     app.state.settings = load_settings()
@@ -143,6 +147,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="见数 · Text2SQL Agent", version="2.0.0", lifespan=lifespan)
 app.add_middleware(BoundedJSON)
 app.include_router(policy_documents_router)
+app.include_router(manual_router)
 _STREAM = {200: {"content": {"application/x-ndjson": {}}, "description": "Workflow events and final trace summary"}}
 
 
@@ -275,6 +280,29 @@ async def policy_investigation(body: InvestigationRequest, request: Request, mod
             return await run_in_threadpool(
                 run_policy_investigation, state.hard_policy_database, body, mode=mode, choose=choose, snapshot=snapshot,
             )
+
+
+@app.post("/api/v3/investigations")
+async def investigate_v3(
+    body: Annotated[PolicyInvestigationV3 | ManualInvestigationV3, Body(discriminator="domain")],
+    request: Request, mode: InvestigationMode = "auto",
+):
+    if isinstance(body, PolicyInvestigationV3):
+        result = await policy_investigation(body, request, mode)
+        return investigation_result("policy", result, policy_evidence(result))
+
+    if mode not in ("auto", "fixed"):
+        raise HTTPException(422, "手册问答使用确定性检索。")
+    state = request.app.state
+    if state.policy_slots.locked():
+        raise HTTPException(503, "调查请求较多，请稍后重试。")
+    async with state.policy_slots:
+        document = None
+        if body.document_id is not None:
+            document, = await run_in_threadpool(
+                state.manual_documents.pin, request.state.owner, [body.document_id], version=body.version,
+            )
+        return await run_in_threadpool(run_manual_investigation, body, document)
 
 
 def _conversation_root(owner: str) -> Path:

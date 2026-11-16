@@ -31,6 +31,7 @@ _APPLICATION_ID = 0x52414748
 _MAX_SOURCE_BYTES = 65_536
 _SEED_FILES = ("catalog", "orders", "refunds", "chargebacks")
 DocumentSource = Literal["policy", "bulletin"]
+PassageSource = Literal["policy", "bulletin", "manual"]
 _DOCUMENT_NUMBER = re.compile(r"^文号[：:]\s*(?P<id>[a-z][a-z0-9-]{0,63})。$", re.MULTILINE)
 _REFERENCED_TITLE = re.compile(r"《([^《》]+)》")
 _REF_TOPIC = re.compile(r"“(?P<topic>[^”]+)”专题最新公告")
@@ -112,7 +113,7 @@ class _LedgerEntry(BaseModel):
 class TextPassage:
     title: str
     quote: str
-    source: DocumentSource
+    source: PassageSource
     file: str
     line_start: int
     line_end: int
@@ -189,7 +190,7 @@ def _catalog(content: bytes) -> dict[str, str]:
     return names
 
 
-def _passages(content: bytes, source: DocumentSource, filename: str) -> tuple[TextPassage, ...]:
+def _passages(content: bytes, source: PassageSource, filename: str) -> tuple[TextPassage, ...]:
     lines = content.decode("utf-8").splitlines()
     headings = [index for index, line in enumerate(lines) if line.startswith("## ")]
     passages = []
@@ -233,7 +234,7 @@ def product_category(product: str, *, snapshot: DocumentSnapshot | None = None) 
     return catalog.get(product)
 
 
-def _rank_passages(passages: tuple[TextPassage, ...], source: DocumentSource, query: str) -> list[TextPassage]:
+def _rank_passages(passages: tuple[TextPassage, ...], source: PassageSource, query: str) -> list[TextPassage]:
     """Retrieve ranked lexical hits from headings and raw Markdown prose."""
     documents = [passage for passage in passages if passage.source == source]
     document_terms = [_terms(passage.title + "\n" + passage.quote) for passage in documents]

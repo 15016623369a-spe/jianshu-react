@@ -5,7 +5,7 @@ import re
 import sqlite3
 import unicodedata
 from contextlib import closing
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
@@ -26,7 +26,7 @@ _SCHEMA = """
 CREATE TABLE IF NOT EXISTS policy_documents (
     id TEXT PRIMARY KEY,
     owner TEXT NOT NULL,
-    source TEXT NOT NULL CHECK (source IN ('policy', 'bulletin')),
+    source TEXT NOT NULL CHECK (source IN ('policy', 'bulletin', 'manual')),
     latest INTEGER NOT NULL CHECK (latest >= 1)
 ) WITHOUT ROWID;
 CREATE INDEX IF NOT EXISTS policy_document_owners ON policy_documents(owner);
@@ -48,6 +48,24 @@ CREATE TABLE IF NOT EXISTS policy_document_readers (
 ) WITHOUT ROWID;
 CREATE INDEX IF NOT EXISTS policy_document_reader_lookup ON policy_document_readers(reader, document_id);
 """
+
+
+@dataclass(frozen=True)
+class PinnedDocument:
+    id: str
+    source: evidence.PassageSource
+    version: int
+    filename: str
+    content: bytes
+    digest: str
+
+    @property
+    def location(self) -> str:
+        return f"uploads/{self.id}/v{self.version}/{self.filename}"
+
+    def passages(self) -> tuple[evidence.TextPassage, ...]:
+        content = self.content.decode("utf-8-sig").encode("utf-8")
+        return tuple(replace(block, file=self.location) for block in evidence._passages(content, self.source, self.filename))
 
 
 class PolicyDocumentMissing(LookupError):
@@ -81,7 +99,7 @@ def _validate(filename: str, content: bytes) -> tuple[str, str]:
         raise PolicyDocumentInput("请使用正文段落。文档不支持 HTML、引用块和代码块。")
     passages = evidence._passages(text.encode("utf-8"), "policy", filename)
     if not 1 <= len(passages) <= _MAX_PASSAGES or any(not 1 <= len(p.title) <= 120 or not p.quote.strip() for p in passages):
-        raise PolicyDocumentInput("请在 1 至 40 个「## 标题」下填写政策或公告正文。")
+        raise PolicyDocumentInput("请在 1 至 40 个「## 标题」下填写文档正文。")
     first = next(line for line in text.splitlines() if line.strip())
     title = first[2:].strip()[:120] if first.startswith("# ") and first[2:].strip() else passages[0].title
     return title, sha256(content).hexdigest()
@@ -172,7 +190,7 @@ class PolicyDocumentStore:
                 for row in rows
             ]
 
-    def create(self, owner: str, filename: str, source: evidence.DocumentSource, content: bytes) -> dict:
+    def create(self, owner: str, filename: str, source: evidence.PassageSource, content: bytes) -> dict:
         title, digest = _validate(filename, content)
         document_id = str(uuid4())
         with closing(self._connect()) as connection, connection:
@@ -234,31 +252,36 @@ class PolicyDocumentStore:
             )
         return [user for _, user in readers]
 
-    def snapshot(self, owner: str, document_ids: list[UUID]) -> evidence.DocumentSnapshot:
-        """Pin access grants and latest versions together before assembling evidence."""
+    def pin(self, owner: str, document_ids: list[UUID], *, version: int | None = None) -> tuple[PinnedDocument, ...]:
+        """Read authorized revisions in one transaction."""
         ids = sorted({str(document_id) for document_id in document_ids})
+        if version is not None and len(ids) != 1:
+            raise PolicyDocumentInput("指定历史版本时请选择一份文档。")
+        pinned = []
         with closing(self._connect()) as connection, connection:
             connection.execute("BEGIN")
-            rows = []
             for document_id in ids:
                 self._require(connection, owner, document_id)
-                rows.append(self._current(connection, document_id, content=True))
+                row = self._current(connection, document_id, version=version, content=True)
+                pinned.append(PinnedDocument(
+                    document_id, row["source"], row["version"], row["filename"], row["content"], row["digest"],
+                ))
+        return tuple(pinned)
 
+    def snapshot(self, owner: str, document_ids: list[UUID]) -> evidence.DocumentSnapshot:
+        documents = self.pin(owner, document_ids)
         catalog_bytes = evidence._read("catalog.json")
         digest = sha256(b"policy-upload-v1\0" + catalog_bytes)
         passages = []
         doc_numbers = set()
-        for row in rows:
-            document_id, version, filename = row["id"], row["version"], row["filename"]
-            digest.update(f"\0{document_id}:{version}:{row['source']}:{row['digest']}".encode("ascii"))
-            location = f"uploads/{document_id}/v{version}/{filename}"
-            content = row["content"].decode("utf-8-sig").encode("utf-8")
-            for passage in evidence._passages(content, row["source"], filename):
+        for document in documents:
+            digest.update(f"\0{document.id}:{document.version}:{document.source}:{document.digest}".encode("ascii"))
+            for passage in document.passages():
                 numbers = evidence._DOCUMENT_NUMBER.findall(passage.quote)
                 if len(numbers) > 1 or (numbers and numbers[0] in doc_numbers):
                     raise PolicyDocumentInput("所选文档有重复的文号。请分别调查，或上传更正版本。")
                 doc_numbers.update(numbers)
-                passages.append(replace(passage, file=location))
+                passages.append(passage)
         return evidence.DocumentSnapshot(
             version=digest.hexdigest(),
             catalog=tuple(evidence._catalog(catalog_bytes).items()),

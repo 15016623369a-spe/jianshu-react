@@ -23,7 +23,7 @@ https://{$RAG_DOMAIN} {
 
 	@api_json {
 		method POST
-		path /api/v1/chat /api/v1/approvals /api/v1/query /api/v2/policy-revenue /api/v2/multisource /api/v2/policy-exploration /api/v2/policy-investigation
+		path /api/v1/chat /api/v1/approvals /api/v1/query /api/v2/policy-revenue /api/v2/multisource /api/v2/policy-exploration /api/v2/policy-investigation /api/v3/investigations
 	}
 	request_body @api_json {
 		max_size 16KiB
@@ -31,7 +31,7 @@ https://{$RAG_DOMAIN} {
 
 	@policy_doc_upload {
 		method POST
-		path /api/v2/policy-documents /api/v2/policy-documents/*/versions
+		path /api/v2/policy-documents /api/v2/policy-documents/*/versions /api/v3/manual-documents /api/v3/manual-documents/*/versions
 	}
 	request_body @policy_doc_upload {
 		max_size 64KiB
@@ -39,7 +39,7 @@ https://{$RAG_DOMAIN} {
 
 	@policy_acl {
 		method PUT
-		path /api/v2/policy-documents/*/readers
+		path /api/v2/policy-documents/*/readers /api/v3/manual-documents/*/readers
 	}
 	request_body @policy_acl {
 		max_size 16KiB
@@ -50,7 +50,7 @@ https://{$RAG_DOMAIN} {
 		max_size 11MiB
 	}
 
-	@api path /api/v1/* /api/v2/*
+	@api path /api/v1/* /api/v2/* /api/v3/*
 	handle @api {
 		reverse_proxy api:8000 {
 			header_up -Authorization

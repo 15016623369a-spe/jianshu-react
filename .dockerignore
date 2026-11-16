@@ -19,6 +19,8 @@ app/**
 !app/hard_policy_corpus/*.md
 !app/investigation_corpus/
 !app/investigation_corpus/*.md
+!app/manual_corpus/
+!app/manual_corpus/*.md
 !app/tools/
 app/tools/**
 !app/tools/*.py
