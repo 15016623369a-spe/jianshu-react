@@ -115,7 +115,9 @@ API 为每次请求记录追踪编号、步骤、耗时、模型调用和 token�
 
 [完整统计、消融方法和误差分类](docs/ci.md#产品路径-bird-评测) · [冻结开发集基准](evaluation/baselines/product_dev.json)
 
-**产品回归。** 发布前宿主环境通过 164 项自动回归。30 个合成对话覆盖 74 轮和 38 个显式槽位断言。20 个表头布局用例中，12 个正确解析，8 个明确阻止错误布局执行。DeepSeek V4 Pro 在十表 PostgreSQL 示例库通过 10/10 道业务题，核对了有序结果、选表范围、CSV 和追踪。GitHub Actions 提交检查覆盖宿主测试、真实文件容器、对话回放、浏览器冒烟和 PostgreSQL。配置模型密钥后，夜间任务按三次中位数检查开发集正确题数和 P95。[持续集成与夜间门禁](docs/ci.md) · [PostgreSQL 验收](docs/postgres.md#验收)
+**产品回归。** v2.0.0 检查点通过 244 项自动测试、完整浏览器回归和双账号 HTTPS 冒烟。冻结的 30 道政策题各复跑三轮，自动模式通过 90/90。[v2.0.0 检查点](docs/v2.0.0-checkpoint.md)
+
+既有专项验收中，30 个合成对话覆盖 74 轮和 38 个显式槽位断言。20 个表头布局用例中，12 个正确解析，8 个明确阻止错误布局执行。DeepSeek V4 Pro 在十表 PostgreSQL 示例库通过 10/10 道业务题，核对了有序结果、选表范围、CSV 和追踪。GitHub Actions 提交检查覆盖宿主测试、真实文件容器、对话回放、浏览器冒烟和 PostgreSQL。配置模型密钥后，夜间任务按三次中位数检查开发集正确题数和 P95。[持续集成与夜间门禁](docs/ci.md) · [PostgreSQL 验收](docs/postgres.md#验收)
 
 ```bash
 python3.11 -m venv .venv

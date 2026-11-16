@@ -1,0 +1,50 @@
+{
+  "suite": "policy-grounding-frozen-expansion",
+  "started_at_utc": "2026-11-16T04:36:06.707691+00:00",
+  "modes": [
+    "fixed",
+    "lexical",
+    "auto"
+  ],
+  "repeats": 3,
+  "case_count": 30,
+  "document_families": [
+    "camera",
+    "clock",
+    "desk",
+    "helmet",
+    "humidifier",
+    "mixer",
+    "pan",
+    "pillow",
+    "projector",
+    "router",
+    "shoe",
+    "torch"
+  ],
+  "passage_count": 53,
+  "document_version": "c78050b78c061bfd01e9db2d3223e84b9c10f938cf010bd9eaa69441a8b9f97d",
+  "source_sha256": {
+    "app/hard_policy_data.py": "5be527f05364392df6610984640264fd8dce8a3694533d5cc834603e85a40738",
+    "app/llm.py": "a81fa1e64d81a4f60935c515e1ff3de5242ea970db6b0b33519fe9a92ebe8ee1",
+    "app/multisource_workflow.py": "a076c78ff89a63634906cd2e650a413baa0351589e84c2004b1e33cf3ffe737b",
+    "app/policy_investigation.py": "ef45dc7aa2f235bc7e1ddf15a79680eda7b9f105760c2b6747eda7dc21dbb681",
+    "app/policy_investigation_retrieval.py": "cb4656b27cdf5dc740e05d2be53d1738a17a7a1cea4d6e462a7ab50841ab9196",
+    "app/tools/db.py": "e49d303eb54ecaba0db7506b3eca064e2991f0f1dc86c56eacaf0d098fbec9e5",
+    "evaluation/policy_grounding_holdout/bulletins.md": "62eb97c85a269fcc7137d13856271e4ebf3301914f850aeabee6613d39b53112",
+    "evaluation/policy_grounding_holdout/cases.json": "5ff5a8d5268d1fca9968f9852e0e57b79d0c4130bdb90df6e4312f406d71b5aa",
+    "evaluation/policy_grounding_holdout/catalog.json": "98a5f662f75c868691808928915dfb8069c8c15ed88c936f3d33071c3a39a28b",
+    "evaluation/policy_grounding_holdout/chargebacks.json": "8bc3f8227f9a526c81af9e0405f4ff817f8b5e8dae6ed0bd96903aeef56e41e9",
+    "evaluation/policy_grounding_holdout/orders.json": "52619b148d0d855c633e0b8d4c4e78e9c980fc9c8fa1470e17606732cc9fdaf4",
+    "evaluation/policy_grounding_holdout/policies.md": "addd97d5cea7578c134e127a31cc74e32a62de0602cbfd9975ef2fe20a97f170",
+    "evaluation/policy_grounding_holdout/refunds.json": "40f928a5e5e54177beb0a76336cd965808a5cb46811275e5bbbbdc3b1d5f75fa",
+    "evaluation/run_policy_grounding.py": "1b78d5c15e893f2e9ce117fe8b8b98e914083934c8a2ba9d0e5e132d7b6d69c5",
+    "evaluation/run_policy_investigation.py": "d66d9d56ec15600756b8e2fc03fff4f84b9ee64788d9a5d665b68d66a27d1d1d"
+  },
+  "model": "deepseek-v4-pro",
+  "temperature": 0,
+  "order_seed": 280716,
+  "latency_method": "sequential application wall time before scoring; nearest-rank P95",
+  "retrieval_method": "Micro-average per actual authority link (start, end, source, referrer, document). Candidate hits require whole-span coverage by intersecting queries from the same authority link. First pass uses only exact events. All-stage recall accepts exact, lexical and model events. Selected authority is counted separately.",
+  "citation_method": "Micro-average per scenario, calculation span and document. A predicted claim counts as correct only when it agrees with the labeled authority and the entire Markdown title, line range and body match."
+}
