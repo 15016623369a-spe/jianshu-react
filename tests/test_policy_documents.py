@@ -11,6 +11,10 @@ from uuid import UUID, uuid4
 
 from fastapi.testclient import TestClient
 
+from io import BytesIO
+
+from docx import Document
+
 from app.policy_documents import MAX_DOCUMENT_BYTES, PolicyDocumentStore
 from app.product_api import app
 
@@ -93,6 +97,42 @@ class PolicyDocumentAPITests(unittest.TestCase):
         self.assertEqual(first.json()["id"], second.json()["id"])
         self.assertEqual(second.json()["version"], 1)
         self.assertEqual(len(self.client.get(_DOCS, headers=self.alice).json()["documents"]), 1)
+
+    def test_pdf_manual_preview_keeps_page_locator(self):
+        source = Path(__file__).with_name("fixtures") / "manual-sample.pdf"
+        preview = self.client.post(
+            "/api/v3/manual-documents/preview", headers={**self.alice, "Content-Type": "application/pdf"},
+            params={"filename": "manual.pdf"}, content=source.read_bytes(),
+        )
+        self.assertEqual(preview.status_code, 200, preview.text)
+        preview = preview.json()
+        self.assertEqual(preview["format"], "pdf")
+        self.assertEqual(preview["passages"][0]["locator"], "page")
+        self.assertIn("Connect Wi-Fi", preview["passages"][0]["quote"])
+
+    def test_docx_manual_upload_keeps_paragraph_locator(self):
+        buffer = BytesIO()
+        document = Document()
+        document.add_heading("设备手册", level=1)
+        document.add_heading("连接 Wi-Fi", level=2)
+        document.add_paragraph("连接成功时指示灯为绿色。")
+        document.save(buffer)
+        upload = self.client.post(
+            "/api/v3/manual-documents", headers={**self.alice, "Content-Type":
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+            params={"filename": "manual.docx"}, content=buffer.getvalue(),
+        )
+        self.assertEqual(upload.status_code, 201, upload.text)
+        source = upload.json()
+        result = self.client.post("/api/v3/investigations", headers=self.alice, json={
+            "domain": "manual", "question": "怎样连接 Wi-Fi？", "document_id": source["id"], "version": 1,
+        })
+        self.assertEqual(result.status_code, 200, result.text)
+        result = result.json()
+        self.assertEqual(result["kind"], "answer")
+        reference, = result["evidence"]
+        self.assertEqual(reference["locator"], "paragraph")
+        self.assertIn("绿色", reference["quote"])
 
     def test_acl_covers_listing_versions_retrieval_and_revocation(self):
         doc = self.upload().json()

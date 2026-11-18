@@ -32,8 +32,10 @@ class Readers(BaseModel):
 
 async def _preview(request: Request, filename: str, source: str):
     content_type = request.headers.get("content-type", "").partition(";")[0].strip().lower()
-    if content_type not in {"", "text/markdown", "text/html", "text/plain", "application/octet-stream"}:
-        raise HTTPException(415, "请上传 UTF-8 Markdown/HTML 文件正文。")
+    if content_type not in {"", "text/markdown", "text/html", "text/plain", "application/pdf",
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            "application/octet-stream"}:
+        raise HTTPException(415, "请上传 Markdown、HTML、PDF 或 DOCX 文件正文。")
     slots = request.app.state.upload_slots
     if slots.locked():
         raise HTTPException(503, "文档预览请求较多，请稍后重试。")
@@ -44,8 +46,10 @@ async def _preview(request: Request, filename: str, source: str):
 
 async def _upload(request: Request, update, *args):
     content_type = request.headers.get("content-type", "").partition(";")[0].strip().lower()
-    if content_type not in {"", "text/markdown", "text/html", "text/plain", "application/octet-stream"}:
-        raise HTTPException(415, "请上传 UTF-8 Markdown/HTML 文件正文。")
+    if content_type not in {"", "text/markdown", "text/html", "text/plain", "application/pdf",
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            "application/octet-stream"}:
+        raise HTTPException(415, "请上传 Markdown、HTML、PDF 或 DOCX 文件正文。")
     slots = request.app.state.upload_slots
     if slots.locked():
         raise HTTPException(503, "文档上传请求较多，请稍后重试。")

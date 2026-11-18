@@ -13,7 +13,7 @@ from uuid import UUID, uuid4
 
 from app import hard_policy_data as evidence
 from app.gateway_identity import owner_id
-from app.rag.ingest import chunk_document
+from app.rag.ingest import chunk_document, parse_binary
 from app.rag.models import DocumentMetadata
 
 MAX_DOCUMENT_BYTES = 65_536
@@ -66,16 +66,27 @@ class PinnedDocument:
         return f"uploads/{self.id}/v{self.version}/{self.filename}"
 
     def passages(self) -> tuple[evidence.TextPassage, ...]:
-        content = self.content.decode("utf-8-sig").encode("utf-8")
-        if _format(self.filename) == "html":
-            metadata = DocumentMetadata(
-                document_id=self.id, title=self.filename, source=self.source, version=self.version,
-                attributes={"file": self.location},
+        source_format = _format(self.filename)
+        metadata = DocumentMetadata(
+            document_id=self.id, title=self.filename, source=self.source, version=self.version,
+            attributes={"file": self.location},
+        )
+        if source_format in {"pdf", "docx"}:
+            return tuple(
+                evidence.TextPassage(
+                    title=block.title if source_format == "pdf" else (block.section or block.title),
+                    quote=block.text, source=self.source, file=self.location,
+                    line_start=block.line_start, line_end=block.line_end, locator=block.locator,
+                )
+                for block in parse_binary(self.content, metadata, format=source_format)
             )
+        content = self.content.decode("utf-8-sig").encode("utf-8")
+        if source_format == "html":
             return tuple(
                 evidence.TextPassage(
                     title=block.section or block.title, quote=block.text, source=self.source,
                     file=self.location, line_start=block.line_start, line_end=block.line_end,
+                    locator=block.locator,
                 )
                 for block in chunk_document(content.decode("utf-8"), metadata, format="html")
             )
@@ -95,18 +106,36 @@ class PolicyDocumentLimit(ValueError):
 
 
 def _format(filename: str) -> str:
-    return "html" if filename.casefold().endswith((".html", ".htm")) else "markdown"
+    name = filename.casefold()
+    if name.endswith((".html", ".htm")):
+        return "html"
+    if name.endswith(".pdf"):
+        return "pdf"
+    if name.endswith(".docx"):
+        return "docx"
+    return "markdown"
 
 
 def _validate(filename: str, content: bytes, source: str = "policy") -> tuple[str, str]:
     if (
         not 4 <= len(filename) <= 120 or filename != filename.strip() or filename.startswith(".")
-        or not filename.casefold().endswith((".md", ".markdown", ".html", ".htm"))
+        or not filename.casefold().endswith((".md", ".markdown", ".html", ".htm", ".pdf", ".docx"))
         or any(char in '/\\?#%<>"' or unicodedata.category(char).startswith("C") for char in filename)
     ):
         raise PolicyDocumentInput("请使用不含路径或特殊字符的 Markdown/HTML 文件名。")
     if not content or len(content) > MAX_DOCUMENT_BYTES:
         raise PolicyDocumentInput("文档不能为空，且不得超过 64 KiB。")
+    source_format = _format(filename)
+    if source_format in {"pdf", "docx"}:
+        try:
+            passages = parse_binary(content, DocumentMetadata(
+                document_id="upload", title=filename, source=source, attributes={"file": filename},
+            ), format=source_format)
+        except ValueError as exc:
+            raise PolicyDocumentInput(str(exc)) from None
+        if not 1 <= len(passages) <= _MAX_PASSAGES:
+            raise PolicyDocumentInput("文档没有可用的章节，或章节数量超过 40。")
+        return passages[0].title[:120], sha256(content).hexdigest()
     try:
         text = content.decode("utf-8-sig")
     except UnicodeDecodeError:
@@ -134,18 +163,25 @@ def _validate(filename: str, content: bytes, source: str = "policy") -> tuple[st
 def preview_document(filename: str, content: bytes, source: str) -> dict:
     """Parse an upload without storing it, for the import preview UI."""
     title, digest = _validate(filename, content, source)
-    text = content.decode("utf-8-sig")
-    if _format(filename) == "html":
-        blocks = chunk_document(text, DocumentMetadata(
-            document_id="preview", title=filename, source=source, attributes={"file": filename},
-        ), format="html")
+    metadata = DocumentMetadata(document_id="preview", title=filename, source=source,
+                                attributes={"file": filename})
+    source_format = _format(filename)
+    if source_format in {"pdf", "docx"}:
+        blocks = parse_binary(content, metadata, format=source_format)
         passages = [{"title": block.section or block.title, "line_start": block.line_start,
-                     "line_end": block.line_end, "quote": block.text} for block in blocks]
+                     "line_end": block.line_end, "locator": block.locator, "quote": block.text}
+                    for block in blocks]
+    elif source_format == "html":
+        blocks = chunk_document(content.decode("utf-8-sig"), metadata, format="html")
+        passages = [{"title": block.section or block.title, "line_start": block.line_start,
+                     "line_end": block.line_end, "locator": block.locator, "quote": block.text}
+                    for block in blocks]
     else:
+        text = content.decode("utf-8-sig")
         passages = [{"title": block.title, "line_start": block.line_start,
-                     "line_end": block.line_end, "quote": block.quote}
+                     "line_end": block.line_end, "locator": None, "quote": block.quote}
                     for block in evidence._passages(text.encode("utf-8"), source, filename)]
-    return {"filename": filename, "source": source, "format": _format(filename), "title": title,
+    return {"filename": filename, "source": source, "format": source_format, "title": title,
             "sha256": digest, "passages": passages}
 
 

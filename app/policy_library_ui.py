@@ -10,7 +10,7 @@ _PATH = "/api/v2/policy-documents"
 _MANUAL_PATH = "/api/v3/manual-documents"
 _SOURCES = {"policy": "政策", "bulletin": "公告"}
 _MAX_DOCUMENT_BYTES = 64 * 1024
-_ACCEPTED_TYPES = ("md", "markdown", "html", "htm")
+_ACCEPTED_TYPES = ("md", "markdown", "html", "htm", "pdf", "docx")
 _EXAMPLE = """# 售后政策
 ## 华南电水壶退款口径
 
@@ -25,8 +25,8 @@ _ERRORS = {
     404: "找不到文档，或当前账号已没有访问权限。",
     409: "版本或文档数量已达上限，请核对当前文档状态。",
     413: "文档不得超过 64 KiB。",
-    415: "请上传 UTF-8 编码的 Markdown/HTML 文档。",
-    422: "请检查文件名、正文格式和章节标题；政策/手册支持 Markdown 或 HTML。",
+    415: "请上传 Markdown、HTML、PDF 或 DOCX 文档。",
+    422: "请检查文件名、正文格式和章节标题；政策/手册支持 Markdown、HTML、PDF、DOCX。",
 }
 
 
@@ -67,7 +67,11 @@ def _send_file(api: str, headers: dict[str, str], upload, path: str = "", *, man
     if upload.size > _MAX_DOCUMENT_BYTES:
         st.error(_ERRORS[413])
         return None
-    content_type = "text/html" if upload.name.casefold().endswith((".html", ".htm")) else "text/markdown"
+    name = upload.name.casefold()
+    content_type = ("text/html" if name.endswith((".html", ".htm")) else
+                    "application/pdf" if name.endswith(".pdf") else
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    if name.endswith(".docx") else "text/markdown")
     try:
         return _document_request(
             "POST", api, {**headers, "Content-Type": content_type}, path,
@@ -82,7 +86,11 @@ def _preview_file(api: str, headers: dict[str, str], upload, source: str | None,
     if upload is None:
         st.info("请先选择 Markdown/HTML 文件。")
         return None
-    content_type = "text/html" if upload.name.casefold().endswith((".html", ".htm")) else "text/markdown"
+    name = upload.name.casefold()
+    content_type = ("text/html" if name.endswith((".html", ".htm")) else
+                    "application/pdf" if name.endswith(".pdf") else
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    if name.endswith(".docx") else "text/markdown")
     params = {"filename": upload.name}
     if source:
         params["source"] = source

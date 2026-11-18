@@ -46,6 +46,7 @@ class InvestigationEvidence:
     line_start: int
     line_end: int
     quote: str
+    locator: str | None = None
 
 
 def investigation_result(domain: Literal["policy", "manual"], result: dict,
@@ -129,7 +130,7 @@ def run_manual_investigation(request: ManualInvestigationV3, document: PinnedDoc
             metadata=DocumentMetadata(
                 document_id=doc_id, title=item.title, source="manual", version=int(version),
                 attributes={"file": item.file},
-            ), source_file=item.file,
+            ), source_file=item.file, locator=item.locator,
         )
         for item in passages
     )
@@ -149,4 +150,4 @@ def run_manual_investigation(request: ManualInvestigationV3, document: PinnedDoc
     return investigation_result("manual", {
         **result, "kind": "answer", "reason": None, "message": "已找到相关手册原文。", "answer": passage.quote,
     }, (InvestigationEvidence("manual", doc_id, str(version), passage.title, passage.source_file or "",
-                              passage.line_start, passage.line_end, passage.quote),))
+                              passage.line_start, passage.line_end, passage.quote, passage.locator),))

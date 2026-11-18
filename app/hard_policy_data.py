@@ -117,6 +117,7 @@ class TextPassage:
     file: str
     line_start: int
     line_end: int
+    locator: str | None = None
 
 
 @dataclass(frozen=True)

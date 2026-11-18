@@ -5,6 +5,7 @@ converted to the same passage shape with block-level, not byte-level, lines.
 """
 from __future__ import annotations
 
+import io
 import re
 from hashlib import sha256
 from html.parser import HTMLParser
@@ -13,6 +14,7 @@ from typing import Iterable, Literal
 from app.rag.models import DocumentMetadata, Passage
 
 SourceFormat = Literal["markdown", "html", "text"]
+_BINARY_FORMATS = {"pdf", "docx"}
 _HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*#*$")
 _BLANK = re.compile(r"\n{3,}")
 
@@ -179,6 +181,102 @@ def parse_text(text: str, metadata: DocumentMetadata) -> tuple[Passage, ...]:
         for content, start, end in paragraphs
         if content.strip()
     )
+
+
+def parse_pdf(data: bytes, metadata: DocumentMetadata) -> tuple[Passage, ...]:
+    """Extract one citation span per PDF page using pypdf."""
+    try:
+        from pypdf import PdfReader
+    except ImportError as exc:
+        raise ValueError("PDF 解析依赖未安装：pypdf") from exc
+    try:
+        reader = PdfReader(io.BytesIO(data))
+    except Exception as exc:
+        raise ValueError("PDF 文件无法解析。") from exc
+    passages: list[Passage] = []
+    for page_number, page in enumerate(reader.pages, 1):
+        try:
+            text = page.extract_text() or ""
+        except Exception:
+            text = ""
+        text = _BLANK.sub("\n\n", "\n".join(line.strip() for line in text.splitlines() if line.strip())).strip()
+        if text:
+            heading = text.splitlines()[0][:120]
+            passages.append(Passage(
+                document_id=metadata.document_id, version=metadata.version,
+                title=heading, section=f"第 {page_number} 页", text=text,
+                line_start=page_number, line_end=page_number, metadata=metadata, locator="page",
+            ))
+    if not passages:
+        raise ValueError("PDF 没有可提取的文本；扫描件暂不支持。")
+    return tuple(passages)
+
+
+def parse_docx(data: bytes, metadata: DocumentMetadata) -> tuple[Passage, ...]:
+    """Extract heading-aware paragraphs and table rows from DOCX."""
+    try:
+        from docx import Document
+    except ImportError as exc:
+        raise ValueError("DOCX 解析依赖未安装：python-docx") from exc
+    try:
+        document = Document(io.BytesIO(data))
+    except Exception as exc:
+        raise ValueError("DOCX 文件无法解析。") from exc
+    title = metadata.title
+    section = metadata.title
+    body: list[str] = []
+    start = 1
+    passages: list[Passage] = []
+    block = 0
+
+    def flush(end: int) -> None:
+        nonlocal body, section
+        text = "\n".join(item for item in body if item.strip()).strip()
+        if text:
+            passages.append(Passage(
+                document_id=metadata.document_id, version=metadata.version,
+                title=title, section=section, text=text, line_start=start, line_end=max(start, end),
+                metadata=metadata, locator="paragraph",
+            ))
+        body = []
+
+    for paragraph in document.paragraphs:
+        block += 1
+        text = paragraph.text.strip()
+        if not text:
+            continue
+        style = paragraph.style.name.casefold() if paragraph.style is not None else ""
+        if style.startswith("heading"):
+            flush(block - 1)
+            section = text
+            start = block
+            if style in {"heading 1", "title"} and not passages and not body:
+                title = text
+            continue
+        if not body:
+            start = block
+        body.append(text)
+    flush(block)
+    for table in document.tables:
+        for row in table.rows:
+            cells = [cell.text.strip() for cell in row.cells if cell.text.strip()]
+            if cells:
+                block += 1
+                if not body:
+                    start = block
+                body.append(" | ".join(cells))
+    flush(block)
+    if not passages:
+        raise ValueError("DOCX 没有可提取的正文。")
+    return tuple(passages)
+
+
+def parse_binary(data: bytes, metadata: DocumentMetadata, *, format: str) -> tuple[Passage, ...]:
+    if format == "pdf":
+        return parse_pdf(data, metadata)
+    if format == "docx":
+        return parse_docx(data, metadata)
+    raise ValueError(f"Unsupported binary format: {format}")
 
 
 def chunk_document(text: str, metadata: DocumentMetadata, *, format: SourceFormat = "markdown") -> tuple[Passage, ...]:
