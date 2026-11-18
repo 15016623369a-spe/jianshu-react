@@ -37,9 +37,10 @@ GET /api/v3/domains
   改为 registry 查 domain → 调用已绑定 handler
 manual 域
   已改用通用 RetrievalService（BM25 + Evidence + source_file）
+  支持上传 HTML 手册并按标题/段落切分
 policy 域
-  行为保持不变，仍走原有证据/账本核验
-UI 未切换
+  行为保持不变，仍走原有证据/账本核验；HTML 上传被拒绝
+UI 已允许手册上传 .html/.htm
 没有引入 Dense/Reranker
 没有动 v2.0.0 tag
 ```
@@ -47,11 +48,11 @@ UI 未切换
 ## 验收
 
 ```text
-Ran 266 tests in 13.744s
+Ran 267 tests in 13.878s
 OK
 ```
 
-新增 18 项测试，覆盖：
+新增 19 项测试，覆盖：
 
 - Markdown 标题行号；
 - HTML 提取与 script 忽略；
@@ -67,7 +68,7 @@ OK
 ## 下一步
 
 1. 将 policy 的文档检索也接到 `RetrievalService`（保留现有引用/账本规则）；
-2. 增加 HTML 上传入口与解析诊断；
+2. 为 HTML 上传增加解析诊断和失败原因展示；
 3. 为 manual 域增加独立留出评测；
 4. 增加 policy/manual 共用的 EvidenceStore 输出；
 5. 再评估 Dense/Reranker。

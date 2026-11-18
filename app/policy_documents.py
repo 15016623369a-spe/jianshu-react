@@ -13,6 +13,8 @@ from uuid import UUID, uuid4
 
 from app import hard_policy_data as evidence
 from app.gateway_identity import owner_id
+from app.rag.ingest import chunk_document
+from app.rag.models import DocumentMetadata
 
 MAX_DOCUMENT_BYTES = 65_536
 MAX_READERS = 32
@@ -65,6 +67,18 @@ class PinnedDocument:
 
     def passages(self) -> tuple[evidence.TextPassage, ...]:
         content = self.content.decode("utf-8-sig").encode("utf-8")
+        if _format(self.filename) == "html":
+            metadata = DocumentMetadata(
+                document_id=self.id, title=self.filename, source=self.source, version=self.version,
+                attributes={"file": self.location},
+            )
+            return tuple(
+                evidence.TextPassage(
+                    title=block.section or block.title, quote=block.text, source=self.source,
+                    file=self.location, line_start=block.line_start, line_end=block.line_end,
+                )
+                for block in chunk_document(content.decode("utf-8"), metadata, format="html")
+            )
         return tuple(replace(block, file=self.location) for block in evidence._passages(content, self.source, self.filename))
 
 
@@ -80,26 +94,40 @@ class PolicyDocumentLimit(ValueError):
     pass
 
 
-def _validate(filename: str, content: bytes) -> tuple[str, str]:
+def _format(filename: str) -> str:
+    return "html" if filename.casefold().endswith((".html", ".htm")) else "markdown"
+
+
+def _validate(filename: str, content: bytes, source: str = "policy") -> tuple[str, str]:
     if (
         not 4 <= len(filename) <= 120 or filename != filename.strip() or filename.startswith(".")
-        or not filename.casefold().endswith((".md", ".markdown"))
+        or not filename.casefold().endswith((".md", ".markdown", ".html", ".htm"))
         or any(char in '/\\?#%<>"' or unicodedata.category(char).startswith("C") for char in filename)
     ):
-        raise PolicyDocumentInput("请使用不含路径或特殊字符的 Markdown 文件名。")
+        raise PolicyDocumentInput("请使用不含路径或特殊字符的 Markdown/HTML 文件名。")
     if not content or len(content) > MAX_DOCUMENT_BYTES:
-        raise PolicyDocumentInput("Markdown 文件不能为空，且不得超过 64 KiB。")
+        raise PolicyDocumentInput("文档不能为空，且不得超过 64 KiB。")
     try:
         text = content.decode("utf-8-sig")
     except UnicodeDecodeError:
-        raise PolicyDocumentInput("请上传 UTF-8 Markdown 文件。") from None
+        raise PolicyDocumentInput("请上传 UTF-8 文档。") from None
     if any(char not in "\t\r\n" and unicodedata.category(char).startswith("C") for char in text):
         raise PolicyDocumentInput("文档包含不支持的控制字符。")
+    source_format = _format(filename)
+    if source_format == "html":
+        if source != "manual":
+            raise PolicyDocumentInput("HTML 目前仅用于产品手册。")
+        passages = chunk_document(text, DocumentMetadata(
+            document_id="upload", title=filename, source=source, attributes={"file": filename},
+        ), format="html")
+        if not 1 <= len(passages) <= _MAX_PASSAGES:
+            raise PolicyDocumentInput("请在 1 至 40 个标题下填写手册正文。")
+        return passages[0].title[:120], sha256(content).hexdigest()
     if _UNSUPPORTED_MARKUP.search(text):
-        raise PolicyDocumentInput("请使用正文段落。文档不支持 HTML、引用块和代码块。")
+        raise PolicyDocumentInput("请使用正文段落。Markdown 不支持 HTML、引用块和代码块。")
     passages = evidence._passages(text.encode("utf-8"), "policy", filename)
     if not 1 <= len(passages) <= _MAX_PASSAGES or any(not 1 <= len(p.title) <= 120 or not p.quote.strip() for p in passages):
-        raise PolicyDocumentInput("请在 1 至 40 个「## 标题」下填写文档正文。")
+        raise PolicyDocumentInput("请在 1 至 40 个「## 标题」下填写政策或公告正文。")
     first = next(line for line in text.splitlines() if line.strip())
     title = first[2:].strip()[:120] if first.startswith("# ") and first[2:].strip() else passages[0].title
     return title, sha256(content).hexdigest()
@@ -191,7 +219,7 @@ class PolicyDocumentStore:
             ]
 
     def create(self, owner: str, filename: str, source: evidence.PassageSource, content: bytes) -> dict:
-        title, digest = _validate(filename, content)
+        title, digest = _validate(filename, content, source)
         document_id = str(uuid4())
         with closing(self._connect()) as connection, connection:
             connection.execute("BEGIN IMMEDIATE")
@@ -208,7 +236,7 @@ class PolicyDocumentStore:
             connection.execute("BEGIN IMMEDIATE")
             self._require(connection, owner, document_id, write=True)
             previous = self._current(connection, document_id)
-            title, digest = _validate(filename, content)
+            title, digest = _validate(filename, content, previous["source"])
             if (previous["filename"], previous["digest"]) == (filename, digest):
                 return self._metadata(previous, owner)
             version = previous["version"] + 1

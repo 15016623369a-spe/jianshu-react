@@ -32,13 +32,13 @@ class Readers(BaseModel):
 
 async def _upload(request: Request, update, *args):
     content_type = request.headers.get("content-type", "").partition(";")[0].strip().lower()
-    if content_type not in {"", "text/markdown", "text/plain", "application/octet-stream"}:
-        raise HTTPException(415, "请上传 UTF-8 Markdown 文件正文。")
+    if content_type not in {"", "text/markdown", "text/html", "text/plain", "application/octet-stream"}:
+        raise HTTPException(415, "请上传 UTF-8 Markdown/HTML 文件正文。")
     slots = request.app.state.upload_slots
     if slots.locked():
         raise HTTPException(503, "文档上传请求较多，请稍后重试。")
     async with slots:
-        data = await bounded_body(request, MAX_DOCUMENT_BYTES, size_error="Markdown 文件超过 64 KiB")
+        data = await bounded_body(request, MAX_DOCUMENT_BYTES, size_error="文档超过 64 KiB")
         return await run_in_threadpool(update, request.state.owner, *args, data)
 
 

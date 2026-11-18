@@ -10,7 +10,7 @@ _PATH = "/api/v2/policy-documents"
 _MANUAL_PATH = "/api/v3/manual-documents"
 _SOURCES = {"policy": "政策", "bulletin": "公告"}
 _MAX_DOCUMENT_BYTES = 64 * 1024
-_ACCEPTED_TYPES = ("md", "markdown")
+_ACCEPTED_TYPES = ("md", "markdown", "html", "htm")
 _EXAMPLE = """# 售后政策
 ## 华南电水壶退款口径
 
@@ -67,9 +67,10 @@ def _send_file(api: str, headers: dict[str, str], upload, path: str = "", *, man
     if upload.size > _MAX_DOCUMENT_BYTES:
         st.error(_ERRORS[413])
         return None
+    content_type = "text/html" if upload.name.casefold().endswith((".html", ".htm")) else "text/markdown"
     try:
         return _document_request(
-            "POST", api, {**headers, "Content-Type": "text/markdown"}, path,
+            "POST", api, {**headers, "Content-Type": content_type}, path,
             manual=manual, params={"filename": upload.name, **params}, content=upload.getvalue(),
         )
     except (httpx.HTTPError, ValueError) as exc:
@@ -84,7 +85,7 @@ def render_policy_library(
         st.warning("暂时无法读取文档库。")
         return
 
-    st.caption("上传和更新 UTF-8 Markdown，每版最多 64 KiB。调查时可选择最新可读版本，旧版本在此保留。")
+    st.caption("上传和更新 UTF-8 Markdown/HTML，每版最多 64 KiB。调查时可选择最新可读版本，旧版本在此保留。")
     with st.expander("查看可用于调查的正文格式"):
         example = "# 设备手册\n\n## 连接 Wi-Fi\n\n打开设备应用并添加设备。" if manual else _EXAMPLE
         st.code(example, language="markdown", wrap_lines=True)
@@ -97,7 +98,7 @@ def render_policy_library(
         st.success(message)
     with st.form(f"{library}-upload-{session_id}", clear_on_submit=True, border=False):
         source = None if manual else st.radio("文档类型", list(_SOURCES), format_func=_SOURCES.__getitem__, horizontal=True)
-        upload = st.file_uploader("新 Markdown 文档", type=_ACCEPTED_TYPES)
+        upload = st.file_uploader("新文档", type=_ACCEPTED_TYPES if manual else ("md", "markdown"))
         create = st.form_submit_button("上传文档", type="primary")
     if create:
         params = {"source": source} if source else {}
@@ -137,7 +138,7 @@ def render_policy_library(
 
     with st.expander("上传新版本"):
         with st.form(f"policy-library-revision-{document_id}", clear_on_submit=True, border=False):
-            revision = st.file_uploader("新版本 Markdown 文档", type=_ACCEPTED_TYPES)
+            revision = st.file_uploader("新版本文档", type=_ACCEPTED_TYPES if manual else ("md", "markdown"))
             save = st.form_submit_button("保存新版本", type="primary")
         if save:
             revised = _send_file(api, headers, revision, path + "/versions", manual=manual)

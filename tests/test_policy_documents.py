@@ -101,6 +101,31 @@ class PolicyDocumentAPITests(unittest.TestCase):
         self.assertEqual(self.client.get(f"{url}/versions/1", headers=self.bob).status_code, 404)
         self.assertEqual(self.ask([doc["id"]], headers=self.bob).status_code, 404)
 
+    def test_html_manual_upload_is_parsed_and_cited(self):
+        raw = (
+            "<html><body><h1>设备手册</h1>"
+            "<h2>连接 Wi-Fi</h2><p>连接成功时指示灯为绿色。</p>"
+            "<h2>检查电量</h2><p>在应用首页查看电池图标。</p>"
+            "</body></html>"
+        ).encode()
+        upload = self.client.post(
+            "/api/v3/manual-documents", headers={**self.alice, "Content-Type": "text/html"},
+            params={"filename": "manual.html"}, content=raw,
+        )
+        self.assertEqual(upload.status_code, 201, upload.text)
+        document = upload.json()
+        result = self.client.post("/api/v3/investigations", headers=self.alice, json={
+            "domain": "manual", "question": "怎样连接 Wi-Fi？", "document_id": document["id"], "version": 1,
+        })
+        self.assertEqual(result.status_code, 200, result.text)
+        result = result.json()
+        self.assertIn("绿色", result["answer"])
+        reference, = result["evidence"]
+        self.assertEqual(reference["file"], f"uploads/{document['id']}/v1/manual.html")
+        self.assertEqual((reference["line_start"], reference["line_end"]), (2, 3))
+        rejected = self.upload(filename="policy.html", content=raw)
+        self.assertEqual(rejected.status_code, 422)
+
     def test_upload_scope_does_not_fill_gaps_from_demo_or_skip_unauthorized_documents(self):
         own = self.upload().json()["id"]
         private = self.upload(headers=self.bob).json()["id"]
