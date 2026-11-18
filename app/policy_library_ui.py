@@ -24,9 +24,9 @@ _ERRORS = {
     403: "当前身份没有修改共享权限。",
     404: "找不到文档，或当前账号已没有访问权限。",
     409: "版本或文档数量已达上限，请核对当前文档状态。",
-    413: "Markdown 文档不得超过 64 KiB。",
-    415: "请上传 UTF-8 编码的 Markdown 文档。",
-    422: "请使用 .md 或 .markdown 文件，并添加以「## 」开头的章节标题。",
+    413: "文档不得超过 64 KiB。",
+    415: "请上传 UTF-8 编码的 Markdown/HTML 文档。",
+    422: "请检查文件名、正文格式和章节标题；政策/手册支持 Markdown 或 HTML。",
 }
 
 
@@ -62,7 +62,7 @@ def document_label(document: dict) -> str:
 
 def _send_file(api: str, headers: dict[str, str], upload, path: str = "", *, manual: bool = False, **params) -> dict | None:
     if upload is None:
-        st.info("请先选择 Markdown 文件。")
+        st.info("请先选择 Markdown/HTML 文件。")
         return None
     if upload.size > _MAX_DOCUMENT_BYTES:
         st.error(_ERRORS[413])
@@ -98,7 +98,7 @@ def render_policy_library(
         st.success(message)
     with st.form(f"{library}-upload-{session_id}", clear_on_submit=True, border=False):
         source = None if manual else st.radio("文档类型", list(_SOURCES), format_func=_SOURCES.__getitem__, horizontal=True)
-        upload = st.file_uploader("新文档", type=_ACCEPTED_TYPES if manual else ("md", "markdown"))
+        upload = st.file_uploader("新文档", type=_ACCEPTED_TYPES)
         create = st.form_submit_button("上传文档", type="primary")
     if create:
         params = {"source": source} if source else {}
@@ -138,7 +138,7 @@ def render_policy_library(
 
     with st.expander("上传新版本"):
         with st.form(f"policy-library-revision-{document_id}", clear_on_submit=True, border=False):
-            revision = st.file_uploader("新版本文档", type=_ACCEPTED_TYPES if manual else ("md", "markdown"))
+            revision = st.file_uploader("新版本文档", type=_ACCEPTED_TYPES)
             save = st.form_submit_button("保存新版本", type="primary")
         if save:
             revised = _send_file(api, headers, revision, path + "/versions", manual=manual)

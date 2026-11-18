@@ -123,8 +123,30 @@ class PolicyDocumentAPITests(unittest.TestCase):
         reference, = result["evidence"]
         self.assertEqual(reference["file"], f"uploads/{document['id']}/v1/manual.html")
         self.assertEqual((reference["line_start"], reference["line_end"]), (2, 3))
-        rejected = self.upload(filename="policy.html", content=raw)
-        self.assertEqual(rejected.status_code, 422)
+        accepted = self.upload(filename="policy.html", content=raw)
+        self.assertEqual(accepted.status_code, 201)
+
+    def test_html_policy_can_drive_the_policy_investigation(self):
+        raw = (
+            "<html><body><h1>上传 HTML 政策</h1>"
+            "<h2>华南电水壶十月退款结算</h2>"
+            "<p>文号：demo-html-kettle-oct。</p>"
+            "<p>在华南销售的家电类商品适用本页规则，具体限于电水壶。从2026年10月1日起执行，到2026年10月31日为止（含当天）。</p>"
+            "<p>按售后退款台账结算，同一订单先聚合退款，每笔扣减上限 5 元。</p>"
+            "</body></html>"
+        ).encode()
+        upload = self.client.post(
+            "/api/v2/policy-documents", headers={**self.alice, "Content-Type": "text/html"},
+            params={"filename": "policy-html.html", "source": "policy"}, content=raw,
+        )
+        self.assertEqual(upload.status_code, 201, upload.text)
+        document = upload.json()
+        result = self.client.post("/api/v2/policy-investigation", headers=self.alice, json={
+            "question": "华南电水壶 2026 年 10 月净营收是多少？", "document_ids": [document["id"]],
+        })
+        self.assertEqual(result.status_code, 200, result.text)
+        result = result.json()
+        self.assertEqual((result["kind"], result["actual"][0]["net_cents"]), ("answer", 29280))
 
     def test_upload_scope_does_not_fill_gaps_from_demo_or_skip_unauthorized_documents(self):
         own = self.upload().json()["id"]

@@ -1,6 +1,6 @@
 # V3 基础层：通用 ingestion / retrieval / evidence
 
-日期 2026 年 11 月 18 日。本提交从 `v2.0.0` 检查点之后的双域版本继续，新增独立的通用 RAG 基础层。v2 端点保持不变；V3 路由已改为 domain registry 驱动，手册域已接入通用检索，并支持 HTML 手册上传。
+日期 2026 年 11 月 18 日。本提交从 `v2.0.0` 检查点之后的双域版本继续，新增独立的通用 RAG 基础层。v2 端点保持不变；V3 路由已改为 domain registry 驱动，手册域已接入通用检索，并支持 HTML 政策/手册上传。
 
 ## 本次交付
 
@@ -37,10 +37,10 @@ GET /api/v3/domains
   改为 registry 查 domain → 调用已绑定 handler
 manual 域
   已改用通用 RetrievalService（BM25 + Evidence + source_file）
-  支持上传 HTML 手册并按标题/段落切分
+  支持上传 HTML 政策和手册，并按标题/段落切分
 policy 域
-  行为保持不变，仍走原有证据/账本核验；HTML 上传被拒绝
-UI 已允许手册上传 .html/.htm
+  行为保持不变，仍走原有证据/账本核验；HTML 政策也可上传并解析
+UI 已允许政策/手册上传 .html/.htm
 没有引入 Dense/Reranker
 没有动 v2.0.0 tag
 ```
@@ -48,11 +48,11 @@ UI 已允许手册上传 .html/.htm
 ## 验收
 
 ```text
-Ran 267 tests in 13.878s
+Ran 268 tests in 13.865s
 OK
 ```
 
-新增 18 项测试，覆盖：
+新增 19 项测试，覆盖：
 
 - Markdown 标题行号；
 - HTML 提取与 script 忽略；
@@ -64,6 +64,20 @@ OK
 - ACL 拒绝；
 - evidence 生成；
 - domain 注册与未知 domain fail closed。
+
+## Hybrid 决策
+
+本次没有引入 Dense/Reranker，理由是现有 BM25 尚未被证明不够：
+
+```text
+政策 grounding 首轮候选 Recall@5：
+  lexical 89.36%
+  auto    91.49%
+  fixed   87.23%
+```
+
+当前门槛是 85%，BM25 达标；因此先不加向量检索。  
+触发条件：50+ 独立检索题上 Recall@5 低于 85%，或同义表达明显漏检。
 
 ## 下一步
 

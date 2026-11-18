@@ -115,8 +115,6 @@ def _validate(filename: str, content: bytes, source: str = "policy") -> tuple[st
         raise PolicyDocumentInput("文档包含不支持的控制字符。")
     source_format = _format(filename)
     if source_format == "html":
-        if source != "manual":
-            raise PolicyDocumentInput("HTML 目前仅用于产品手册。")
         passages = chunk_document(text, DocumentMetadata(
             document_id="upload", title=filename, source=source, attributes={"file": filename},
         ), format="html")
