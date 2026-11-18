@@ -33,6 +33,12 @@ _BASELINE = re.compile(
     rf"(?P<month>{_MONTH_VALUE})\s*月(?:份)?\s*(?:的\s*)?(?:口径|规则|政策|办法)"
 )
 _GOAL = re.compile(r"净营收|净销售额|净收入|(?:扣除|扣掉)退款后(?:的)?(?:销售额|营收|收入)")
+_MONTH_TOKEN = rf"(?:(?:20\d{{2}})\s*年\s*)?(?:{_MONTH_VALUE})\s*月(?:份)?"
+_DIRECTION = re.compile(
+    rf"(?:(?:比较|对比|相比)\s*(?P<left_a>{_MONTH_TOKEN})\s*(?:和|与|、)\s*(?P<right_a>{_MONTH_TOKEN}))"
+    rf"|(?:(?P<left_b>{_MONTH_TOKEN})\s*(?:比|较|相对)\s*(?P<right_b>{_MONTH_TOKEN}))"
+    rf"|(?:(?P<left_c>{_MONTH_TOKEN})\s*(?:减|减去)\s*(?P<right_c>{_MONTH_TOKEN}))"
+)
 _OUT_OF_SCOPE = re.compile(
     r"按(?:城市|省|省份|渠道|天|周)|分(?:城市|省|省份|渠道)|只看(?:金额|单价|订单号)|订单明细|"
     r"只算退款订单|只看退款订单|退款订单的净营收|退款率|毛利润|排名|同比|上月|本月|"
@@ -106,12 +112,17 @@ class Scope:
     periods: tuple[Period, ...]
     baseline_period: int | None
     assumed_year: int | None
+    baseline_rule_period: Period | None = None
+    comparison_sign: int = 1
 
     def json(self) -> dict:
         return {
             "product": self.product, "region": self.region,
             "periods": [period.json() for period in self.periods],
-            "baseline_period": self.baseline_period, "assumed_year": self.assumed_year,
+            "baseline_period": self.baseline_period,
+            "baseline_rule_period": self.baseline_rule_period.json() if self.baseline_rule_period else None,
+            "comparison_sign": self.comparison_sign,
+            "assumed_year": self.assumed_year,
         }
 
 
@@ -131,11 +142,38 @@ def _period(year: int, month: int) -> Period:
     return Period(date(year, month, 1), date(year + (month == 12), month % 12 + 1, 1))
 
 
+def _month_of(value: str) -> int:
+    match = _MONTH.search(value)
+    if match is None:
+        raise _Stop("ambiguous_period")
+    return _month(match["month"])
+
+
+def _direction_sign(text: str, dates: list[tuple[int, int]]) -> int:
+    match = _DIRECTION.search(text)
+    if match is None:
+        return 1
+    left = next((match[name] for name in ("left_a", "left_b", "left_c") if match[name]), None)
+    right = next((match[name] for name in ("right_a", "right_b", "right_c") if match[name]), None)
+    if left is None or right is None:
+        return 1
+    left_month, right_month = _month_of(left), _month_of(right)
+    left_year = _MONTH.search(left)["year"] if _MONTH.search(left) else None
+    right_year = _MONTH.search(right)["year"] if _MONTH.search(right) else None
+    left_index = next((index for index, (year, month) in enumerate(dates)
+                       if month == left_month and (not left_year or year == int(left_year))), None)
+    right_index = next((index for index, (year, month) in enumerate(dates)
+                        if month == right_month and (not right_year or year == int(right_year))), None)
+    if left_index is None or right_index is None or left_index == right_index:
+        return 1
+    return 1 if left_index > right_index else -1
+
+
 def _parse(question: str, snapshot: DocumentSnapshot, reference_year: int | None) -> Scope:
     question = unicodedata.normalize("NFKC", question)
     if _OUT_OF_SCOPE.search(question):
         raise _Stop("unsupported_scope")
-    if not _GOAL.search(question):
+    if not _GOAL.search(question) and not _COMPARE.search(question):
         raise _Stop("missing_metric")
     products = sorted({product for product, _ in snapshot.catalog if product in question}, key=len, reverse=True)
     # A matched catalog name may contain a shorter product name in the same phrase.
@@ -175,23 +213,32 @@ def _parse(question: str, snapshot: DocumentSnapshot, reference_year: int | None
         if token["year"]:
             year = int(token["year"])
         actual.add((year, _month(token["month"])))
-    if len(actual) > 2 or (len(actual) != 2 and _COMPARE.search(actual_text)):
+    if len(actual) > 2 or (len(actual) != 2 and _COMPARE.search(actual_text) and baseline is None):
         raise _Stop("ambiguous_period")
     if len(actual) == 2 and not _COMPARE.search(actual_text):
         raise _Stop("ambiguous_period")
 
     dates = sorted(actual)
+    comparison_sign = _direction_sign(actual_text, dates)
     if baseline is None and re.search(r"如果|假如|假设|统一口径|相同口径|同一口径|重算|重计", question):
         raise _Stop("missing_baseline")
     baseline_period = None
+    baseline_rule_period = None
     if baseline:
         matches = [index for index, (y, m) in enumerate(dates) if
                    m == _month(baseline["month"]) and (not baseline["year"] or y == int(baseline["year"]))]
-        if len(actual) != 2 or len(matches) != 1:
+        if len(matches) == 1 and len(actual) == 2:
+            baseline_period = matches[0]
+        elif len(actual) == 1:
+            baseline_year = int(baseline["year"]) if baseline["year"] else year
+            baseline_rule_period = _period(baseline_year, _month(baseline["month"]))
+        else:
             raise _Stop("missing_baseline")
-        baseline_period = matches[0]
-    return Scope(selected[0], areas[0], tuple(_period(y, m) for y, m in dates),
-                 baseline_period, None if explicit else reference_year)
+    return Scope(
+        selected[0], areas[0], tuple(_period(y, m) for y, m in dates),
+        baseline_period, None if explicit else reference_year,
+        baseline_rule_period, comparison_sign,
+    )
 
 
 def run_policy_investigation(
@@ -227,12 +274,14 @@ def run_policy_investigation(
     def result(
         kind: str, reason: str | None, message: str, actual=(), counterfactual=(),
         actual_delta: int | None = None, counterfactual_delta: int | None = None,
+        single_period_delta: int | None = None,
     ) -> dict:
         effect = None if actual_delta is None or counterfactual_delta is None else actual_delta - counterfactual_delta
         return {
             "kind": kind, "reason": reason, "message": message, "mode": mode, "scope": scope.json() if scope else None,
             "document_version": version, "actual": list(actual), "counterfactual": list(counterfactual),
             "actual_delta_cents": actual_delta, "counterfactual_delta_cents": counterfactual_delta,
+            "single_period_delta_cents": single_period_delta,
             "policy_effect_cents": effect, "tool_trace": trace, "retrieval_trace": retrieval_trace,
             "metrics": {**metrics, "latency_ms": round((perf_counter() - began) * 1000, 3)},
         }
@@ -306,7 +355,23 @@ def run_policy_investigation(
             actual_segments.append(tuple(resolved))
 
         counter_segments = []
-        if scope.baseline_period is not None:
+        if scope.baseline_rule_period is not None:
+            baseline = scope.baseline_rule_period
+            raw_basis = resolve_policy_window(
+                snapshot, scope.product, scope.region, baseline.start, baseline.end_exclusive,
+                lexical=use_lexical, rewrite=expand, observe=record, track=retrieval_trace.append,
+            )
+            basis = tuple(
+                _Segment(Period(segment.start, segment.end_exclusive), segment.ledger, segment.cap_cents,
+                         (segment.policy, *segment.bulletins))
+                for segment in raw_basis
+            )
+            if not basis or len({(segment.ledger, segment.cap_cents) for segment in basis}) != 1:
+                raise _Stop("baseline_ambiguous")
+            rule = basis[0]
+            documents = tuple({doc["id"]: doc for segment in basis for doc in segment.documents}.values())
+            counter_segments = [(_Segment(period, rule.ledger, rule.cap_cents, documents),) for period in scope.periods]
+        elif scope.baseline_period is not None:
             basis = actual_segments[scope.baseline_period]
             if len({(segment.ledger, segment.cap_cents) for segment in basis}) != 1:
                 raise _Stop("baseline_ambiguous")
@@ -361,11 +426,15 @@ def run_policy_investigation(
             if any((left["gross_cents"], left["order_count"]) != (right["gross_cents"], right["order_count"])
                    for left, right in zip(actual, counterfactual, strict=True)):
                 raise _Stop("verification_failed")
-        actual_delta = actual[1]["net_cents"] - actual[0]["net_cents"] if len(actual) == 2 else None
-        counter_delta = counterfactual[1]["net_cents"] - counterfactual[0]["net_cents"] if counterfactual else None
+        actual_delta = ((actual[1]["net_cents"] - actual[0]["net_cents"]) * scope.comparison_sign
+                        if len(actual) == 2 else None)
+        counter_delta = ((counterfactual[1]["net_cents"] - counterfactual[0]["net_cents"]) * scope.comparison_sign
+                         if len(counterfactual) == 2 else None)
+        single_delta = (actual[0]["net_cents"] - counterfactual[0]["net_cents"]
+                        if len(actual) == 1 and counterfactual else None)
         record("verify", "ok", "各时段口径、账本、绑定参数及金额均已核对。")
         return result("answer", None, "已按适用政策和只读账本计算。", actual, counterfactual,
-                      actual_delta, counter_delta)
+                      actual_delta, counter_delta, single_delta)
     except (RetrievalStop, _Stop) as exc:
         trace.append({"stage": "stopped", "status": "error", "detail": exc.reason})
         if exc.reason in _QUESTIONS:

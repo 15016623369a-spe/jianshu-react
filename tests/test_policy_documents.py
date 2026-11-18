@@ -147,6 +147,15 @@ class PolicyDocumentAPITests(unittest.TestCase):
         self.assertEqual(result.status_code, 200, result.text)
         result = result.json()
         self.assertEqual((result["kind"], result["actual"][0]["net_cents"]), ("answer", 29280))
+        wrapped = self.client.post("/api/v3/investigations", headers=self.alice, json={
+            "domain": "policy", "question": "华南电水壶 2026 年 10 月净营收是多少？",
+            "document_ids": [document["id"]],
+        })
+        self.assertEqual(wrapped.status_code, 200, wrapped.text)
+        reference, = wrapped.json()["evidence"]
+        self.assertIn("每笔扣减上限 5 元", reference["quote"])
+        self.assertEqual(reference["file"], f"uploads/{document['id']}/v1/policy-html.html")
+        self.assertGreater(reference["line_start"], 0)
 
     def test_upload_scope_does_not_fill_gaps_from_demo_or_skip_unauthorized_documents(self):
         own = self.upload().json()["id"]

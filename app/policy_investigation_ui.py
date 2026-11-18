@@ -101,14 +101,23 @@ def _render_calculation(entries: list[dict], label: str) -> None:
 def _render_answer(result: dict) -> None:
     scope = result["scope"]
     periods, counterfactual = scope["periods"], result["counterfactual"]
-    timeframe = _period_label(periods[0]) if len(periods) == 1 else (
-        f"{_period_label(periods[1])} 减 {_period_label(periods[0])}"
-    )
+    if len(periods) == 1:
+        timeframe = _period_label(periods[0])
+    elif scope.get("comparison_sign", 1) < 0:
+        timeframe = f"{_period_label(periods[0])} 减 {_period_label(periods[1])}"
+    else:
+        timeframe = f"{_period_label(periods[1])} 减 {_period_label(periods[0])}"
     st.caption(f"{scope['region']} · {scope['product']} · {timeframe}")
     if year := scope.get("assumed_year"):
         st.caption(f"问题中省略的查询年份按演示数据推断为 {year} 年。")
     if len(periods) == 1:
-        st.metric("实际净营收", _format_money(result["actual"][0]["net_cents"]))
+        if counterfactual:
+            metric_cards = st.columns(3)
+            metric_cards[0].metric("实际净营收", _format_money(result["actual"][0]["net_cents"]))
+            metric_cards[1].metric("统一口径净营收", _format_money(counterfactual[0]["net_cents"]))
+            metric_cards[2].metric("实际减统一", _format_money(result["single_period_delta_cents"], signed=True))
+        else:
+            st.metric("实际净营收", _format_money(result["actual"][0]["net_cents"]))
     else:
         metric_cards = st.columns(3) if counterfactual else [st.container()]
         metric_cards[0].metric("实际口径差额", _format_money(result["actual_delta_cents"], signed=True))
@@ -132,8 +141,14 @@ def _render_answer(result: dict) -> None:
             st.caption(f"实际口径 · {_period_label(segment['period'])} · {_rule_label(segment['rule'])}")
 
     if counterfactual:
-        base_label = _period_label(periods[scope["baseline_period"]])
-        st.caption(f"统一口径沿用 {base_label}的退款规则重算同一批订单。口径差额影响等于实际差额减去统一口径差额。")
+        if scope.get("baseline_rule_period"):
+            base_label = _period_label(scope["baseline_rule_period"])
+        else:
+            base_label = _period_label(periods[scope["baseline_period"]])
+        if len(periods) == 1:
+            st.caption(f"统一口径沿用 {base_label}的退款规则重算同一批订单。")
+        else:
+            st.caption(f"统一口径沿用 {base_label}的退款规则重算同一批订单。口径差额影响等于实际差额减去统一口径差额。")
     _render_calculation(result["actual"], "核对实际口径的条款和 SQL")
     if counterfactual:
         _render_calculation(counterfactual, "核对统一口径的条款和 SQL")

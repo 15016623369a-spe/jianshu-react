@@ -43,6 +43,28 @@ class PolicyInvestigationTests(unittest.TestCase):
         self.assertEqual(november_counter["documents"][-1]["id"], "bulletin-south-appliances-oct")
         model.assert_not_called()
 
+    def test_single_month_cross_year_baseline(self):
+        result = self.ask(
+            "2027 年 1 月华南电水壶净营收是多少？如果都按 2026 年 10 月口径重算呢？",
+        )
+        self.assertEqual(result["kind"], "answer")
+        self.assertEqual([part["net_cents"] for part in result["actual"]], [21100])
+        self.assertEqual([part["net_cents"] for part in result["counterfactual"]], [22000])
+        self.assertEqual(result["single_period_delta_cents"], -900)
+        self.assertEqual(result["scope"]["baseline_rule_period"]["start"], "2026-10-01")
+        self.assertEqual(result["metrics"]["sql_queries"], 2)
+
+    def test_comparison_direction_reverses_delta_and_unified_delta(self):
+        result = self.ask(
+            "华南电水壶 2026 年 10 月比 11 月高多少？如果都按 10 月口径重算呢？",
+        )
+        self.assertEqual(result["kind"], "answer")
+        self.assertEqual(result["scope"]["comparison_sign"], -1)
+        self.assertEqual(result["actual_delta_cents"], 4640)
+        self.assertEqual(result["counterfactual_delta_cents"], 4080)
+        self.assertEqual(result["policy_effect_cents"], 560)
+        self.assertEqual([part["net_cents"] for part in result["actual"]], [29280, 24640])
+
     def test_auto_uses_verified_lexical_hit_without_model(self):
         question = "华南电水壶2026年12月净营收是多少？"
         select = Mock(side_effect=AssertionError("a verified lexical match should avoid the model"))
