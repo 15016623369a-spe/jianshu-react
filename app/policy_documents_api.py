@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 from starlette.concurrency import run_in_threadpool
 
 from app.hard_policy_data import DocumentSource
-from app.policy_documents import MAX_DOCUMENT_BYTES, MAX_READERS, PolicyDocumentStore
+from app.policy_documents import MAX_DOCUMENT_BYTES, MAX_READERS, PolicyDocumentStore, preview_document
 from app.upload_body import bounded_body
 
 router = APIRouter(prefix="/api/v2/policy-documents", tags=["Policy documents"])
@@ -28,6 +28,18 @@ Filename = Annotated[str, Query(min_length=4, max_length=120)]
 class Readers(BaseModel):
     model_config = ConfigDict(extra="forbid")
     users: Annotated[list[Annotated[str, StringConstraints(pattern=r"^[A-Za-z0-9_.@-]{1,64}$")]], Field(max_length=MAX_READERS)]
+
+
+async def _preview(request: Request, filename: str, source: str):
+    content_type = request.headers.get("content-type", "").partition(";")[0].strip().lower()
+    if content_type not in {"", "text/markdown", "text/html", "text/plain", "application/octet-stream"}:
+        raise HTTPException(415, "请上传 UTF-8 Markdown/HTML 文件正文。")
+    slots = request.app.state.upload_slots
+    if slots.locked():
+        raise HTTPException(503, "文档预览请求较多，请稍后重试。")
+    async with slots:
+        data = await bounded_body(request, MAX_DOCUMENT_BYTES, size_error="文档超过 64 KiB")
+        return await run_in_threadpool(preview_document, filename, data, source)
 
 
 async def _upload(request: Request, update, *args):
@@ -54,6 +66,16 @@ def list_documents(
         "sharing_enabled": bool(request.state.owner),
         "next_offset": offset + limit if len(documents) > limit else None,
     }
+
+
+@manual_router.post("/preview")
+@router.post("/preview")
+async def preview_upload(request: Request, filename: Filename, source: DocumentSource | None = None):
+    if request.url.path.startswith(_MANUAL_PATH):
+        return await _preview(request, filename, "manual")
+    if source is None:
+        raise HTTPException(422, "请选择政策或公告类型。")
+    return await _preview(request, filename, source)
 
 
 @router.post("", status_code=201)

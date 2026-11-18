@@ -78,6 +78,22 @@ class PolicyDocumentAPITests(unittest.TestCase):
         retry = self.client.post(f"{url}/versions", headers=self.alice, content=_V2, params={"filename": "政策-v2.md"})
         self.assertEqual(retry.json()["version"], 2)
 
+    def test_preview_does_not_persist_and_duplicate_upload_is_idempotent(self):
+        preview = self.client.post(f"{_DOCS}/preview", headers=self.alice, content=_V1,
+                                   params={"filename": "政策.md", "source": "policy"})
+        self.assertEqual(preview.status_code, 200, preview.text)
+        preview = preview.json()
+        self.assertEqual((preview["format"], preview["source"]), ("markdown", "policy"))
+        self.assertGreaterEqual(len(preview["passages"]), 1)
+        self.assertEqual(self.client.get(_DOCS, headers=self.alice).json()["documents"], [])
+        first = self.upload()
+        second = self.upload()
+        self.assertEqual(first.status_code, 201)
+        self.assertEqual(second.status_code, 201)
+        self.assertEqual(first.json()["id"], second.json()["id"])
+        self.assertEqual(second.json()["version"], 1)
+        self.assertEqual(len(self.client.get(_DOCS, headers=self.alice).json()["documents"]), 1)
+
     def test_acl_covers_listing_versions_retrieval_and_revocation(self):
         doc = self.upload().json()
         url = f"{_DOCS}/{doc['id']}"

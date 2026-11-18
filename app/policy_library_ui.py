@@ -78,6 +78,25 @@ def _send_file(api: str, headers: dict[str, str], upload, path: str = "", *, man
         return None
 
 
+def _preview_file(api: str, headers: dict[str, str], upload, source: str | None, *, manual: bool) -> dict | None:
+    if upload is None:
+        st.info("请先选择 Markdown/HTML 文件。")
+        return None
+    content_type = "text/html" if upload.name.casefold().endswith((".html", ".htm")) else "text/markdown"
+    params = {"filename": upload.name}
+    if source:
+        params["source"] = source
+    prefix = _MANUAL_PATH if manual else _PATH
+    try:
+        response = httpx.post(api + prefix + "/preview", headers={**headers, "Content-Type": content_type},
+                              params=params, content=upload.getvalue(), timeout=8, trust_env=False)
+        response.raise_for_status()
+        return response.json()
+    except (httpx.HTTPError, ValueError) as exc:
+        _report_error(exc, "文档暂时无法预览，请检查格式和标题。")
+        return None
+
+
 def render_policy_library(
     api: str, headers: dict[str, str], session_id: str, registry: dict | None, *, manual: bool = False,
 ) -> None:
@@ -108,6 +127,24 @@ def render_policy_library(
             st.session_state[feedback_key] = f"已上传第 {created['version']} 版。"
             st.rerun()
 
+    with st.expander("解析预览（不会上传）"):
+        with st.form(f"{library}-preview-{session_id}", clear_on_submit=True, border=False):
+            preview_source = None if manual else st.radio(
+                "预览类型", list(_SOURCES), format_func=_SOURCES.__getitem__, horizontal=True,
+                key=f"{library}-preview-source-{session_id}",
+            )
+            preview_upload = st.file_uploader("选择要预览的文件", type=_ACCEPTED_TYPES,
+                                               key=f"{library}-preview-file-{session_id}")
+            preview_submit = st.form_submit_button("解析预览")
+        if preview_submit:
+            preview = _preview_file(api, headers, preview_upload, preview_source, manual=manual)
+            if preview:
+                st.success(f"{preview['format']} · {preview['title']} · {len(preview['passages'])} 个章节")
+                for passage in preview["passages"][:5]:
+                    st.caption(f"{passage['title']} · 第 {passage['line_start']}–{passage['line_end']} 行")
+                    st.code(passage["quote"], language="text")
+                if len(preview["passages"]) > 5:
+                    st.caption(f"另有 {len(preview['passages']) - 5} 个章节未展开。")
     documents = {item["id"]: item for item in registry["documents"]}
     if not documents:
         st.info("文档库为空。上传后可在「自然语言调查」选择文档。")

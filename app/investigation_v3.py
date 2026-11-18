@@ -24,6 +24,7 @@ _TOPIC_PHRASES = re.compile(r"请问|我想知道|远望m1|演示手册|手册|�
 
 class PolicyInvestigationV3(InvestigationRequest):
     domain: Literal["policy"]
+    investigation_id: UUID | None = None
 
 
 class ManualInvestigationV3(BaseModel):
@@ -32,6 +33,7 @@ class ManualInvestigationV3(BaseModel):
     question: Annotated[str, StringConstraints(strict=True, strip_whitespace=True, min_length=1, max_length=500)]
     document_id: UUID | None = None
     version: Annotated[int, Field(strict=True, ge=1, le=20)] | None = None
+    investigation_id: UUID | None = None
 
 
 @dataclass(frozen=True)

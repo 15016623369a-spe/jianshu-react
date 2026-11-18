@@ -131,6 +131,24 @@ def _validate(filename: str, content: bytes, source: str = "policy") -> tuple[st
     return title, sha256(content).hexdigest()
 
 
+def preview_document(filename: str, content: bytes, source: str) -> dict:
+    """Parse an upload without storing it, for the import preview UI."""
+    title, digest = _validate(filename, content, source)
+    text = content.decode("utf-8-sig")
+    if _format(filename) == "html":
+        blocks = chunk_document(text, DocumentMetadata(
+            document_id="preview", title=filename, source=source, attributes={"file": filename},
+        ), format="html")
+        passages = [{"title": block.section or block.title, "line_start": block.line_start,
+                     "line_end": block.line_end, "quote": block.text} for block in blocks]
+    else:
+        passages = [{"title": block.title, "line_start": block.line_start,
+                     "line_end": block.line_end, "quote": block.quote}
+                    for block in evidence._passages(text.encode("utf-8"), source, filename)]
+    return {"filename": filename, "source": source, "format": _format(filename), "title": title,
+            "sha256": digest, "passages": passages}
+
+
 class PolicyDocumentStore:
     def __init__(self, path: Path):
         self.path = path
@@ -221,6 +239,15 @@ class PolicyDocumentStore:
         document_id = str(uuid4())
         with closing(self._connect()) as connection, connection:
             connection.execute("BEGIN IMMEDIATE")
+            existing = connection.execute(
+                """SELECT d.id FROM policy_documents d
+                   JOIN policy_document_versions v ON v.document_id = d.id AND v.version = d.latest
+                   WHERE d.owner = ? AND d.source = ? AND v.filename = ? AND v.digest = ?
+                   ORDER BY v.created_at DESC LIMIT 1""",
+                (owner, source, filename, digest),
+            ).fetchone()
+            if existing is not None:
+                return self._metadata(self._current(connection, existing["id"]), owner)
             count = connection.execute("SELECT count(*) FROM policy_documents WHERE owner = ?", (owner,)).fetchone()[0]
             if count >= _MAX_OWNER_DOCUMENTS:
                 raise PolicyDocumentLimit("每个账号最多保存 40 份政策文档。")

@@ -265,6 +265,26 @@ def render_policy_investigation(
         _render_answer(result)
     elif result["kind"] == "clarification":
         st.info(result["message"])
+        with st.form(f"policy-clarification-{session_id}"):
+            supplement = st.text_input("补充缺失条件", key=f"policy-supplement-{session_id}")
+            if st.form_submit_button("继续这次调查", type="primary"):
+                if not supplement.strip():
+                    st.info("请补充缺失的时间、地区或口径。")
+                else:
+                    combined = f"{result['question']} {supplement.strip()}"
+                    try:
+                        response = httpx.post(
+                            api + "/api/v3/investigations", headers=headers, params={"mode": mode},
+                            json={"domain": "policy", "question": combined, "document_ids": selected,
+                                  "investigation_id": result["investigation_id"]},
+                            timeout=45, trust_env=False,
+                        )
+                        response.raise_for_status()
+                        st.session_state[question_key] = combined
+                        st.session_state[result_key] = visible_scope, response.json()
+                        st.rerun()
+                    except (httpx.HTTPError, ValueError):
+                        st.error("暂时无法继续调查，请稍后重试。")
     else:
         st.warning(result["message"])
     _render_trace(result)

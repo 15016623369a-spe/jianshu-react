@@ -76,7 +76,7 @@ def check_manual_investigation(page: Page, origin: str) -> None:
     library.get_by_text("产品手册", exact=True).click()
     expect(library.get_by_role("radiogroup", name="文档类型")).to_have_count(0)
     sample = Path(__file__).resolve().parents[2] / "app" / "manual_corpus" / "guide-v1.md"
-    library.get_by_test_id("stForm").first.locator('input[type="file"]').set_input_files(
+    library.get_by_test_id("stForm").last.locator('input[type="file"]').set_input_files(
         {"name": "browser-manual-v1.md", "mimeType": "text/markdown", "buffer": sample.read_bytes()},
     )
     expect(library.get_by_text("browser-manual-v1.md", exact=True)).to_be_visible(timeout=15000)
@@ -158,7 +158,8 @@ def check_policy_document_library(page: Page, origin: str) -> None:
                 "buffer": (evidence / f"policy-upload-v{version}.md").read_bytes()}
         region.locator('input[type="file"]').set_input_files(file)
 
-    upload(library.get_by_test_id("stForm").first, 1)
+    upload_form = library.get_by_test_id("stForm").last
+    upload(upload_form, 1)
     library.get_by_role("button", name="上传文档", exact=True).click()
     expect(library.get_by_text("已上传第 1 版。", exact=True)).to_be_visible(timeout=20000)
     expect(library.get_by_text(f"policy-{unique}-v1.md", exact=True).last).to_be_visible()

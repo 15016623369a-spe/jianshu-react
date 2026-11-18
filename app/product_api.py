@@ -31,7 +31,7 @@ from app.file_analysis_history import FileAnalysisHistory
 from app.gateway_identity import configured_key, gateway_user, owner_id
 from app.hard_policy_data import prepare_hard_policy_database
 from app.hard_policy_workflow import HardMode, HardPolicyRequest, run_hard_policy
-from app.investigation_history import InvestigationHistory, InvestigationMissing
+from app.investigation_history import InvestigationHistory, InvestigationMissing, csv_report, markdown_report
 from app.investigation_v3 import (
     ManualInvestigationV3, PolicyInvestigationV3, investigation_result, policy_evidence, run_manual_investigation,
 )
@@ -322,9 +322,28 @@ async def investigate_v3(
     pack = request.app.state.domains.get(body.domain)
     result = await request.app.state.domains.handler(pack.name)(body, request, mode)
     data_version = result.get("document_version") or request.app.state.demo_data_version
+    parent_id = getattr(body, "investigation_id", None)
     return request.app.state.investigations.save(
         request.state.owner, body.domain, body.question, result, data_version=data_version,
+        parent_id=str(parent_id) if parent_id else None,
     )
+
+
+@app.get("/api/v3/status")
+def v3_status(request: Request):
+    state = request.app.state
+    return {
+        "version": app.version,
+        "model_configured": bool(state.settings.llm_configured and state.settings.llm_base_url),
+        "data_sources": {
+            "policy_database": state.hard_policy_database is not None,
+            "policy_documents": "available",
+            "manual_documents": "available",
+        },
+        "history_available": True,
+        "domains": state.domains.describe(),
+        "retrieval": "BM25 + metadata filters",
+    }
 
 
 @app.get("/api/v3/investigations")
@@ -342,6 +361,30 @@ def get_investigation(investigation_id: str, request: Request):
         return request.app.state.investigations.get(request.state.owner, investigation_id)
     except InvestigationMissing:
         raise HTTPException(404, "调查记录不存在或当前账号无权读取。") from None
+
+
+@app.get("/api/v3/investigations/{investigation_id}/report.md")
+def investigation_report(investigation_id: str, request: Request):
+    try:
+        record = request.app.state.investigations.get(request.state.owner, investigation_id)
+    except InvestigationMissing:
+        raise HTTPException(404, "调查记录不存在或当前账号无权读取。") from None
+    return Response(
+        markdown_report(record), media_type="text/markdown; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="investigation-{investigation_id}.md"'},
+    )
+
+
+@app.get("/api/v3/investigations/{investigation_id}/amounts.csv")
+def investigation_amounts(investigation_id: str, request: Request):
+    try:
+        record = request.app.state.investigations.get(request.state.owner, investigation_id)
+    except InvestigationMissing:
+        raise HTTPException(404, "调查记录不存在或当前账号无权读取。") from None
+    return Response(
+        csv_report(record).encode("utf-8-sig"), media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="investigation-{investigation_id}.csv"'},
+    )
 
 
 def _conversation_root(owner: str) -> Path:

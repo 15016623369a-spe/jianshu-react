@@ -120,6 +120,36 @@ class InvestigationV3Tests(unittest.TestCase):
             self.assertEqual(loaded["evidence"], completed["evidence"])
             self.assertEqual(client.get("/api/v3/investigations/not-a-uuid").status_code, 404)
 
+    def test_followup_links_to_parent_investigation(self):
+        with TestClient(app) as client:
+            first = client.post(INVESTIGATE, json={"domain": "policy", "question": "电水壶 2026 年 10 月净营收是多少？"}).json()
+            self.assertEqual((first["kind"], first["status"]), ("clarification", "clarification"))
+            second = client.post(INVESTIGATE, json={
+                "domain": "policy", "question": f"{first['question']} 华南",
+                "investigation_id": first["investigation_id"],
+            }).json()
+            self.assertEqual((second["kind"], second["status"]), ("answer", "completed"))
+            self.assertEqual(second["parent_investigation_id"], first["investigation_id"])
+
+    def test_history_exports_and_system_status(self):
+        with TestClient(app) as client:
+            created = client.post(INVESTIGATE, json={"domain": "policy", "question": POLICY_QUESTION}).json()
+            identifier = created["investigation_id"]
+            report = client.get(f"/api/v3/investigations/{identifier}/report.md")
+            self.assertEqual(report.status_code, 200)
+            self.assertIn("见数调查记录", report.text)
+            self.assertIn("实际差额", report.text)
+            self.assertIn("attachment;", report.headers["content-disposition"])
+            amounts = client.get(f"/api/v3/investigations/{identifier}/amounts.csv")
+            self.assertEqual(amounts.status_code, 200)
+            self.assertTrue(amounts.content.startswith(b"\xef\xbb\xbf"))
+            self.assertIn("actual", amounts.text)
+            self.assertEqual(client.get(f"/api/v3/investigations/{identifier}/report.md").headers["cache-control"], "no-store")
+            status = client.get("/api/v3/status").json()
+            self.assertTrue(status["history_available"])
+            self.assertIn("policy", status["domains"])
+            self.assertIn("retrieval", status)
+
     def test_domain_registry_is_exposed_for_v3_clients(self):
         with TestClient(app) as client:
             response = client.get("/api/v3/domains")

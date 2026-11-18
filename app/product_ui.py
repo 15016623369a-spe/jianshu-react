@@ -18,10 +18,12 @@ from app.file_downloads import csv_table, table_rows, xlsx_table
 from app.file_preview_ui import choose_layout
 from app.gateway_identity import KEY_HEADER, USER_HEADER, configured_key, gateway_user
 from app.hard_policy_ui import render_hard_policy_workspace
+from app.investigation_history_ui import render_investigation_history
 from app.manual_investigation_ui import render_manual_investigation
 from app.multisource_ui import render_multisource_workspace
 from app.policy_investigation_ui import render_policy_investigation
 from app.policy_library_ui import read_policy_library, render_policy_library
+from app.system_status_ui import render_system_status
 
 API = os.getenv("RAG_API_URL", "http://127.0.0.1:8000")
 STAGES = {
@@ -52,7 +54,7 @@ WORKSPACES = {
     "政策调查": ("policy-exploration", "政策调查", "用自然语言比较政策口径，核对每笔汇总背后的文档版本和账本。"),
 }
 _POLICY_WORKSPACE = WORKSPACES["政策调查"][0]
-_POLICY_TABS = ("自然语言调查", "文档库", "按条件查口径", "日期分段", "多源实验")
+_POLICY_TABS = ("自然语言调查", "文档库", "调查历史", "系统状态", "按条件查口径", "日期分段", "多源实验")
 _LEGACY_POLICY_VIEWS = {"policy": "日期分段", "multisource": "多源实验"}
 POLICY_STAGES = {
     "resolve_scope": "确认日期和地区",
@@ -607,7 +609,7 @@ if mode_id == _POLICY_WORKSPACE:
         elif "policy_view" in st.query_params:
             del st.query_params["policy_view"]
 
-    investigation, library, structured, classic, multisource = st.tabs(
+    investigation, library, history, status, structured, classic, multisource = st.tabs(
         _POLICY_TABS, default=policy_view if policy_view in _POLICY_TABS else None,
         key="policy-view-tab", on_change=remember_policy_view,
     )
@@ -627,6 +629,12 @@ if mode_id == _POLICY_WORKSPACE:
             manual = kind == "产品手册"
             registry = read_policy_library(API, GATEWAY_HEADERS, manual=manual)
             render_policy_library(API, GATEWAY_HEADERS, session_id, registry, manual=manual)
+    if history.open:
+        with history:
+            render_investigation_history(API, GATEWAY_HEADERS, session_id)
+    if status.open:
+        with status:
+            render_system_status(API, GATEWAY_HEADERS)
     if structured.open:
         with structured:
             render_hard_policy_workspace(API, GATEWAY_HEADERS, session_id, model_configured)
