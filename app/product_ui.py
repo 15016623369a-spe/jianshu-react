@@ -22,6 +22,7 @@ from app.investigation_history_ui import render_investigation_history
 from app.manual_investigation_ui import render_manual_investigation
 from app.multisource_ui import render_multisource_workspace
 from app.policy_investigation_ui import render_policy_investigation
+from app.retail_investigation_ui import render_retail_investigation
 from app.policy_library_ui import read_policy_library, render_policy_library
 from app.system_status_ui import render_system_status
 
@@ -618,10 +619,12 @@ if mode_id == _POLICY_WORKSPACE:
     model_configured = capabilities["model_configured"]
     if investigation.open:
         with investigation:
-            task = st.radio("调查任务", ["政策计算", "手册问答"], horizontal=True, key=f"investigation-domain-{session_id}")
+            task = st.radio("调查任务", ["政策计算", "手册问答", "零售指标"], horizontal=True, key=f"investigation-domain-{session_id}")
             if task == "手册问答":
                 registry = read_policy_library(API, GATEWAY_HEADERS, manual=True)
                 render_manual_investigation(API, GATEWAY_HEADERS, session_id, registry)
+            elif task == "零售指标":
+                render_retail_investigation(API, GATEWAY_HEADERS, session_id)
             else:
                 registry = read_policy_library(API, GATEWAY_HEADERS)
                 render_policy_investigation(API, GATEWAY_HEADERS, session_id, model_configured, registry)

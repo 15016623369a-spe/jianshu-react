@@ -150,14 +150,29 @@ class InvestigationV3Tests(unittest.TestCase):
             self.assertIn("policy", status["domains"])
             self.assertIn("retrieval", status)
 
+    def test_retail_domain_answers_from_the_demo_ledger(self):
+        with TestClient(app) as client:
+            result = client.post(INVESTIGATE, json={
+                "domain": "retail", "question": "2026 年 10 月华南电水壶净营收是多少？",
+            })
+            self.assertEqual(result.status_code, 200, result.text)
+            result = result.json()
+            self.assertEqual((result["kind"], result["status"], result["scope"]["metric"]), ("answer", "completed", "net"))
+            self.assertEqual((result["actual"][0]["order_count"], result["actual"][0]["net_cents"]), (3, 27400))
+            self.assertEqual(result["evidence"][0]["source"], "retail")
+            missing = client.post(INVESTIGATE, json={"domain": "retail", "question": "净营收是多少？"}).json()
+            self.assertEqual((missing["kind"], missing["status"], missing["metrics"]["sql_queries"]), ("clarification", "clarification", 0))
+
     def test_domain_registry_is_exposed_for_v3_clients(self):
         with TestClient(app) as client:
             response = client.get("/api/v3/domains")
         self.assertEqual(response.status_code, 200)
         domains = response.json()["domains"]
-        self.assertEqual(tuple(domains), ("policy", "manual"))
+        self.assertEqual(tuple(domains), ("policy", "manual", "retail"))
         self.assertTrue(domains["policy"]["supports_sql"])
         self.assertEqual(domains["manual"]["document_sources"], ["manual"])
+        self.assertTrue(domains["retail"]["supports_sql"])
+        self.assertFalse(domains["retail"]["supports_upload"])
 
     def test_request_boundary_rejects_unknown_domain_and_oversize(self):
         with TestClient(app) as client:

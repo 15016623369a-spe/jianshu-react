@@ -36,15 +36,64 @@ app/rag/hybrid.py
 
 当前产品默认仍是 BM25；没有捆绑模型，也没有把未评测的 dense 设为默认。
 
-### 3. 数据源
+### 3. retail domain
+
+新增：
+
+```text
+app/retail_investigation.py
+DomainRegistry: retail
+UI: 调查任务 → 零售指标
+```
+
+首批任务：
+
+```text
+2026 年 10 月华南电水壶净营收
+2026 年 10 月华南电水壶订单数
+2026 年 10 月华南电水壶退款额
+2026 年 10 月华南电水壶客单价
+```
+
+- 商品、地区、月份和指标缺失时澄清；
+- 只执行只读聚合 SQL；
+- 结果保存为正式调查记录；
+- 执行证据包含 SQL。
+
+### 4. manual 独立留出集
+
+新增：
+
+```text
+evaluation/manual_holdout_cases.json
+evaluation/run_manual_holdout.py
+tests/test_manual_holdout.py
+```
+
+固定 12 题，覆盖：
+
+- v1/v2 版本差异；
+- Wi-Fi、访客网络、电量；
+- 不支持的问题；
+- 未知版本；
+- 问题中显式指定版本。
+
+结果：
+
+```text
+manual-holdout-v1: 12/12 passed
+```
+
+### 5. 数据源
 
 政策调查继续使用 SQLite 演示账本；现有 PostgreSQL 连接和只读约束未改。
 
 ## 验收
 
 ```text
-Ran 288 tests in 14.324s
+Ran 290 tests in 14.242s
 OK
+manual-holdout-v1: 12/12 passed
 ```
 
 新增覆盖：
@@ -61,12 +110,10 @@ OK
 ## 尚未完成
 
 ```text
-[ ] retail domain 的任务、数据表、指标口径和拒答规则
 [ ] policy 检索迁移到通用 RetrievalService
-[ ] manual 独立留出评测
 [ ] 真实 dense/rerank 配置与同题集指标
 [ ] SQLite/PostgreSQL 同一固定数据集的基准对照
-[ ] 150 题多域评测和发布门槛
+[ ] 150 题多域评测和发布门槛（M5）
 ```
 
 ## 结论

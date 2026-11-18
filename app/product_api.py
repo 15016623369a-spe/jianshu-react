@@ -33,8 +33,10 @@ from app.hard_policy_data import prepare_hard_policy_database
 from app.hard_policy_workflow import HardMode, HardPolicyRequest, run_hard_policy
 from app.investigation_history import InvestigationHistory, InvestigationMissing, csv_report, markdown_report
 from app.investigation_v3 import (
-    ManualInvestigationV3, PolicyInvestigationV3, investigation_result, policy_evidence, run_manual_investigation,
+    ManualInvestigationV3, PolicyInvestigationV3, RetailInvestigationV3,
+    investigation_result, policy_evidence, run_manual_investigation,
 )
+from app.retail_investigation import run_retail_investigation
 from app.multisource_data import prepare_multisource_database
 from app.multisource_workflow import MultiSourceMode, MultiSourceRequest, multisource_selector, run_multisource_workflow
 from app.policy_documents import PolicyDocumentInput, PolicyDocumentLimit, PolicyDocumentMissing, PolicyDocumentStore
@@ -124,6 +126,15 @@ async def _policy_v3_handler(body: PolicyInvestigationV3, request: Request, mode
     return investigation_result("policy", result, policy_evidence(result))
 
 
+async def _retail_v3_handler(body: RetailInvestigationV3, request: Request, mode: InvestigationMode) -> dict:
+    if mode == "model":
+        raise HTTPException(422, "零售指标使用确定性 SQL。")
+    state = request.app.state
+    if state.hard_policy_database is None:
+        raise HTTPException(503, "零售演示数据暂不可用。")
+    return await run_in_threadpool(run_retail_investigation, state.hard_policy_database, body, mode=mode)
+
+
 async def _manual_v3_handler(body: ManualInvestigationV3, request: Request, mode: InvestigationMode) -> dict:
     if mode not in ("auto", "fixed"):
         raise HTTPException(422, "手册问答使用确定性检索。")
@@ -154,6 +165,7 @@ async def lifespan(app: FastAPI):
     app.state.domains = default_registry()
     app.state.domains.bind("policy", _policy_v3_handler)
     app.state.domains.bind("manual", _manual_v3_handler)
+    app.state.domains.bind("retail", _retail_v3_handler)
     app.state.investigations = InvestigationHistory(app.state.root / "investigations.sqlite")
     app.state.demo_data_version = "hard-policy-demo-v1"
     bird = os.getenv("RAG_BIRD_ROOT")
@@ -316,7 +328,7 @@ def list_v3_domains(request: Request):
 
 @app.post("/api/v3/investigations")
 async def investigate_v3(
-    body: Annotated[PolicyInvestigationV3 | ManualInvestigationV3, Body(discriminator="domain")],
+    body: Annotated[PolicyInvestigationV3 | ManualInvestigationV3 | RetailInvestigationV3, Body(discriminator="domain")],
     request: Request, mode: InvestigationMode = "auto",
 ):
     pack = request.app.state.domains.get(body.domain)

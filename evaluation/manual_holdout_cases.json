@@ -1,0 +1,93 @@
+{
+  "suite": "manual-holdout-v1",
+  "frozen_versions": [
+    1,
+    2
+  ],
+  "cases": [
+    {
+      "id": "v1-wifi",
+      "version": 1,
+      "question": "怎样连接 Wi-Fi？",
+      "kind": "answer",
+      "contains": "蓝色"
+    },
+    {
+      "id": "v2-wifi",
+      "version": 2,
+      "question": "怎样连接 Wi-Fi？",
+      "kind": "answer",
+      "contains": "绿色"
+    },
+    {
+      "id": "v1-guest",
+      "version": 1,
+      "question": "怎样开启访客网络？",
+      "kind": "answer",
+      "contains": "访客网络"
+    },
+    {
+      "id": "v2-guest",
+      "version": 2,
+      "question": "怎样开启访客网络？",
+      "kind": "answer",
+      "contains": "有效时长"
+    },
+    {
+      "id": "v1-battery",
+      "version": 1,
+      "question": "怎样检查电量？",
+      "kind": "answer",
+      "contains": "电量键"
+    },
+    {
+      "id": "v2-battery",
+      "version": 2,
+      "question": "怎样检查电量？",
+      "kind": "answer",
+      "contains": "电池图标"
+    },
+    {
+      "id": "v1-no-history",
+      "version": 1,
+      "question": "怎么查看历史 Wi-Fi 连接记录？",
+      "kind": "abstained",
+      "reason": "no_matching_section"
+    },
+    {
+      "id": "v2-no-history",
+      "version": 2,
+      "question": "怎么查看历史 Wi-Fi 连接记录？",
+      "kind": "abstained",
+      "reason": "no_matching_section"
+    },
+    {
+      "id": "v1-no-payment",
+      "version": 1,
+      "question": "怎么修改支付密码？",
+      "kind": "abstained",
+      "reason": "no_matching_section"
+    },
+    {
+      "id": "v2-no-payment",
+      "version": 2,
+      "question": "怎么修改支付密码？",
+      "kind": "abstained",
+      "reason": "no_matching_section"
+    },
+    {
+      "id": "unknown-version",
+      "version": 3,
+      "question": "怎样连接 Wi-Fi？",
+      "kind": "clarification",
+      "reason": "unknown_version"
+    },
+    {
+      "id": "v1-explicit-version",
+      "version": 2,
+      "question": "第 2 版怎样连接 Wi-Fi？",
+      "kind": "answer",
+      "contains": "绿色"
+    }
+  ]
+}

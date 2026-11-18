@@ -27,6 +27,13 @@ class PolicyInvestigationV3(InvestigationRequest):
     investigation_id: UUID | None = None
 
 
+class RetailInvestigationV3(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    domain: Literal["retail"]
+    question: Annotated[str, StringConstraints(strict=True, strip_whitespace=True, min_length=1, max_length=500)]
+    investigation_id: UUID | None = None
+
+
 class ManualInvestigationV3(BaseModel):
     model_config = ConfigDict(extra="forbid")
     domain: Literal["manual"]
@@ -49,7 +56,7 @@ class InvestigationEvidence:
     locator: str | None = None
 
 
-def investigation_result(domain: Literal["policy", "manual"], result: dict,
+def investigation_result(domain: Literal["policy", "manual", "retail"], result: dict,
                          sources: tuple[InvestigationEvidence, ...] = ()) -> dict:
     """Publish an answer only when it has well-formed source references."""
     if result["kind"] == "answer" and (

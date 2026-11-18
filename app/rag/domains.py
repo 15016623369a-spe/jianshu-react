@@ -75,4 +75,8 @@ def default_registry() -> DomainRegistry:
         "manual", "检索产品手册章节并引用指定版本文本",
         ("manual",), supports_sql=False,
     ))
+    registry.register(DomainPack(
+        "retail", "查询零售订单、退款、客单价与净营收",
+        ("orders", "refunds"), supports_sql=True, supports_upload=False,
+    ))
     return registry

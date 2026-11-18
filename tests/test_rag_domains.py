@@ -9,7 +9,7 @@ from app.rag.domains import DomainPack, DomainRegistry, default_registry
 class DomainRegistryTests(unittest.TestCase):
     def test_default_domains_are_described_and_ordered(self):
         registry = default_registry()
-        self.assertEqual(registry.names(), ("policy", "manual"))
+        self.assertEqual(registry.names(), ("policy", "manual", "retail"))
         policy = registry.get("policy")
         self.assertTrue(policy.supports_sql)
         self.assertEqual(policy.document_sources, ("policy", "bulletin"))
