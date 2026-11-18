@@ -2,11 +2,11 @@
 
 V3 从 [V2 冻结检查点](docs/v2.0.0-checkpoint.md) 延续开发。调查入口支持选择政策计算或手册问答，共用文档版本、访问控制和引用字段。[双域演示](docs/v3-dual-domain.md)
 
-当前 V3 基础层：**279 项自动测试**，支持 Markdown/HTML 政策与手册上传、domain registry、通用 BM25 检索和 HTML 解析。`v2.0.0` 检查点的 244 项回归仍作为回退基线。
+当前 V3 基础层：**288 项自动测试**，支持 Markdown/HTML/PDF/DOCX 政策与手册上传、domain registry、通用 BM25 检索和可插拔 hybrid 接口。`v2.0.0` 检查点的 244 项回归仍作为回退基线。
 
 见数把政策正文和只读账本接到同一个调查入口。用自然语言比较两个月的净营收，可按其中一个月的退款口径重算，并核对每段生效规则、引用、SQL 和绑定参数。
 
-调查先查精确标题和生效期，再用词面补查。只有正式来源被排在候选之外、且正文存在可验证的转引时，才向模型请求新检索词。检索和金额都保留证据。政策与手册资料可上传 Markdown/HTML，版本保留历史，生产环境支持按账号授予和撤回只读权限。[产品演示](docs/policy-product-demo.md) · [独立文档与检索评测](docs/policy-grounding-evaluation.md)
+调查先查精确标题和生效期，再用词面补查。只有正式来源被排在候选之外、且正文存在可验证的转引时，才向模型请求新检索词。检索和金额都保留证据。政策与手册资料可上传 Markdown/HTML/PDF/DOCX，版本保留历史，生产环境支持按账号授予和撤回只读权限。[产品演示](docs/policy-product-demo.md) · [独立文档与检索评测](docs/policy-grounding-evaluation.md)
 
 运行 `bash scripts/demo.sh` 后打开[政策调查](http://127.0.0.1:28501/?workspace=policy-exploration)。用默认问题验收华南电水壶 2026 年 10 月和 11 月的净营收，实际差额 **−¥46.40**，统一 10 月口径后的差额 **−¥40.80**。
 
@@ -168,8 +168,8 @@ RAG_BIRD_DATA_DIR=/absolute/path/to/dev_databases \
 
 - `POST /api/v3/investigations` 按 `domain` 选择政策调查或手册问答，两种任务均返回版本化引用和调查 ID。
 - `GET /api/v3/investigations` 分页列出当前账号的调查记录，`GET /api/v3/investigations/{id}` 读取当时保存的完整结果；`report.md` 导出调查报告，`amounts.csv` 导出金额明细。[M3 工作台](docs/v3-m3-workbench.md)
-- `GET /api/v3/status` 返回领域、数据源、模型和历史可用状态。`POST /api/v2/policy-documents/preview` 与 `POST /api/v3/manual-documents/preview` 提供不落库的解析预览。
-- `/api/v3/manual-documents` 支持 Markdown/HTML 手册上传、历史版本读取及账号授权。
+- `GET /api/v3/status` 返回领域、数据源、模型和历史可用状态。`POST /api/v2/policy-documents/preview` 与 `POST /api/v3/manual-documents/preview` 提供不落库的解析预览。[M4 格式与检索](docs/v3-m4-ingestion-hybrid.md)
+- `/api/v3/manual-documents` 支持 Markdown/HTML/PDF/DOCX 手册上传、历史版本读取及账号授权。
 - `POST /api/v2/policy-investigation` 接收 `question` 和可选的 `document_ids`，返回计算、出处与各阶段检索轨迹。
 - `/api/v2/policy-documents` 提供上传、版本历史和读取授权。选择上传资料调查时，只检索已选且有权读取的版本。
 - `POST /api/v2/policy-revenue` 按实际生效的退款政策查询净营收，并返回可核对的文档与 SQL 证据。
