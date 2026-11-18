@@ -24,6 +24,9 @@ app/**
 !app/tools/
 app/tools/**
 !app/tools/*.py
+!app/rag/
+app/rag/**
+!app/rag/*.py
 !evaluation/
 evaluation/**
 !evaluation/__init__.py
