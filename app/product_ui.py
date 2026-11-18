@@ -54,7 +54,8 @@ WORKSPACES = {
     "政策调查": ("policy-exploration", "政策调查", "用自然语言比较政策口径，核对每笔汇总背后的文档版本和账本。"),
 }
 _POLICY_WORKSPACE = WORKSPACES["政策调查"][0]
-_POLICY_TABS = ("自然语言调查", "文档库", "调查历史", "系统状态", "按条件查口径", "日期分段", "多源实验")
+_POLICY_TABS = ("自然语言调查", "文档库", "调查历史", "系统状态", "高级实验")
+_ADVANCED_TABS = ("按条件查口径", "日期分段", "多源实验")
 _LEGACY_POLICY_VIEWS = {"policy": "日期分段", "multisource": "多源实验"}
 POLICY_STAGES = {
     "resolve_scope": "确认日期和地区",
@@ -609,8 +610,9 @@ if mode_id == _POLICY_WORKSPACE:
         elif "policy_view" in st.query_params:
             del st.query_params["policy_view"]
 
-    investigation, library, history, status, structured, classic, multisource = st.tabs(
-        _POLICY_TABS, default=policy_view if policy_view in _POLICY_TABS else None,
+    advanced_view = policy_view if policy_view in _ADVANCED_TABS else None
+    investigation, library, history, status, advanced = st.tabs(
+        _POLICY_TABS, default=advanced_view and "高级实验",
         key="policy-view-tab", on_change=remember_policy_view,
     )
     model_configured = capabilities["model_configured"]
@@ -635,15 +637,17 @@ if mode_id == _POLICY_WORKSPACE:
     if status.open:
         with status:
             render_system_status(API, GATEWAY_HEADERS)
-    if structured.open:
-        with structured:
-            render_hard_policy_workspace(API, GATEWAY_HEADERS, session_id, model_configured)
-    if classic.open:
-        with classic:
-            render_policy_workspace(session_id, model_configured)
-    if multisource.open:
-        with multisource:
-            render_multisource_workspace(API, GATEWAY_HEADERS, session_id, model_configured)
+    if advanced.open:
+        with advanced:
+            structured, classic, multisource = st.tabs(
+                _ADVANCED_TABS, default=advanced_view, key="policy-advanced-tab",
+            )
+            with structured:
+                render_hard_policy_workspace(API, GATEWAY_HEADERS, session_id, model_configured)
+            with classic:
+                render_policy_workspace(session_id, model_configured)
+            with multisource:
+                render_multisource_workspace(API, GATEWAY_HEADERS, session_id, model_configured)
 elif mode == "文件分析":
     render_file_workspace(session_id, capabilities["model_configured"])
 else:

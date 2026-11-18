@@ -76,10 +76,10 @@ def check_manual_investigation(page: Page, origin: str) -> None:
     library.get_by_text("产品手册", exact=True).click()
     expect(library.get_by_role("radiogroup", name="文档类型")).to_have_count(0)
     sample = Path(__file__).resolve().parents[2] / "app" / "manual_corpus" / "guide-v1.md"
-    library.get_by_test_id("stForm").first.locator('input[type="file"]').set_input_files(
+    library.locator('input[type="file"]').first.set_input_files(
         {"name": "browser-manual-v1.md", "mimeType": "text/markdown", "buffer": sample.read_bytes()},
     )
-    expect(library.get_by_text("browser-manual-v1.md", exact=True)).to_be_visible(timeout=15000)
+    expect(library.get_by_text("browser-manual-v1.md", exact=True).first).to_be_visible(timeout=15000)
     library.get_by_role("button", name="上传文档", exact=True).click()
     expect(library.get_by_text("已上传第 1 版。", exact=True)).to_be_visible(timeout=20000)
     page.get_by_role("tab", name="自然语言调查").click()
@@ -101,6 +101,7 @@ def check_policy_exploration(page: Page, origin: str) -> None:
     expect(page.get_by_role("radio", name="政策调查", exact=True)).to_have_count(1)
     expect(page.get_by_role("radio", name="政策问数", exact=True)).to_have_count(0)
     expect(page.get_by_role("radio", name="多源实验", exact=True)).to_have_count(0)
+    page.get_by_role("tab", name="高级实验").click()
     page.get_by_role("tab", name="按条件查口径").click()
     panel = page.get_by_role("tabpanel", name="按条件查口径")
 
@@ -156,9 +157,9 @@ def check_policy_document_library(page: Page, origin: str) -> None:
     def upload(region, version: int) -> None:
         file = {"name": f"policy-{unique}-v{version}.md", "mimeType": "text/markdown",
                 "buffer": (evidence / f"policy-upload-v{version}.md").read_bytes()}
-        region.locator('input[type="file"]').set_input_files(file)
+        region.set_input_files(file)
 
-    upload_form = library.get_by_test_id("stForm").first
+    upload_form = library.locator('input[type="file"]').first
     upload(upload_form, 1)
     library.get_by_role("button", name="上传文档", exact=True).click()
     expect(library.get_by_text("已上传第 1 版。", exact=True)).to_be_visible(timeout=20000)
@@ -188,7 +189,7 @@ def check_policy_document_library(page: Page, origin: str) -> None:
     investigate("¥292.80", 1, choose_doc=True)
     page.get_by_role("tab", name="文档库").click()
     library.get_by_text("上传新版本", exact=True).click()
-    upload(library.get_by_test_id("stForm").last, 2)
+    upload(library.locator('input[type="file"]').last, 2)
     library.get_by_role("button", name="保存新版本").click()
     expect(library.get_by_text("已保存第 2 版。", exact=True)).to_be_visible(timeout=20000)
     expect(library.get_by_role("combobox", name="查看版本")).to_have_value("第 2 版")
