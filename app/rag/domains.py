@@ -1,7 +1,9 @@
 """Domain-pack descriptors used to make V3 routing data-driven."""
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -15,9 +17,13 @@ class DomainPack:
     supports_upload: bool = True
 
 
+DomainHandler = Callable[[Any, Any, str], Awaitable[dict]]
+
+
 class DomainRegistry:
     def __init__(self) -> None:
         self._packs: dict[str, DomainPack] = {}
+        self._handlers: dict[str, DomainHandler] = {}
 
     def register(self, pack: DomainPack) -> None:
         if not pack.name or pack.name in self._packs:
@@ -33,6 +39,19 @@ class DomainRegistry:
     def names(self) -> tuple[str, ...]:
         return tuple(self._packs)
 
+    def bind(self, name: str, handler: DomainHandler) -> None:
+        self.get(name)
+        if name in self._handlers:
+            raise ValueError(f"Domain already bound: {name!r}")
+        self._handlers[name] = handler
+
+    def handler(self, name: str) -> DomainHandler:
+        self.get(name)
+        try:
+            return self._handlers[name]
+        except KeyError as exc:
+            raise KeyError(f"Domain is not bound: {name!r}") from exc
+
     def describe(self) -> dict[str, dict]:
         return {
             name: {
@@ -40,6 +59,7 @@ class DomainRegistry:
                 "document_sources": list(pack.document_sources),
                 "supports_sql": pack.supports_sql,
                 "supports_upload": pack.supports_upload,
+                "handler_bound": name in self._handlers,
             }
             for name, pack in self._packs.items()
         }

@@ -31,10 +31,15 @@ tests/
 ## 本次接入
 
 ```text
-新增 GET /api/v3/domains
-  返回 policy/manual 的 domain pack 描述
-现有 /api/v3/investigations 行为保持不变
-UI 与现有政策/手册检索未切换
+GET /api/v3/domains
+  返回 policy/manual 的 domain pack 描述与 handler_bound
+/api/v3/investigations
+  改为 registry 查 domain → 调用已绑定 handler
+manual 域
+  已改用通用 RetrievalService（BM25 + Evidence + source_file）
+policy 域
+  行为保持不变，仍走原有证据/账本核验
+UI 未切换
 没有引入 Dense/Reranker
 没有动 v2.0.0 tag
 ```
@@ -42,11 +47,11 @@ UI 与现有政策/手册检索未切换
 ## 验收
 
 ```text
-Ran 264 tests in 14.197s
+Ran 266 tests in 13.744s
 OK
 ```
 
-新增 15 项测试，覆盖：
+新增 18 项测试，覆盖：
 
 - Markdown 标题行号；
 - HTML 提取与 script 忽略；
@@ -61,8 +66,8 @@ OK
 
 ## 下一步
 
-1. 用 `DomainRegistry` 驱动 `/api/v3/investigations` 路由，而不是手写分支；
-2. 将 policy/manual 的文档加载接到 `RetrievalService`；
-3. 增加 Markdown/HTML 上传入口；
-4. 为 manual 域增加独立留出评测；
+1. 将 policy 的文档检索也接到 `RetrievalService`（保留现有引用/账本规则）；
+2. 增加 HTML 上传入口与解析诊断；
+3. 为 manual 域增加独立留出评测；
+4. 增加 policy/manual 共用的 EvidenceStore 输出；
 5. 再评估 Dense/Reranker。

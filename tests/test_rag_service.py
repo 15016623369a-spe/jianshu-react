@@ -38,3 +38,17 @@ class RetrievalServiceTests(unittest.TestCase):
         self.assertEqual(service.search("打印机"), ())
         self.assertEqual(service.search("电池", acl=frozenset({"bob"})), ())
         self.assertEqual(len(service.search("电池", acl=frozenset({"alice"}))), 1)
+
+
+class PassageBackedServiceTests(unittest.TestCase):
+    def test_service_can_index_prechunked_passages(self):
+        from app.rag import Passage
+
+        metadata = DocumentMetadata("m", "手册", source="manual", version=2)
+        service = RetrievalService.from_passages((Passage(
+            "m", 2, "手册", "连接 Wi-Fi", "指示灯为绿色。", 1, 1,
+            metadata, source_file="app/manual_corpus/guide-v2.md",
+        ),))
+        evidence, = service.search("绿色")
+        self.assertEqual(evidence.source_file, "app/manual_corpus/guide-v2.md")
+        self.assertEqual((evidence.document_id, evidence.version), ("m", 2))

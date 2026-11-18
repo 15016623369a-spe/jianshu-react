@@ -30,6 +30,7 @@ class Passage:
     line_start: int
     line_end: int
     metadata: DocumentMetadata
+    source_file: str | None = None
 
     @property
     def evidence_id(self) -> str:
@@ -52,6 +53,7 @@ class Evidence:
     line_start: int
     line_end: int
     score: float | None = None
+    source_file: str | None = None
 
     @classmethod
     def from_passage(cls, passage: Passage, *, score: float | None = None) -> Evidence:
@@ -65,4 +67,5 @@ class Evidence:
             line_start=passage.line_start,
             line_end=passage.line_end,
             score=score,
+            source_file=passage.source_file,
         )

@@ -10,9 +10,11 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
-from app.hard_policy_data import PassageSource, TextPassage, _normalize, _passages, _rank_passages, _terms
+from app.hard_policy_data import PassageSource, TextPassage, _normalize, _passages, _terms
 from app.policy_documents import PinnedDocument
 from app.policy_investigation import InvestigationRequest
+from app.rag.models import DocumentMetadata, Evidence, Passage
+from app.rag.service import RetrievalService
 
 _MANUAL_ROOT = Path(__file__).with_name("manual_corpus")
 _MANUAL_LATEST = 2
@@ -82,7 +84,7 @@ def _manual_passages(version: int) -> tuple[tuple[TextPassage, ...], str]:
     return passages, sha256(raw).hexdigest()
 
 
-def _matches_topic(query: str, passage: TextPassage) -> bool:
+def _matches_topic(query: str, passage: TextPassage | Passage | Evidence) -> bool:
     title = _TOPIC_PHRASES.sub("", _normalize(passage.title))
     question = _TOPIC_PHRASES.sub("", _normalize(query))
     if len(question) < 2 or len(title) < 2:
@@ -118,8 +120,21 @@ def run_manual_investigation(request: ManualInvestigationV3, document: PinnedDoc
             **result, "kind": "clarification", "reason": "version_conflict", "message": "请在手册版本中选择问题指定的一个版本。",
         })
     question = _VERSION_MENTION.sub("", request.question)
-    ranked = _rank_passages(passages, "manual", question)
-    matching = [item for item in ranked if _matches_topic(question, item)]
+    indexed = tuple(
+        Passage(
+            document_id=doc_id, version=int(version), title=item.title, section=item.title,
+            text=item.quote, line_start=item.line_start, line_end=item.line_end,
+            metadata=DocumentMetadata(
+                document_id=doc_id, title=item.title, source="manual", version=int(version),
+                attributes={"file": item.file},
+            ), source_file=item.file,
+        )
+        for item in passages
+    )
+    matching = [
+        hit for hit in RetrievalService.from_passages(indexed).search(question, top_k=5)
+        if _matches_topic(question, hit)
+    ]
     if not matching:
         return investigation_result("manual", {
             **result, "kind": "abstained", "reason": "no_matching_section", "message": "当前手册版本未找到足够匹配的章节。",
@@ -131,5 +146,5 @@ def run_manual_investigation(request: ManualInvestigationV3, document: PinnedDoc
     passage = matching[0]
     return investigation_result("manual", {
         **result, "kind": "answer", "reason": None, "message": "已找到相关手册原文。", "answer": passage.quote,
-    }, (InvestigationEvidence("manual", doc_id, str(version), passage.title, passage.file,
+    }, (InvestigationEvidence("manual", doc_id, str(version), passage.title, passage.source_file or "",
                               passage.line_start, passage.line_end, passage.quote),))

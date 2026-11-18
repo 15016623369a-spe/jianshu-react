@@ -118,6 +118,26 @@ def _hard_policy_demo_database(root: Path) -> Path | None:
         return None
 
 
+async def _policy_v3_handler(body: PolicyInvestigationV3, request: Request, mode: InvestigationMode) -> dict:
+    result = await policy_investigation(body, request, mode)
+    return investigation_result("policy", result, policy_evidence(result))
+
+
+async def _manual_v3_handler(body: ManualInvestigationV3, request: Request, mode: InvestigationMode) -> dict:
+    if mode not in ("auto", "fixed"):
+        raise HTTPException(422, "手册问答使用确定性检索。")
+    state = request.app.state
+    if state.policy_slots.locked():
+        raise HTTPException(503, "调查请求较多，请稍后重试。")
+    async with state.policy_slots:
+        document = None
+        if body.document_id is not None:
+            document, = await run_in_threadpool(
+                state.manual_documents.pin, request.state.owner, [body.document_id], version=body.version,
+            )
+        return await run_in_threadpool(run_manual_investigation, body, document)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.root = Path(os.getenv("RAG_DATA_DIR", PROJECT_ROOT / "data" / "step8")).resolve()
@@ -131,6 +151,8 @@ async def lifespan(app: FastAPI):
     app.state.policy_documents = PolicyDocumentStore(app.state.root / "policy_documents.sqlite")
     app.state.manual_documents = PolicyDocumentStore(app.state.root / "manual_documents.sqlite")
     app.state.domains = default_registry()
+    app.state.domains.bind("policy", _policy_v3_handler)
+    app.state.domains.bind("manual", _manual_v3_handler)
     bird = os.getenv("RAG_BIRD_ROOT")
     app.state.bird = Path(bird).resolve() if bird else None
     app.state.settings = load_settings()
@@ -294,22 +316,8 @@ async def investigate_v3(
     body: Annotated[PolicyInvestigationV3 | ManualInvestigationV3, Body(discriminator="domain")],
     request: Request, mode: InvestigationMode = "auto",
 ):
-    if isinstance(body, PolicyInvestigationV3):
-        result = await policy_investigation(body, request, mode)
-        return investigation_result("policy", result, policy_evidence(result))
-
-    if mode not in ("auto", "fixed"):
-        raise HTTPException(422, "手册问答使用确定性检索。")
-    state = request.app.state
-    if state.policy_slots.locked():
-        raise HTTPException(503, "调查请求较多，请稍后重试。")
-    async with state.policy_slots:
-        document = None
-        if body.document_id is not None:
-            document, = await run_in_threadpool(
-                state.manual_documents.pin, request.state.owner, [body.document_id], version=body.version,
-            )
-        return await run_in_threadpool(run_manual_investigation, body, document)
+    pack = request.app.state.domains.get(body.domain)
+    return await request.app.state.domains.handler(pack.name)(body, request, mode)
 
 
 def _conversation_root(owner: str) -> Path:
