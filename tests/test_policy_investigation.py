@@ -116,6 +116,32 @@ class PolicyInvestigationTests(unittest.TestCase):
         self.assertEqual(result["actual_delta_cents"], -4640)
         self.assertEqual(result["counterfactual"][1]["net_cents"], 24640)
 
+    def test_uncovered_period_stops_before_sql(self):
+        result = self.ask("2027 年 7 月华南电水壶净营收是多少？")
+        self.assertEqual((result["kind"], result["reason"]), ("abstained", "policy_missing"))
+        self.assertEqual((result["actual"], result["counterfactual"], result["metrics"]["sql_queries"]), ([], [], 0))
+
+    def test_same_priority_policy_conflict_stops_before_sql(self):
+        snapshot = investigation.load_investigation_snapshot()
+        def policy(identifier, cap):
+            return TextPassage(
+                title=f"华南电水壶十月退款政策 {identifier}",
+                quote=(
+                    f"文号：{identifier}。\n\n"
+                    "在华南销售的家电类商品，具体限于电水壶。"
+                    "从2026年10月1日起执行，到2026年10月31日为止（含当天）。\n\n"
+                    f"按售后退款台账结算，每笔扣减上限 {cap} 元。"
+                ),
+                source="policy", file=f"test/{identifier}.md", line_start=1, line_end=4,
+            )
+        snapshot = replace(snapshot, passages=snapshot.passages + (
+            policy("conflict-kettle-a", 3), policy("conflict-kettle-b", 5),
+        ))
+        result = self.ask("华南电水壶 2026 年 10 月净营收是多少？", snapshot=snapshot)
+        self.assertEqual((result["kind"], result["reason"]), ("abstained", "policy_conflict"))
+        self.assertEqual((result["actual"], result["metrics"]["sql_queries"]), ([], 0))
+        self.assertIn("policy_conflict", [step["detail"] for step in result["tool_trace"]])
+
     def test_missing_later_period_authority_prevents_all_query_execution(self):
         result = self.ask("2026年10月与12月华东电水壶净营收相差多少？")
         self.assertEqual((result["kind"], result["reason"]), ("abstained", "policy_missing"))

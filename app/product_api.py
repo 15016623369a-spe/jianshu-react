@@ -31,6 +31,7 @@ from app.file_analysis_history import FileAnalysisHistory
 from app.gateway_identity import configured_key, gateway_user, owner_id
 from app.hard_policy_data import prepare_hard_policy_database
 from app.hard_policy_workflow import HardMode, HardPolicyRequest, run_hard_policy
+from app.investigation_history import InvestigationHistory, InvestigationMissing
 from app.investigation_v3 import (
     ManualInvestigationV3, PolicyInvestigationV3, investigation_result, policy_evidence, run_manual_investigation,
 )
@@ -153,6 +154,8 @@ async def lifespan(app: FastAPI):
     app.state.domains = default_registry()
     app.state.domains.bind("policy", _policy_v3_handler)
     app.state.domains.bind("manual", _manual_v3_handler)
+    app.state.investigations = InvestigationHistory(app.state.root / "investigations.sqlite")
+    app.state.demo_data_version = "hard-policy-demo-v1"
     bird = os.getenv("RAG_BIRD_ROOT")
     app.state.bird = Path(bird).resolve() if bird else None
     app.state.settings = load_settings()
@@ -317,7 +320,28 @@ async def investigate_v3(
     request: Request, mode: InvestigationMode = "auto",
 ):
     pack = request.app.state.domains.get(body.domain)
-    return await request.app.state.domains.handler(pack.name)(body, request, mode)
+    result = await request.app.state.domains.handler(pack.name)(body, request, mode)
+    data_version = result.get("document_version") or request.app.state.demo_data_version
+    return request.app.state.investigations.save(
+        request.state.owner, body.domain, body.question, result, data_version=data_version,
+    )
+
+
+@app.get("/api/v3/investigations")
+def list_investigations(
+    request: Request,
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+    before: Annotated[str | None, Query(max_length=64)] = None,
+):
+    return request.app.state.investigations.list(request.state.owner, limit=limit, before=before)
+
+
+@app.get("/api/v3/investigations/{investigation_id}")
+def get_investigation(investigation_id: str, request: Request):
+    try:
+        return request.app.state.investigations.get(request.state.owner, investigation_id)
+    except InvestigationMissing:
+        raise HTTPException(404, "调查记录不存在或当前账号无权读取。") from None
 
 
 def _conversation_root(owner: str) -> Path:

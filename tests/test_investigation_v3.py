@@ -103,6 +103,23 @@ class InvestigationV3Tests(unittest.TestCase):
             self.assertEqual(client.get(detail + "/versions/1", headers=bob).status_code, 404)
             self.assertEqual(client.post(INVESTIGATE, headers=bob, json=body).status_code, 404)
 
+    def test_completed_and_clarification_records_are_listed_and_readable(self):
+        with TestClient(app) as client:
+            completed = client.post(INVESTIGATE, json={"domain": "policy", "question": POLICY_QUESTION})
+            clarification = client.post(INVESTIGATE, json={"domain": "manual", "question": "怎样连接 Wi-Fi？", "version": 3})
+            self.assertEqual(completed.status_code, 200, completed.text)
+            self.assertEqual(clarification.status_code, 200, clarification.text)
+            completed, clarification = completed.json(), clarification.json()
+            self.assertEqual((completed["status"], clarification["status"]), ("completed", "clarification"))
+            self.assertTrue(completed["investigation_id"] and clarification["investigation_id"])
+            listed = client.get("/api/v3/investigations").json()["investigations"]
+            self.assertEqual([item["investigation_id"] for item in listed],
+                             [clarification["investigation_id"], completed["investigation_id"]])
+            loaded = client.get(f"/api/v3/investigations/{completed['investigation_id']}").json()
+            self.assertEqual(loaded["actual_delta_cents"], -4640)
+            self.assertEqual(loaded["evidence"], completed["evidence"])
+            self.assertEqual(client.get("/api/v3/investigations/not-a-uuid").status_code, 404)
+
     def test_domain_registry_is_exposed_for_v3_clients(self):
         with TestClient(app) as client:
             response = client.get("/api/v3/domains")
