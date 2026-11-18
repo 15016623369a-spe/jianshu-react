@@ -166,7 +166,8 @@ RAG_BIRD_DATA_DIR=/absolute/path/to/dev_databases \
 
 ## API 索引
 
-- `POST /api/v3/investigations` 按 `domain` 选择政策调查或手册问答，两种任务均返回版本化引用。
+- `POST /api/v3/investigations` 按 `domain` 选择政策调查或手册问答，两种任务均返回版本化引用和调查 ID。
+- `GET /api/v3/investigations` 分页列出当前账号的调查记录，`GET /api/v3/investigations/{id}` 读取当时保存的完整结果；[M2 记录](docs/v3-m2-investigation-records.md)。
 - `/api/v3/manual-documents` 支持 Markdown/HTML 手册上传、历史版本读取及账号授权。
 - `POST /api/v2/policy-investigation` 接收 `question` 和可选的 `document_ids`，返回计算、出处与各阶段检索轨迹。
 - `/api/v2/policy-documents` 提供上传、版本历史和读取授权。选择上传资料调查时，只检索已选且有权读取的版本。

@@ -81,8 +81,10 @@ OK
 
 ## 下一步
 
-1. 将 policy 的文档检索也接到 `RetrievalService`（保留现有引用/账本规则）；
-2. 为 HTML 上传增加解析诊断和失败原因展示；
-3. 为 manual 域增加独立留出评测；
-4. 增加 policy/manual 共用的 EvidenceStore 输出；
+M1/M2 已完成。当前进入 M3：
+
+1. 历史页与导出（Markdown 调查报告、CSV 明细）；
+2. 将 policy 的文档检索接到 `RetrievalService`（保留现有引用/账本规则）；
+3. 为 HTML 上传增加解析诊断；
+4. 为 manual 域增加独立留出评测；
 5. 再评估 Dense/Reranker。
