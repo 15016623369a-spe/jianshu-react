@@ -40,6 +40,7 @@ from app.policy_documents import PolicyDocumentInput, PolicyDocumentLimit, Polic
 from app.policy_documents_api import manual_router, router as policy_documents_router
 from app.policy_investigation import InvestigationMode, InvestigationRequest, run_policy_investigation
 from app.policy_react import deepseek_policy_selector
+from app.rag.domains import default_registry
 from app.policy_workflow import PolicyMode, PolicyRevenueRequest, run_policy_workflow
 from app.product_assistant import answer_data_turn
 from app.product_errors import chat_http_error, is_chat_request
@@ -129,6 +130,7 @@ async def lifespan(app: FastAPI):
     app.state.query_exports = QueryExportStore(app.state.root / "query_exports.sqlite")
     app.state.policy_documents = PolicyDocumentStore(app.state.root / "policy_documents.sqlite")
     app.state.manual_documents = PolicyDocumentStore(app.state.root / "manual_documents.sqlite")
+    app.state.domains = default_registry()
     bird = os.getenv("RAG_BIRD_ROOT")
     app.state.bird = Path(bird).resolve() if bird else None
     app.state.settings = load_settings()
@@ -280,6 +282,11 @@ async def policy_investigation(body: InvestigationRequest, request: Request, mod
             return await run_in_threadpool(
                 run_policy_investigation, state.hard_policy_database, body, mode=mode, choose=choose, snapshot=snapshot,
             )
+
+
+@app.get("/api/v3/domains")
+def list_v3_domains(request: Request):
+    return {"domains": request.app.state.domains.describe()}
 
 
 @app.post("/api/v3/investigations")

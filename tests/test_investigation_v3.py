@@ -103,6 +103,15 @@ class InvestigationV3Tests(unittest.TestCase):
             self.assertEqual(client.get(detail + "/versions/1", headers=bob).status_code, 404)
             self.assertEqual(client.post(INVESTIGATE, headers=bob, json=body).status_code, 404)
 
+    def test_domain_registry_is_exposed_for_v3_clients(self):
+        with TestClient(app) as client:
+            response = client.get("/api/v3/domains")
+        self.assertEqual(response.status_code, 200)
+        domains = response.json()["domains"]
+        self.assertEqual(tuple(domains), ("policy", "manual"))
+        self.assertTrue(domains["policy"]["supports_sql"])
+        self.assertEqual(domains["manual"]["document_sources"], ["manual"])
+
     def test_request_boundary_rejects_unknown_domain_and_oversize(self):
         with TestClient(app) as client:
             self.assertEqual(client.post(INVESTIGATE, json={"domain": "unknown", "question": "查文档"}).status_code, 422)

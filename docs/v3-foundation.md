@@ -28,12 +28,13 @@ tests/
 - 中文按单字 + 二元词片段、英文按词切分；
 - 标题字段加权，但排序仍确定性。
 
-## 本次没有做
+## 本次接入
 
 ```text
-没有改 HTTP API
-没有改 UI
-没有替换现有政策/手册检索
+新增 GET /api/v3/domains
+  返回 policy/manual 的 domain pack 描述
+现有 /api/v3/investigations 行为保持不变
+UI 与现有政策/手册检索未切换
 没有引入 Dense/Reranker
 没有动 v2.0.0 tag
 ```
@@ -41,11 +42,11 @@ tests/
 ## 验收
 
 ```text
-Ran 263 tests in 14.509s
+Ran 264 tests in 14.197s
 OK
 ```
 
-新增 14 项测试，覆盖：
+新增 15 项测试，覆盖：
 
 - Markdown 标题行号；
 - HTML 提取与 script 忽略；
@@ -60,7 +61,7 @@ OK
 
 ## 下一步
 
-1. 把 `DomainRegistry` 接入 `/api/v3/investigations` 路由；
+1. 用 `DomainRegistry` 驱动 `/api/v3/investigations` 路由，而不是手写分支；
 2. 将 policy/manual 的文档加载接到 `RetrievalService`；
 3. 增加 Markdown/HTML 上传入口；
 4. 为 manual 域增加独立留出评测；
