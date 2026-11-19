@@ -108,7 +108,7 @@ auto    75/90
 ## 验收
 
 ```text
-Ran 290 tests in 14.242s
+Ran 290 tests in 13.911s
 OK
 manual-holdout-v1: 12/12 passed
 ```
