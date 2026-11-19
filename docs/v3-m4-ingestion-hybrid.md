@@ -112,16 +112,31 @@ auto    75/90（离线无模型）
 app/rag/dense.py
   SentenceTransformerDense
   CrossEncoderReranker
+app/rag/hybrid.py
+  HybridIndex
+  reciprocal_rank_fusion
 ```
 
-- 模型通过注入加载，不在导入时下载；
-- 测试用 fake encoder 验证排序、ACL 和 metadata filter；
-- 本机没有可离线加载的 dense/rerank 模型缓存，尚未产生真实模型指标；
-- 当前不把未评测模型设为默认。
+本机用离线 `bge-m3` 对 manual 检索题集做了 12 题 ×3 轮对照：
+
+```text
+BM25   Recall@1/3/5 = 100% / 100% / 100%
+Dense  Recall@1/3/5 = 100% / 100% / 100%
+BM25   median 0.011 ms
+Dense  median 32.47 ms
+```
+
+结论：当前数据规模下 BM25 已足够，dense 没有召回收益但延迟增加；因此默认仍用 BM25，dense 只在配置并评测后启用。CrossEncoderReranker 代码路径保留，未产生真实 rerank 指标。
 
 ### 7. 数据源
 
-政策调查继续使用 SQLite 演示账本；现有 PostgreSQL 连接和只读约束未改。
+用同一批零售订单做 SQLite/PostgreSQL 对照，4 个聚合场景全部一致：
+
+```text
+SQLite  = PostgreSQL（订单数、毛营收、退款、净营收）
+```
+
+测试脚本：`evaluation/run_cross_db_benchmark.py`；结果：`evaluation/results/cross_db_benchmark.json`。
 
 ## 验收
 

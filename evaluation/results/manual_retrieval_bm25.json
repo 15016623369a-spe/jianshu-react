@@ -1,0 +1,229 @@
+{
+  "suite": "manual-retrieval-holdout-v1",
+  "dense": false,
+  "repeats": 3,
+  "cases": 36,
+  "recall@1": 1.0,
+  "recall@3": 1.0,
+  "recall@5": 1.0,
+  "median_ms": 0.010937495972029865,
+  "p95_ms": 0.01554097980260849,
+  "results": [
+    {
+      "id": "v1-wifi",
+      "query": "怎样连接 Wi-Fi？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v1-wifi-color",
+      "query": "Wi-Fi 连接成功时指示灯是什么颜色？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v1-guest",
+      "query": "访客网络怎么开启？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v1-guest-password",
+      "query": "访客网络密码在哪里设置？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v1-battery",
+      "query": "怎么检查设备电量？",
+      "gold": "检查电量",
+      "rank": 1
+    },
+    {
+      "id": "v1-battery-key",
+      "query": "电量键怎么用？",
+      "gold": "检查电量",
+      "rank": 1
+    },
+    {
+      "id": "v2-wifi",
+      "query": "怎样连接 Wi-Fi？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v2-wifi-color",
+      "query": "Wi-Fi 连接成功时指示灯是什么颜色？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v2-guest",
+      "query": "访客网络怎么开启？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v2-guest-duration",
+      "query": "访客网络有效时长在哪里设置？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v2-battery",
+      "query": "怎么检查设备电量？",
+      "gold": "检查电量",
+      "rank": 1
+    },
+    {
+      "id": "v2-battery-percent",
+      "query": "在哪里查看剩余电量百分比？",
+      "gold": "检查电量",
+      "rank": 1
+    },
+    {
+      "id": "v1-wifi",
+      "query": "怎样连接 Wi-Fi？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v1-wifi-color",
+      "query": "Wi-Fi 连接成功时指示灯是什么颜色？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v1-guest",
+      "query": "访客网络怎么开启？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v1-guest-password",
+      "query": "访客网络密码在哪里设置？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v1-battery",
+      "query": "怎么检查设备电量？",
+      "gold": "检查电量",
+      "rank": 1
+    },
+    {
+      "id": "v1-battery-key",
+      "query": "电量键怎么用？",
+      "gold": "检查电量",
+      "rank": 1
+    },
+    {
+      "id": "v2-wifi",
+      "query": "怎样连接 Wi-Fi？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v2-wifi-color",
+      "query": "Wi-Fi 连接成功时指示灯是什么颜色？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v2-guest",
+      "query": "访客网络怎么开启？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v2-guest-duration",
+      "query": "访客网络有效时长在哪里设置？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v2-battery",
+      "query": "怎么检查设备电量？",
+      "gold": "检查电量",
+      "rank": 1
+    },
+    {
+      "id": "v2-battery-percent",
+      "query": "在哪里查看剩余电量百分比？",
+      "gold": "检查电量",
+      "rank": 1
+    },
+    {
+      "id": "v1-wifi",
+      "query": "怎样连接 Wi-Fi？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v1-wifi-color",
+      "query": "Wi-Fi 连接成功时指示灯是什么颜色？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v1-guest",
+      "query": "访客网络怎么开启？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v1-guest-password",
+      "query": "访客网络密码在哪里设置？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v1-battery",
+      "query": "怎么检查设备电量？",
+      "gold": "检查电量",
+      "rank": 1
+    },
+    {
+      "id": "v1-battery-key",
+      "query": "电量键怎么用？",
+      "gold": "检查电量",
+      "rank": 1
+    },
+    {
+      "id": "v2-wifi",
+      "query": "怎样连接 Wi-Fi？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v2-wifi-color",
+      "query": "Wi-Fi 连接成功时指示灯是什么颜色？",
+      "gold": "连接 Wi-Fi",
+      "rank": 1
+    },
+    {
+      "id": "v2-guest",
+      "query": "访客网络怎么开启？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v2-guest-duration",
+      "query": "访客网络有效时长在哪里设置？",
+      "gold": "开启访客网络",
+      "rank": 1
+    },
+    {
+      "id": "v2-battery",
+      "query": "怎么检查设备电量？",
+      "gold": "检查电量",
+      "rank": 1
+    },
+    {
+      "id": "v2-battery-percent",
+      "query": "在哪里查看剩余电量百分比？",
+      "gold": "检查电量",
+      "rank": 1
+    }
+  ]
+}
