@@ -84,7 +84,24 @@ tests/test_manual_holdout.py
 manual-holdout-v1: 12/12 passed
 ```
 
-### 5. 数据源
+### 5. policy 迁移试验
+
+尝试把 policy 的 `_rank_passages` 切到共享 BM25：
+
+```text
+fixed   72/90
+lexical 75/90
+auto    75/90
+```
+
+原基线 lexical 78/90、auto 90/90，出现回退。  
+已回退，不把该切换作为默认。迁移需要保留标题精确匹配和引用链语义后再评估。
+
+### 6. dense/rerank 状态
+
+`HybridIndex` 接口已验证，但本机没有可离线加载的 dense/rerank 模型缓存，当前不把未评测模型设为默认。
+
+### 7. 数据源
 
 政策调查继续使用 SQLite 演示账本；现有 PostgreSQL 连接和只读约束未改。
 
@@ -110,8 +127,8 @@ manual-holdout-v1: 12/12 passed
 ## 尚未完成
 
 ```text
-[ ] policy 检索迁移到通用 RetrievalService
-[ ] 真实 dense/rerank 配置与同题集指标
+[ ] policy 检索迁移到通用 RetrievalService（BM25 试验回退，需保留精确标题/引用链）
+[ ] 真实 dense/rerank 配置与同题集指标（本机无离线模型）
 [ ] SQLite/PostgreSQL 同一固定数据集的基准对照
 [ ] 150 题多域评测和发布门槛（M5）
 ```
