@@ -23,9 +23,11 @@ RAG_POLICY_SMOKE_PYTHON=/Users/jace/RAG/.venv/bin/python \
 结果：
 
 ```text
-PASS TLS, anonymous denial, forged identity,
-     versioned uploads, share/read/revoke and upload limits
+PASS TLS, anonymous denial, forged identity, versioned uploads,
+     share/read/revoke and upload limits
+PASS v3 retail/LEDGER/A1/manual/history/report/CSV
 PASS revisions and revoked ACL persisted across API restart
+PASS v3 history/report/CSV and owner isolation survived API restart
 ```
 
 覆盖：
@@ -41,14 +43,22 @@ PASS revisions and revoked ACL persisted across API restart
 [✓] 撤权
 [✓] API 重启后版本和 ACL 仍生效
 [✓] 上传大小限制
+[✓] v3 历史/报告/CSV
+[✓] v3 owner 隔离
+[✓] v3 重启后历史/导出仍可读
 ```
 
-## 镜像
+## 候选镜像 rc2
 
 ```text
-api              sha256:5115db6c9d7a9bc135a4de4e8830b6cb9ae695236f14a91a50089c1321185298
-ui               sha256:a2d9e60f8d375a0b90e3f22ad04ab90696c5fe3aa0f89b7ccd4398416c7e406d
-sandbox-broker   sha256:4c3dcb007c69de5864cb27be52f4451e435faf7024c97517f3097d519ecd095e
+jianshu-react-api:v3.0.0-rc2              digests/ed98...
+  sha256:ed98e326723c9f647d2cf3a0d1766760e0a4abf78b8708197bbd263c3a85f445
+jianshu-react-ui:v3.0.0-rc2
+  sha256:76babd6426cdfe74ea7f9673fc731ef453f9b03a2b771ed3114f385e932114d7
+jianshu-react-sandbox-broker:v3.0.0-rc2
+  sha256:40eb80bb7af62cc3d452e4f620cbf6c945c29360300ebbd2beecdcd3ab6d58b3
+jianshu-react-worker:v3.0.0-rc2
+  sha256:4ca8954bd9732a85201319100c3d13e7ae79036c0f0fb280afb893bbf500d410
 ```
 
 ## 本轮修复
@@ -88,7 +98,7 @@ dense/rerank 只通过 app.rag.dense / app.rag.rerank 显式导入
 [ ] 外部试点（1–3 名试用者）
 [ ] 真实域名证书和外部访问范围
 [ ] 生产状态卷备份/恢复演练
-[ ] 回滚演练
+[ ] 回滚演练（rc2 ↔ 上一版镜像）
 [ ] 镜像扫描/容量
 [ ] 三分钟演示录制
 [ ] v3.0.0 tag

@@ -45,8 +45,14 @@ export LLM_API_KEY="" RAG_LANGSMITH_EXPORT=false RAG_POSTGRES_HOST=""
 RAG_SMOKE_TLS_PORT="$https_port" RAG_SMOKE_CA="$scratch/ca.crt" \
   RAG_SMOKE_ALICE="$password_a" RAG_SMOKE_BOB="$password_b" \
   "${RAG_POLICY_SMOKE_PYTHON:-python3}" scripts/check_policy_release.py
+RAG_SMOKE_TLS_PORT="$https_port" RAG_SMOKE_CA="$scratch/ca.crt" \
+  RAG_SMOKE_ALICE="$password_a" RAG_SMOKE_BOB="$password_b" \
+  "${RAG_POLICY_SMOKE_PYTHON:-python3}" scripts/check_v3_release.py
 "${compose[@]}" restart api
 "${compose[@]}" up -d --wait
 RAG_SMOKE_TLS_PORT="$https_port" RAG_SMOKE_CA="$scratch/ca.crt" \
   RAG_SMOKE_ALICE="$password_a" RAG_SMOKE_BOB="$password_b" \
   "${RAG_POLICY_SMOKE_PYTHON:-python3}" scripts/check_policy_release.py --after-restart
+RAG_SMOKE_TLS_PORT="$https_port" RAG_SMOKE_CA="$scratch/ca.crt" \
+  RAG_SMOKE_ALICE="$password_a" RAG_SMOKE_BOB="$password_b" \
+  "${RAG_POLICY_SMOKE_PYTHON:-python3}" scripts/check_v3_release.py --after-restart
