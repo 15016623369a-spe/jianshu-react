@@ -110,6 +110,25 @@ class PolicyDocumentAPITests(unittest.TestCase):
         self.assertEqual(preview["passages"][0]["locator"], "page")
         self.assertIn("Connect Wi-Fi", preview["passages"][0]["quote"])
 
+    def test_pdf_manual_upload_answers_with_page_citation(self):
+        source = Path(__file__).with_name("fixtures") / "manual-sample.pdf"
+        upload = self.client.post(
+            "/api/v3/manual-documents", headers={**self.alice, "Content-Type": "application/pdf"},
+            params={"filename": "manual.pdf"}, content=source.read_bytes(),
+        )
+        self.assertEqual(upload.status_code, 201, upload.text)
+        document = upload.json()
+        result = self.client.post("/api/v3/investigations", headers=self.alice, json={
+            "domain": "manual", "question": "How to connect Wi-Fi?", "document_id": document["id"], "version": 1,
+        })
+        self.assertEqual(result.status_code, 200, result.text)
+        result = result.json()
+        self.assertEqual(result["kind"], "answer")
+        reference, = result["evidence"]
+        self.assertEqual((reference["locator"], reference["line_start"]), ("page", 1))
+        self.assertIn("green", reference["quote"])
+        self.assertEqual(reference["file"], f"uploads/{document['id']}/v1/manual.pdf")
+
     def test_docx_manual_upload_keeps_paragraph_locator(self):
         buffer = BytesIO()
         document = Document()
