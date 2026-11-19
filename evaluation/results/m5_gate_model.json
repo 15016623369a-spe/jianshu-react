@@ -8,8 +8,14 @@
   "doc_precision": 1.0,
   "abstain_pass": 1.0,
   "model_calls": 4,
-  "median_ms": 0.0,
-  "p95_ms": 4.95,
+  "median_ms": 0.31,
+  "p95_ms": 5.848,
+  "normal_p50_ms": 0.306,
+  "normal_p95_ms": 4.452,
+  "fallback_p50_ms": 880.452,
+  "fallback_p95_ms": 1002.51,
+  "normal_cases": 146,
+  "fallback_cases": 4,
   "failed": [],
   "rows": [
     {
@@ -19,7 +25,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.4077909979969263,
       "model_calls": 0
     },
     {
@@ -29,7 +35,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.32300001475960016,
       "model_calls": 0
     },
     {
@@ -39,7 +45,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.14637500862590969,
       "model_calls": 0
     },
     {
@@ -49,7 +55,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.1366250216960907,
       "model_calls": 0
     },
     {
@@ -59,7 +65,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11616700794547796,
       "model_calls": 0
     },
     {
@@ -69,7 +75,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11204200563952327,
       "model_calls": 0
     },
     {
@@ -79,7 +85,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11920899851247668,
       "model_calls": 0
     },
     {
@@ -89,7 +95,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.1274579844903201,
       "model_calls": 0
     },
     {
@@ -99,7 +105,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.10979201761074364,
       "model_calls": 0
     },
     {
@@ -109,7 +115,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11233301484026015,
       "model_calls": 0
     },
     {
@@ -119,7 +125,7 @@
       "citation_ok": true,
       "kind": "clarification",
       "expected_kind": "clarification",
-      "latency_ms": 0.0,
+      "latency_ms": 0.0021669839043170214,
       "model_calls": 0
     },
     {
@@ -129,7 +135,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.1078750065062195,
       "model_calls": 0
     },
     {
@@ -139,7 +145,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11299998732283711,
       "model_calls": 0
     },
     {
@@ -149,7 +155,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.10341699817217886,
       "model_calls": 0
     },
     {
@@ -159,7 +165,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11158298002555966,
       "model_calls": 0
     },
     {
@@ -169,7 +175,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.10299999848939478,
       "model_calls": 0
     },
     {
@@ -179,7 +185,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.1042500080075115,
       "model_calls": 0
     },
     {
@@ -189,7 +195,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.12024998432025313,
       "model_calls": 0
     },
     {
@@ -199,7 +205,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.09766698349267244,
       "model_calls": 0
     },
     {
@@ -209,7 +215,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11570801143534482,
       "model_calls": 0
     },
     {
@@ -219,7 +225,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11258397717028856,
       "model_calls": 0
     },
     {
@@ -229,7 +235,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11754201841540635,
       "model_calls": 0
     },
     {
@@ -239,7 +245,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.2999170101247728,
       "model_calls": 0
     },
     {
@@ -249,7 +255,7 @@
       "citation_ok": true,
       "kind": "clarification",
       "expected_kind": "clarification",
-      "latency_ms": 0.0,
+      "latency_ms": 0.014209013897925615,
       "model_calls": 0
     },
     {
@@ -259,7 +265,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.2430829918012023,
       "model_calls": 0
     },
     {
@@ -269,7 +275,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.16683302237652242,
       "model_calls": 0
     },
     {
@@ -279,7 +285,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.12641598004847765,
       "model_calls": 0
     },
     {
@@ -289,7 +295,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.17629200010560453,
       "model_calls": 0
     },
     {
@@ -299,7 +305,7 @@
       "citation_ok": true,
       "kind": "abstained",
       "expected_kind": "abstained",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11583301238715649,
       "model_calls": 0
     },
     {
@@ -309,7 +315,7 @@
       "citation_ok": true,
       "kind": "clarification",
       "expected_kind": "clarification",
-      "latency_ms": 0.0,
+      "latency_ms": 0.00200001522898674,
       "model_calls": 0
     },
     {
@@ -319,7 +325,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.14179199934005737,
       "model_calls": 0
     },
     {
@@ -329,7 +335,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.19129199790768325,
       "model_calls": 0
     },
     {
@@ -339,7 +345,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.19687501480802894,
       "model_calls": 0
     },
     {
@@ -349,7 +355,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.13929099077358842,
       "model_calls": 0
     },
     {
@@ -359,7 +365,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.132458982989192,
       "model_calls": 0
     },
     {
@@ -369,7 +375,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.12087498907931149,
       "model_calls": 0
     },
     {
@@ -379,7 +385,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.12491701636463404,
       "model_calls": 0
     },
     {
@@ -389,7 +395,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11904200073331594,
       "model_calls": 0
     },
     {
@@ -399,7 +405,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.10933401063084602,
       "model_calls": 0
     },
     {
@@ -409,7 +415,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.10379200102761388,
       "model_calls": 0
     },
     {
@@ -419,7 +425,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11604200699366629,
       "model_calls": 0
     },
     {
@@ -429,7 +435,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.10579099762253463,
       "model_calls": 0
     },
     {
@@ -439,7 +445,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.12737498036585748,
       "model_calls": 0
     },
     {
@@ -449,7 +455,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.11329198605380952,
       "model_calls": 0
     },
     {
@@ -459,7 +465,7 @@
       "citation_ok": true,
       "kind": "answer",
       "expected_kind": "answer",
-      "latency_ms": 0.0,
+      "latency_ms": 0.12599999899975955,
       "model_calls": 0
     },
     {
@@ -472,7 +478,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.7027920219115913,
       "model_calls": 0
     },
     {
@@ -485,7 +491,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.35358298919163644,
       "model_calls": 0
     },
     {
@@ -498,7 +504,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3330000035930425,
       "model_calls": 0
     },
     {
@@ -511,7 +517,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3447920025791973,
       "model_calls": 0
     },
     {
@@ -524,7 +530,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3100830072071403,
       "model_calls": 0
     },
     {
@@ -537,7 +543,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.30300000798888505,
       "model_calls": 0
     },
     {
@@ -550,7 +556,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.30166699434630573,
       "model_calls": 0
     },
     {
@@ -563,7 +569,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3208339912816882,
       "model_calls": 0
     },
     {
@@ -576,7 +582,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.2959159901365638,
       "model_calls": 0
     },
     {
@@ -589,7 +595,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.290291995042935,
       "model_calls": 0
     },
     {
@@ -602,7 +608,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.30112502281554043,
       "model_calls": 0
     },
     {
@@ -615,7 +621,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3227500128559768,
       "model_calls": 0
     },
     {
@@ -628,7 +634,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3163750225212425,
       "model_calls": 0
     },
     {
@@ -641,7 +647,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.31045801006257534,
       "model_calls": 0
     },
     {
@@ -654,7 +660,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3004999889526516,
       "model_calls": 0
     },
     {
@@ -667,7 +673,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.30337501084432006,
       "model_calls": 0
     },
     {
@@ -680,7 +686,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.32800002372823656,
       "model_calls": 0
     },
     {
@@ -693,7 +699,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3553749993443489,
       "model_calls": 0
     },
     {
@@ -706,7 +712,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3290830063633621,
       "model_calls": 0
     },
     {
@@ -719,7 +725,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3092909755650908,
       "model_calls": 0
     },
     {
@@ -732,7 +738,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3253330069128424,
       "model_calls": 0
     },
     {
@@ -745,7 +751,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3276659990660846,
       "model_calls": 0
     },
     {
@@ -758,7 +764,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3030409861821681,
       "model_calls": 0
     },
     {
@@ -771,7 +777,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.333709002006799,
       "model_calls": 0
     },
     {
@@ -784,7 +790,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.328666006680578,
       "model_calls": 0
     },
     {
@@ -797,7 +803,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3158750187139958,
       "model_calls": 0
     },
     {
@@ -810,7 +816,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.31058298191055655,
       "model_calls": 0
     },
     {
@@ -823,7 +829,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.45245798537507653,
       "model_calls": 0
     },
     {
@@ -836,7 +842,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 1.0828330123331398,
       "model_calls": 0
     },
     {
@@ -849,7 +855,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3901669988408685,
       "model_calls": 0
     },
     {
@@ -862,7 +868,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3155839804094285,
       "model_calls": 0
     },
     {
@@ -875,7 +881,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.29654198442585766,
       "model_calls": 0
     },
     {
@@ -888,7 +894,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.5167089984752238,
       "model_calls": 0
     },
     {
@@ -901,7 +907,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.429292005719617,
       "model_calls": 0
     },
     {
@@ -914,7 +920,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3550840192474425,
       "model_calls": 0
     },
     {
@@ -927,7 +933,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3204170207027346,
       "model_calls": 0
     },
     {
@@ -940,7 +946,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.32637501135468483,
       "model_calls": 0
     },
     {
@@ -953,7 +959,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3085409989580512,
       "model_calls": 0
     },
     {
@@ -966,7 +972,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.2908750029746443,
       "model_calls": 0
     },
     {
@@ -979,7 +985,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.2878340019378811,
       "model_calls": 0
     },
     {
@@ -992,7 +998,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.27658301405608654,
       "model_calls": 0
     },
     {
@@ -1005,7 +1011,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.4479169729165733,
       "model_calls": 0
     },
     {
@@ -1018,7 +1024,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.4150839813519269,
       "model_calls": 0
     },
     {
@@ -1031,7 +1037,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.3434999962337315,
       "model_calls": 0
     },
     {
@@ -1044,7 +1050,7 @@
       "expected_kind": "answer",
       "numeric_output": true,
       "amount_ok": true,
-      "latency_ms": 0.0,
+      "latency_ms": 0.32029100111685693,
       "model_calls": 0
     },
     {
@@ -1058,7 +1064,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.272,
+      "latency_ms": 0.2778329944703728,
       "model_calls": 0
     },
     {
@@ -1072,7 +1078,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.185,
+      "latency_ms": 0.19066702225245535,
       "model_calls": 0
     },
     {
@@ -1086,7 +1092,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.176,
+      "latency_ms": 0.1804579806048423,
       "model_calls": 0
     },
     {
@@ -1100,7 +1106,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.177,
+      "latency_ms": 0.1807910157367587,
       "model_calls": 0
     },
     {
@@ -1114,7 +1120,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.174,
+      "latency_ms": 0.1788749941624701,
       "model_calls": 0
     },
     {
@@ -1128,7 +1134,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.172,
+      "latency_ms": 0.17608399502933025,
       "model_calls": 0
     },
     {
@@ -1142,7 +1148,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.168,
+      "latency_ms": 0.17504201969131827,
       "model_calls": 0
     },
     {
@@ -1156,7 +1162,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.169,
+      "latency_ms": 0.244333001319319,
       "model_calls": 0
     },
     {
@@ -1170,7 +1176,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.168,
+      "latency_ms": 0.20700000459328294,
       "model_calls": 0
     },
     {
@@ -1184,7 +1190,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.179,
+      "latency_ms": 0.18745797569863498,
       "model_calls": 0
     },
     {
@@ -1198,7 +1204,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.197,
+      "latency_ms": 0.19395799608901143,
       "model_calls": 0
     },
     {
@@ -1212,7 +1218,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.216,
+      "latency_ms": 0.19258298561908305,
       "model_calls": 0
     },
     {
@@ -1226,7 +1232,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.216,
+      "latency_ms": 0.18145798821933568,
       "model_calls": 0
     },
     {
@@ -1240,7 +1246,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.337,
+      "latency_ms": 0.31450000824406743,
       "model_calls": 0
     },
     {
@@ -1254,7 +1260,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.236,
+      "latency_ms": 0.3229169815313071,
       "model_calls": 0
     },
     {
@@ -1268,7 +1274,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.195,
+      "latency_ms": 0.347083987435326,
       "model_calls": 0
     },
     {
@@ -1282,7 +1288,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.194,
+      "latency_ms": 0.2877080114558339,
       "model_calls": 0
     },
     {
@@ -1296,7 +1302,7 @@
       "amount_ok": true,
       "doc_recall": 1.0,
       "doc_precision": 1.0,
-      "latency_ms": 0.202,
+      "latency_ms": 0.20087501616217196,
       "model_calls": 0
     },
     {
@@ -1309,7 +1315,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 2,
-      "latency_ms": 3.215,
+      "latency_ms": 3.768,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1324,7 +1330,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 4,
-      "latency_ms": 4.446,
+      "latency_ms": 5.256,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1339,7 +1345,7 @@
       "kind": "clarification",
       "expected_kind": "clarification",
       "sql_queries": 0,
-      "latency_ms": 2.918,
+      "latency_ms": 3.737,
       "amount_ok": true,
       "numeric_output": false,
       "model_calls": 0
@@ -1354,7 +1360,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 1,
-      "latency_ms": 3.149,
+      "latency_ms": 3.523,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1369,7 +1375,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 2,
-      "latency_ms": 4.313,
+      "latency_ms": 4.47,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1384,7 +1390,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 4.265,
+      "latency_ms": 4.452,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1399,7 +1405,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 1,
-      "latency_ms": 3.671,
+      "latency_ms": 3.614,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1414,7 +1420,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 6.518,
+      "latency_ms": 6.143,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1429,7 +1435,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 1,
-      "latency_ms": 3.95,
+      "latency_ms": 3.956,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1444,7 +1450,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 5.664,
+      "latency_ms": 5.848,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1459,7 +1465,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 1,
-      "latency_ms": 578.99,
+      "latency_ms": 764.7,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 1
@@ -1474,7 +1480,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 771.228,
+      "latency_ms": 907.333,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 1
@@ -1489,7 +1495,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 1,
-      "latency_ms": 641.913,
+      "latency_ms": 853.572,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 1
@@ -1504,7 +1510,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 446.724,
+      "latency_ms": 1002.51,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 1
@@ -1519,7 +1525,7 @@
       "kind": "abstained",
       "expected_kind": "abstained",
       "sql_queries": 0,
-      "latency_ms": 5.911,
+      "latency_ms": 7.251,
       "amount_ok": true,
       "numeric_output": false,
       "model_calls": 0
@@ -1534,7 +1540,7 @@
       "kind": "abstained",
       "expected_kind": "abstained",
       "sql_queries": 0,
-      "latency_ms": 4.95,
+      "latency_ms": 5.613,
       "amount_ok": true,
       "numeric_output": false,
       "model_calls": 0
@@ -1549,7 +1555,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 1,
-      "latency_ms": 2.337,
+      "latency_ms": 2.743,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1564,7 +1570,7 @@
       "kind": "abstained",
       "expected_kind": "abstained",
       "sql_queries": 0,
-      "latency_ms": 3.5,
+      "latency_ms": 3.202,
       "amount_ok": true,
       "numeric_output": false,
       "model_calls": 0
@@ -1579,7 +1585,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 1,
-      "latency_ms": 2.59,
+      "latency_ms": 2.352,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1594,7 +1600,7 @@
       "kind": "abstained",
       "expected_kind": "abstained",
       "sql_queries": 0,
-      "latency_ms": 5.336,
+      "latency_ms": 6.388,
       "amount_ok": true,
       "numeric_output": false,
       "model_calls": 0
@@ -1609,7 +1615,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 1,
-      "latency_ms": 1.643,
+      "latency_ms": 2.08,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1624,7 +1630,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 1,
-      "latency_ms": 1.575,
+      "latency_ms": 1.77,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1639,7 +1645,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 1,
-      "latency_ms": 1.697,
+      "latency_ms": 1.898,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1654,7 +1660,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 4.541,
+      "latency_ms": 4.13,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1669,7 +1675,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 2,
-      "latency_ms": 3.384,
+      "latency_ms": 4.153,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1684,7 +1690,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 3.431,
+      "latency_ms": 3.952,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1699,7 +1705,7 @@
       "kind": "abstained",
       "expected_kind": "abstained",
       "sql_queries": 0,
-      "latency_ms": 2.041,
+      "latency_ms": 2.227,
       "amount_ok": true,
       "numeric_output": false,
       "model_calls": 0
@@ -1714,7 +1720,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 1,
-      "latency_ms": 1.474,
+      "latency_ms": 1.572,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1729,7 +1735,7 @@
       "kind": "clarification",
       "expected_kind": "clarification",
       "sql_queries": 0,
-      "latency_ms": 0.009,
+      "latency_ms": 0.01,
       "amount_ok": true,
       "numeric_output": false,
       "model_calls": 0
@@ -1744,7 +1750,7 @@
       "kind": "clarification",
       "expected_kind": "clarification",
       "sql_queries": 0,
-      "latency_ms": 0.022,
+      "latency_ms": 0.02,
       "amount_ok": true,
       "numeric_output": false,
       "model_calls": 0
@@ -1759,7 +1765,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 3.778,
+      "latency_ms": 3.432,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1774,7 +1780,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 4,
-      "latency_ms": 3.097,
+      "latency_ms": 3.139,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1789,7 +1795,7 @@
       "kind": "clarification",
       "expected_kind": "clarification",
       "sql_queries": 0,
-      "latency_ms": 1.672,
+      "latency_ms": 1.615,
       "amount_ok": true,
       "numeric_output": false,
       "model_calls": 0
@@ -1804,7 +1810,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 3.144,
+      "latency_ms": 3.186,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1819,7 +1825,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 3.064,
+      "latency_ms": 3.083,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1834,7 +1840,7 @@
       "kind": "abstained",
       "expected_kind": "abstained",
       "sql_queries": 0,
-      "latency_ms": 1.908,
+      "latency_ms": 1.331,
       "amount_ok": true,
       "numeric_output": false,
       "model_calls": 0
@@ -1849,7 +1855,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 2.687,
+      "latency_ms": 2.117,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1864,7 +1870,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 2.08,
+      "latency_ms": 2.419,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1879,7 +1885,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 2,
-      "latency_ms": 3.231,
+      "latency_ms": 3.328,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1894,7 +1900,7 @@
       "kind": "answer",
       "expected_kind": "answer",
       "sql_queries": 3,
-      "latency_ms": 3.32,
+      "latency_ms": 3.636,
       "amount_ok": true,
       "numeric_output": true,
       "model_calls": 0
@@ -1909,7 +1915,7 @@
       "kind": "abstained",
       "expected_kind": "abstained",
       "sql_queries": 0,
-      "latency_ms": 1.058,
+      "latency_ms": 1.097,
       "amount_ok": true,
       "numeric_output": false,
       "model_calls": 0

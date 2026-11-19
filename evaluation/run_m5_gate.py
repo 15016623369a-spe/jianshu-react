@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 from statistics import median
 from tempfile import TemporaryDirectory
+from time import perf_counter
 
 from unittest.mock import patch
 
@@ -32,9 +34,11 @@ def _manual() -> list[dict]:
     cases = json.loads(MANUAL.read_text())["cases"]
     rows = []
     for case in cases:
+        began = perf_counter()
         result = run_manual_investigation(ManualInvestigationV3(
             domain="manual", question=case["question"], version=case["version"],
         ), None)
+        elapsed = (perf_counter() - began) * 1000
         ok = result["kind"] == case["kind"]
         if case.get("reason"):
             ok = ok and result.get("reason") == case["reason"]
@@ -45,7 +49,8 @@ def _manual() -> list[dict]:
         citation_ok = (not case.get("section")) or (bool(result.get("evidence")) and
                                                    result["evidence"][0]["title"] == case["section"])
         rows.append({"id": case["id"], "domain": "manual", "ok": ok, "citation_ok": citation_ok,
-                     "kind": result["kind"], "expected_kind": case["kind"], "latency_ms": 0.0, "model_calls": 0})
+                     "kind": result["kind"], "expected_kind": case["kind"], "latency_ms": elapsed,
+                     "model_calls": 0})
     return rows
 
 
@@ -55,7 +60,9 @@ def _retail() -> list[dict]:
     with TemporaryDirectory() as directory:
         database = prepare_hard_policy_database(Path(directory))
         for case in cases:
+            began = perf_counter()
             result = run_retail_investigation(database, RetailInvestigationV3(domain="retail", question=case["question"]))
+            elapsed = (perf_counter() - began) * 1000
             expected = case["expected"]
             actual = {
                 "net": result["actual"][0]["net_cents"] if result.get("actual") else None,
@@ -67,7 +74,7 @@ def _retail() -> list[dict]:
             rows.append({"id": case["id"], "domain": "retail", "ok": result["kind"] == "answer" and actual == target,
                          "citation_ok": bool(result.get("evidence")), "expected": target, "actual": actual,
                          "expected_kind": "answer", "numeric_output": True, "amount_ok": actual == target,
-                         "latency_ms": 0.0, "model_calls": 0})
+                         "latency_ms": elapsed, "model_calls": 0})
     return rows
 
 
@@ -77,12 +84,14 @@ def _policy_extra() -> list[dict]:
     with TemporaryDirectory() as directory:
         database = prepare_hard_policy_database(Path(directory))
         for case in cases:
+            began = perf_counter()
             result = run_policy_investigation(database, InvestigationRequest(question=case["question"]))
+            elapsed = (perf_counter() - began) * 1000
             rows.append({"id": case["id"], "domain": "policy", "ok": (result["kind"], result.get("reason")) ==
                          (case["kind"], case["reason"]), "citation_ok": True,
                          "sql_queries": result["metrics"]["sql_queries"], "expected_kind": case["kind"],
                          "numeric_output": False, "amount_ok": True, "doc_recall": 1.0, "doc_precision": 1.0,
-                         "latency_ms": result["metrics"]["latency_ms"], "model_calls": result["metrics"]["model_calls"]})
+                         "latency_ms": elapsed, "model_calls": result["metrics"]["model_calls"]})
     return rows
 
 
@@ -157,7 +166,11 @@ def evaluate(*, use_model: bool = False) -> dict:
     doc_precisions = [row.get("doc_precision", 1.0) for row in rows if row["domain"] == "policy"]
     abstain_cases = [row for row in rows if row.get("expected_kind") in {"clarification", "abstained"}]
     latencies = sorted(row.get("latency_ms", 0.0) for row in rows)
-    p95 = latencies[max(0, int(len(latencies) * .95) - 1)] if latencies else 0.0
+    normal = sorted(row.get("latency_ms", 0.0) for row in rows if row.get("model_calls", 0) == 0)
+    fallback = sorted(row.get("latency_ms", 0.0) for row in rows if row.get("model_calls", 0) > 0)
+
+    def p95(values: list[float]) -> float:
+        return values[max(0, math.ceil(len(values) * .95) - 1)] if values else 0.0
     return {
         "suite": "m5-multidomain-v1",
         "executed": len(rows),
@@ -169,7 +182,13 @@ def evaluate(*, use_model: bool = False) -> dict:
         "abstain_pass": sum(row["ok"] for row in abstain_cases) / len(abstain_cases) if abstain_cases else 1.0,
         "model_calls": sum(row.get("model_calls", 0) for row in rows),
         "median_ms": round(median(latencies), 3) if latencies else 0.0,
-        "p95_ms": round(p95, 3),
+        "p95_ms": round(p95(latencies), 3),
+        "normal_p50_ms": round(median(normal), 3) if normal else 0.0,
+        "normal_p95_ms": round(p95(normal), 3),
+        "fallback_p50_ms": round(median(fallback), 3) if fallback else 0.0,
+        "fallback_p95_ms": round(p95(fallback), 3),
+        "normal_cases": len(normal),
+        "fallback_cases": len(fallback),
         "failed": [row for row in rows if not row["ok"]],
         "rows": rows,
     }

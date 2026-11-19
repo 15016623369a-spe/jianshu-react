@@ -102,23 +102,38 @@ Citation precision
 ## 四、当前验收
 
 ```text
-Ran 297 tests in 14.918s
+Ran 297 tests in 17.708s
 OK
 M5 offline gate: 146/150，wrong_numeric 0
 M5 model gate:   150/150，wrong_numeric 0
 manual-holdout-v1: 12/12
 ```
 
-## 五、M5 剩余
+## 五、延迟与发布报告
+
+已完成：
 
 ```text
-[x] 将 policy 基础 42 题接入统一 gate
-[x] 补齐 150 题统一 manifest/结果
-[x] 逐题记录 expected status、金额/答案、允许引用、版本、可接受澄清
-[x] 计算 Doc Recall 和 citation precision
-[x] 区分开发集/留出集
-[ ] 固定硬件的 P50/P95、模型调用与端到端延迟
-[ ] 汇总发布报告、失败分类和发布门槛
+离线 150 题：P50 0.294 ms / P95 3.925 ms
+模型兜底：正常 P95 4.452 ms；兜底 P50 880.452 ms / P95 1002.510 ms
+HTTP API：P50 7.865 ms / P95 12.743 ms
+浏览器正常路径：P50 304.656 ms / P95 323.473 ms
+```
+
+发布报告：
+
+```text
+docs/v3-m5-release-report.md
+```
+
+## 六、M5 剩余
+
+```text
+[x] 150 题统一 gate
+[x] 延迟、模型调用与端到端延迟
+[x] 汇总报告、失败分类和发布门槛
+[ ] 浏览器兜底路径端到端
+[ ] 并发压测
 [ ] 生产 HTTPS/权限/备份（M6）
 ```
 
