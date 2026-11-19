@@ -2,7 +2,7 @@
 
 V3 从 [V2 冻结检查点](docs/v2.0.0-checkpoint.md) 延续开发。调查入口支持选择政策计算或手册问答，共用文档版本、访问控制和引用字段。[双域演示](docs/v3-dual-domain.md)
 
-当前 V3 基础层：**296 项自动测试**，支持 Markdown/HTML/PDF/DOCX 政策与手册上传、policy/manual/retail 三个 domain、通用 BM25 检索和可插拔 hybrid/dense/rerank 接口，`RAG_RERANK_MODE` 控制是否启用。`v2.0.0` 检查点的 244 项回归仍作为回退基线。
+当前 V3 基础层：**297 项自动测试**，支持 Markdown/HTML/PDF/DOCX 政策与手册上传、policy/manual/retail 三个 domain、通用 BM25 检索和可插拔 hybrid/dense/rerank 接口，`RAG_RERANK_MODE` 控制是否启用。`v2.0.0` 检查点的 244 项回归仍作为回退基线。
 
 见数把政策正文和只读账本接到同一个调查入口。用自然语言比较两个月的净营收，可按其中一个月的退款口径重算，并核对每段生效规则、引用、SQL 和绑定参数。
 
@@ -168,7 +168,7 @@ RAG_BIRD_DATA_DIR=/absolute/path/to/dev_databases \
 
 - `POST /api/v3/investigations` 按 `domain` 选择政策调查、手册问答或零售指标，三种任务均返回调查 ID；政策/手册有版本化引用。
 - `GET /api/v3/investigations` 分页列出当前账号的调查记录，`GET /api/v3/investigations/{id}` 读取当时保存的完整结果；`report.md` 导出调查报告，`amounts.csv` 导出金额明细。[M3 工作台](docs/v3-m3-workbench.md)
-- `GET /api/v3/status` 返回领域、数据源、模型和历史可用状态。`POST /api/v2/policy-documents/preview` 与 `POST /api/v3/manual-documents/preview` 提供不落库的解析预览。[M4 格式与检索](docs/v3-m4-ingestion-hybrid.md) · [M4 验收](docs/v3-m4-acceptance.md)
+- `GET /api/v3/status` 返回领域、数据源、模型和历史可用状态。`POST /api/v2/policy-documents/preview` 与 `POST /api/v3/manual-documents/preview` 提供不落库的解析预览。[M4 格式与检索](docs/v3-m4-ingestion-hybrid.md) · [M4 验收](docs/v3-m4-acceptance.md) · [M5 评测](docs/v3-m5-evaluation.md)
 - `/api/v3/manual-documents` 支持 Markdown/HTML/PDF/DOCX 手册上传、历史版本读取及账号授权。
 - `POST /api/v2/policy-investigation` 接收 `question` 和可选的 `document_ids`，返回计算、出处与各阶段检索轨迹。
 - `/api/v2/policy-documents` 提供上传、版本历史和读取授权。选择上传资料调查时，只检索已选且有权读取的版本。

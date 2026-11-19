@@ -132,7 +132,7 @@ SQLite = PostgreSQL
 ## 5. 回归
 
 ```text
-Ran 296 tests in 15.540s
+Ran 297 tests in 15.540s
 OK
 
 浏览器 smoke：9/9 PASS

@@ -1,0 +1,770 @@
+{
+  "suite": "m5-retail-v1",
+  "cases": [
+    {
+      "id": "retail-001",
+      "domain": "retail",
+      "question": "2026 年 10 月华东帐篷净营收是多少？",
+      "product": "帐篷",
+      "region": "华东",
+      "month": "2026-10",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 35000,
+        "refund_cents": 2900,
+        "net_cents": 32100,
+        "aov_cents": 35000
+      }
+    },
+    {
+      "id": "retail-002",
+      "domain": "retail",
+      "question": "2026 年 10 月华东帐篷订单数是多少？",
+      "product": "帐篷",
+      "region": "华东",
+      "month": "2026-10",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 35000,
+        "refund_cents": 2900,
+        "net_cents": 32100,
+        "aov_cents": 35000
+      }
+    },
+    {
+      "id": "retail-003",
+      "domain": "retail",
+      "question": "2026 年 10 月华东帐篷客单价是多少？",
+      "product": "帐篷",
+      "region": "华东",
+      "month": "2026-10",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 35000,
+        "refund_cents": 2900,
+        "net_cents": 32100,
+        "aov_cents": 35000
+      }
+    },
+    {
+      "id": "retail-004",
+      "domain": "retail",
+      "question": "2026 年 11 月华东帐篷净营收是多少？",
+      "product": "帐篷",
+      "region": "华东",
+      "month": "2026-11",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 31000,
+        "refund_cents": 1600,
+        "net_cents": 29400,
+        "aov_cents": 31000
+      }
+    },
+    {
+      "id": "retail-005",
+      "domain": "retail",
+      "question": "2026 年 11 月华东帐篷订单数是多少？",
+      "product": "帐篷",
+      "region": "华东",
+      "month": "2026-11",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 31000,
+        "refund_cents": 1600,
+        "net_cents": 29400,
+        "aov_cents": 31000
+      }
+    },
+    {
+      "id": "retail-006",
+      "domain": "retail",
+      "question": "2026 年 11 月华东帐篷客单价是多少？",
+      "product": "帐篷",
+      "region": "华东",
+      "month": "2026-11",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 31000,
+        "refund_cents": 1600,
+        "net_cents": 29400,
+        "aov_cents": 31000
+      }
+    },
+    {
+      "id": "retail-007",
+      "domain": "retail",
+      "question": "2026 年 10 月华北帐篷净营收是多少？",
+      "product": "帐篷",
+      "region": "华北",
+      "month": "2026-10",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 3,
+        "gross_cents": 146900,
+        "refund_cents": 9900,
+        "net_cents": 137000,
+        "aov_cents": 48967
+      }
+    },
+    {
+      "id": "retail-008",
+      "domain": "retail",
+      "question": "2026 年 10 月华北帐篷订单数是多少？",
+      "product": "帐篷",
+      "region": "华北",
+      "month": "2026-10",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 3,
+        "gross_cents": 146900,
+        "refund_cents": 9900,
+        "net_cents": 137000,
+        "aov_cents": 48967
+      }
+    },
+    {
+      "id": "retail-009",
+      "domain": "retail",
+      "question": "2026 年 10 月华北帐篷客单价是多少？",
+      "product": "帐篷",
+      "region": "华北",
+      "month": "2026-10",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 3,
+        "gross_cents": 146900,
+        "refund_cents": 9900,
+        "net_cents": 137000,
+        "aov_cents": 48967
+      }
+    },
+    {
+      "id": "retail-010",
+      "domain": "retail",
+      "question": "2026 年 11 月华北帐篷净营收是多少？",
+      "product": "帐篷",
+      "region": "华北",
+      "month": "2026-11",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 108900,
+        "refund_cents": 8500,
+        "net_cents": 100400,
+        "aov_cents": 54450
+      }
+    },
+    {
+      "id": "retail-011",
+      "domain": "retail",
+      "question": "2026 年 11 月华北帐篷订单数是多少？",
+      "product": "帐篷",
+      "region": "华北",
+      "month": "2026-11",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 108900,
+        "refund_cents": 8500,
+        "net_cents": 100400,
+        "aov_cents": 54450
+      }
+    },
+    {
+      "id": "retail-012",
+      "domain": "retail",
+      "question": "2026 年 11 月华北帐篷客单价是多少？",
+      "product": "帐篷",
+      "region": "华北",
+      "month": "2026-11",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 108900,
+        "refund_cents": 8500,
+        "net_cents": 100400,
+        "aov_cents": 54450
+      }
+    },
+    {
+      "id": "retail-013",
+      "domain": "retail",
+      "question": "2027 年 1 月华北帐篷净营收是多少？",
+      "product": "帐篷",
+      "region": "华北",
+      "month": "2027-01",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 51000,
+        "refund_cents": 870,
+        "net_cents": 50130,
+        "aov_cents": 25500
+      }
+    },
+    {
+      "id": "retail-014",
+      "domain": "retail",
+      "question": "2027 年 1 月华北帐篷订单数是多少？",
+      "product": "帐篷",
+      "region": "华北",
+      "month": "2027-01",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 51000,
+        "refund_cents": 870,
+        "net_cents": 50130,
+        "aov_cents": 25500
+      }
+    },
+    {
+      "id": "retail-015",
+      "domain": "retail",
+      "question": "2027 年 1 月华北帐篷客单价是多少？",
+      "product": "帐篷",
+      "region": "华北",
+      "month": "2027-01",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 51000,
+        "refund_cents": 870,
+        "net_cents": 50130,
+        "aov_cents": 25500
+      }
+    },
+    {
+      "id": "retail-016",
+      "domain": "retail",
+      "question": "2026 年 10 月华南帐篷净营收是多少？",
+      "product": "帐篷",
+      "region": "华南",
+      "month": "2026-10",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 39000,
+        "refund_cents": 1300,
+        "net_cents": 37700,
+        "aov_cents": 39000
+      }
+    },
+    {
+      "id": "retail-017",
+      "domain": "retail",
+      "question": "2026 年 10 月华南帐篷订单数是多少？",
+      "product": "帐篷",
+      "region": "华南",
+      "month": "2026-10",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 39000,
+        "refund_cents": 1300,
+        "net_cents": 37700,
+        "aov_cents": 39000
+      }
+    },
+    {
+      "id": "retail-018",
+      "domain": "retail",
+      "question": "2026 年 10 月华南帐篷客单价是多少？",
+      "product": "帐篷",
+      "region": "华南",
+      "month": "2026-10",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 39000,
+        "refund_cents": 1300,
+        "net_cents": 37700,
+        "aov_cents": 39000
+      }
+    },
+    {
+      "id": "retail-019",
+      "domain": "retail",
+      "question": "2026 年 11 月华南帐篷净营收是多少？",
+      "product": "帐篷",
+      "region": "华南",
+      "month": "2026-11",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 25500,
+        "refund_cents": 1900,
+        "net_cents": 23600,
+        "aov_cents": 25500
+      }
+    },
+    {
+      "id": "retail-020",
+      "domain": "retail",
+      "question": "2026 年 11 月华南帐篷订单数是多少？",
+      "product": "帐篷",
+      "region": "华南",
+      "month": "2026-11",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 25500,
+        "refund_cents": 1900,
+        "net_cents": 23600,
+        "aov_cents": 25500
+      }
+    },
+    {
+      "id": "retail-021",
+      "domain": "retail",
+      "question": "2026 年 11 月华南帐篷客单价是多少？",
+      "product": "帐篷",
+      "region": "华南",
+      "month": "2026-11",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 25500,
+        "refund_cents": 1900,
+        "net_cents": 23600,
+        "aov_cents": 25500
+      }
+    },
+    {
+      "id": "retail-022",
+      "domain": "retail",
+      "question": "2026 年 11 月华东清仓手表净营收是多少？",
+      "product": "清仓手表",
+      "region": "华东",
+      "month": "2026-11",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 26300,
+        "refund_cents": 280,
+        "net_cents": 26020,
+        "aov_cents": 13150
+      }
+    },
+    {
+      "id": "retail-023",
+      "domain": "retail",
+      "question": "2026 年 11 月华东清仓手表订单数是多少？",
+      "product": "清仓手表",
+      "region": "华东",
+      "month": "2026-11",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 26300,
+        "refund_cents": 280,
+        "net_cents": 26020,
+        "aov_cents": 13150
+      }
+    },
+    {
+      "id": "retail-024",
+      "domain": "retail",
+      "question": "2026 年 11 月华东清仓手表客单价是多少？",
+      "product": "清仓手表",
+      "region": "华东",
+      "month": "2026-11",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 26300,
+        "refund_cents": 280,
+        "net_cents": 26020,
+        "aov_cents": 13150
+      }
+    },
+    {
+      "id": "retail-025",
+      "domain": "retail",
+      "question": "2026 年 10 月华东电水壶净营收是多少？",
+      "product": "电水壶",
+      "region": "华东",
+      "month": "2026-10",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 32600,
+        "refund_cents": 3380,
+        "net_cents": 29220,
+        "aov_cents": 16300
+      }
+    },
+    {
+      "id": "retail-026",
+      "domain": "retail",
+      "question": "2026 年 10 月华东电水壶订单数是多少？",
+      "product": "电水壶",
+      "region": "华东",
+      "month": "2026-10",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 32600,
+        "refund_cents": 3380,
+        "net_cents": 29220,
+        "aov_cents": 16300
+      }
+    },
+    {
+      "id": "retail-027",
+      "domain": "retail",
+      "question": "2026 年 10 月华东电水壶客单价是多少？",
+      "product": "电水壶",
+      "region": "华东",
+      "month": "2026-10",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 32600,
+        "refund_cents": 3380,
+        "net_cents": 29220,
+        "aov_cents": 16300
+      }
+    },
+    {
+      "id": "retail-028",
+      "domain": "retail",
+      "question": "2026 年 11 月华东电水壶净营收是多少？",
+      "product": "电水壶",
+      "region": "华东",
+      "month": "2026-11",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 32300,
+        "refund_cents": 400,
+        "net_cents": 31900,
+        "aov_cents": 16150
+      }
+    },
+    {
+      "id": "retail-029",
+      "domain": "retail",
+      "question": "2026 年 11 月华东电水壶订单数是多少？",
+      "product": "电水壶",
+      "region": "华东",
+      "month": "2026-11",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 32300,
+        "refund_cents": 400,
+        "net_cents": 31900,
+        "aov_cents": 16150
+      }
+    },
+    {
+      "id": "retail-030",
+      "domain": "retail",
+      "question": "2026 年 11 月华东电水壶客单价是多少？",
+      "product": "电水壶",
+      "region": "华东",
+      "month": "2026-11",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 32300,
+        "refund_cents": 400,
+        "net_cents": 31900,
+        "aov_cents": 16150
+      }
+    },
+    {
+      "id": "retail-031",
+      "domain": "retail",
+      "question": "2026 年 11 月华北电水壶净营收是多少？",
+      "product": "电水壶",
+      "region": "华北",
+      "month": "2026-11",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 10500,
+        "refund_cents": 390,
+        "net_cents": 10110,
+        "aov_cents": 10500
+      }
+    },
+    {
+      "id": "retail-032",
+      "domain": "retail",
+      "question": "2026 年 11 月华北电水壶订单数是多少？",
+      "product": "电水壶",
+      "region": "华北",
+      "month": "2026-11",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 10500,
+        "refund_cents": 390,
+        "net_cents": 10110,
+        "aov_cents": 10500
+      }
+    },
+    {
+      "id": "retail-033",
+      "domain": "retail",
+      "question": "2026 年 11 月华北电水壶客单价是多少？",
+      "product": "电水壶",
+      "region": "华北",
+      "month": "2026-11",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 10500,
+        "refund_cents": 390,
+        "net_cents": 10110,
+        "aov_cents": 10500
+      }
+    },
+    {
+      "id": "retail-034",
+      "domain": "retail",
+      "question": "2026 年 10 月华南电水壶净营收是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2026-10",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 3,
+        "gross_cents": 30000,
+        "refund_cents": 2600,
+        "net_cents": 27400,
+        "aov_cents": 10000
+      }
+    },
+    {
+      "id": "retail-035",
+      "domain": "retail",
+      "question": "2026 年 10 月华南电水壶订单数是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2026-10",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 3,
+        "gross_cents": 30000,
+        "refund_cents": 2600,
+        "net_cents": 27400,
+        "aov_cents": 10000
+      }
+    },
+    {
+      "id": "retail-036",
+      "domain": "retail",
+      "question": "2026 年 10 月华南电水壶客单价是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2026-10",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 3,
+        "gross_cents": 30000,
+        "refund_cents": 2600,
+        "net_cents": 27400,
+        "aov_cents": 10000
+      }
+    },
+    {
+      "id": "retail-037",
+      "domain": "retail",
+      "question": "2026 年 11 月华南电水壶净营收是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2026-11",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 3,
+        "gross_cents": 26000,
+        "refund_cents": 4200,
+        "net_cents": 21800,
+        "aov_cents": 8667
+      }
+    },
+    {
+      "id": "retail-038",
+      "domain": "retail",
+      "question": "2026 年 11 月华南电水壶订单数是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2026-11",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 3,
+        "gross_cents": 26000,
+        "refund_cents": 4200,
+        "net_cents": 21800,
+        "aov_cents": 8667
+      }
+    },
+    {
+      "id": "retail-039",
+      "domain": "retail",
+      "question": "2026 年 11 月华南电水壶客单价是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2026-11",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 3,
+        "gross_cents": 26000,
+        "refund_cents": 4200,
+        "net_cents": 21800,
+        "aov_cents": 8667
+      }
+    },
+    {
+      "id": "retail-040",
+      "domain": "retail",
+      "question": "2026 年 12 月华南电水壶净营收是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2026-12",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 6400,
+        "refund_cents": 800,
+        "net_cents": 5600,
+        "aov_cents": 6400
+      }
+    },
+    {
+      "id": "retail-041",
+      "domain": "retail",
+      "question": "2026 年 12 月华南电水壶订单数是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2026-12",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 6400,
+        "refund_cents": 800,
+        "net_cents": 5600,
+        "aov_cents": 6400
+      }
+    },
+    {
+      "id": "retail-042",
+      "domain": "retail",
+      "question": "2026 年 12 月华南电水壶客单价是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2026-12",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 1,
+        "gross_cents": 6400,
+        "refund_cents": 800,
+        "net_cents": 5600,
+        "aov_cents": 6400
+      }
+    },
+    {
+      "id": "retail-043",
+      "domain": "retail",
+      "question": "2027 年 1 月华南电水壶净营收是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2027-01",
+      "metric": "net",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 22000,
+        "refund_cents": 1350,
+        "net_cents": 20650,
+        "aov_cents": 11000
+      }
+    },
+    {
+      "id": "retail-044",
+      "domain": "retail",
+      "question": "2027 年 1 月华南电水壶订单数是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2027-01",
+      "metric": "orders",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 22000,
+        "refund_cents": 1350,
+        "net_cents": 20650,
+        "aov_cents": 11000
+      }
+    },
+    {
+      "id": "retail-045",
+      "domain": "retail",
+      "question": "2027 年 1 月华南电水壶客单价是多少？",
+      "product": "电水壶",
+      "region": "华南",
+      "month": "2027-01",
+      "metric": "aov",
+      "expected": {
+        "kind": "answer",
+        "order_count": 2,
+        "gross_cents": 22000,
+        "refund_cents": 1350,
+        "net_cents": 20650,
+        "aov_cents": 11000
+      }
+    }
+  ]
+}

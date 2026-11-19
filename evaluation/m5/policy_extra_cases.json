@@ -1,0 +1,131 @@
+{
+  "suite": "m5-policy-extra-v1",
+  "cases": [
+    {
+      "id": "policy-extra-01",
+      "domain": "policy",
+      "question": "电水壶 2026 年 10 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "missing_region"
+    },
+    {
+      "id": "policy-extra-02",
+      "domain": "policy",
+      "question": "蓝牙耳机 2026 年 10 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "missing_region"
+    },
+    {
+      "id": "policy-extra-03",
+      "domain": "policy",
+      "question": "帐篷 2026 年 10 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "missing_region"
+    },
+    {
+      "id": "policy-extra-04",
+      "domain": "policy",
+      "question": "空气炸锅 2026 年 10 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "missing_region"
+    },
+    {
+      "id": "policy-extra-05",
+      "domain": "policy",
+      "question": "登山杖 2026 年 10 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "missing_region"
+    },
+    {
+      "id": "policy-extra-06",
+      "domain": "policy",
+      "question": "清仓手表 2026 年 10 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "missing_region"
+    },
+    {
+      "id": "policy-extra-07",
+      "domain": "policy",
+      "question": "华南 2026 年 10 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "missing_product"
+    },
+    {
+      "id": "policy-extra-08",
+      "domain": "policy",
+      "question": "华北 2026 年 10 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "missing_product"
+    },
+    {
+      "id": "policy-extra-09",
+      "domain": "policy",
+      "question": "华东 2026 年 10 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "missing_product"
+    },
+    {
+      "id": "policy-extra-10",
+      "domain": "policy",
+      "question": "华南电水壶净营收是多少？",
+      "kind": "clarification",
+      "reason": "missing_period"
+    },
+    {
+      "id": "policy-extra-11",
+      "domain": "policy",
+      "question": "华南电水壶净营收差了多少？",
+      "kind": "clarification",
+      "reason": "missing_period"
+    },
+    {
+      "id": "policy-extra-12",
+      "domain": "policy",
+      "question": "华南电水壶 2026 年 10 月与 11 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "ambiguous_period"
+    },
+    {
+      "id": "policy-extra-13",
+      "domain": "policy",
+      "question": "华南电水壶 2026 年 10 月和 11 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "ambiguous_period"
+    },
+    {
+      "id": "policy-extra-14",
+      "domain": "policy",
+      "question": "华南电水壶 2026 年 10 月和 11 月净营收差额，统一口径重算。",
+      "kind": "clarification",
+      "reason": "missing_baseline"
+    },
+    {
+      "id": "policy-extra-15",
+      "domain": "policy",
+      "question": "华南电水壶 2026 年 10 月和 11 月净营收差额，如果重新计算呢？",
+      "kind": "clarification",
+      "reason": "missing_baseline"
+    },
+    {
+      "id": "policy-extra-16",
+      "domain": "policy",
+      "question": "华南电水壶 2026 年 10 月净营收，请只算订单金额一百元以上。",
+      "kind": "clarification",
+      "reason": "unsupported_scope"
+    },
+    {
+      "id": "policy-extra-17",
+      "domain": "policy",
+      "question": "华南华东电水壶 2026 年 10 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "ambiguous_region"
+    },
+    {
+      "id": "policy-extra-18",
+      "domain": "policy",
+      "question": "华南电水壶和蓝牙耳机 2026 年 10 月净营收是多少？",
+      "kind": "clarification",
+      "reason": "ambiguous_product"
+    }
+  ]
+}
