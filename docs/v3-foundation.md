@@ -48,7 +48,7 @@ UI 已允许政策/手册上传 .html/.htm
 ## 验收
 
 ```text
-Ran 301 tests in 15.748s
+Ran 301 tests in 16.806s
 OK
 ```
 

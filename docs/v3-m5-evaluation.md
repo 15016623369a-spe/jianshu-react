@@ -102,7 +102,7 @@ Citation precision
 ## 四、当前验收
 
 ```text
-Ran 301 tests in 17.708s
+Ran 301 tests in 16.806s
 OK
 M5 offline gate: 146/150，wrong_numeric 0
 M5 model gate:   150/150，wrong_numeric 0
