@@ -106,7 +106,18 @@ auto    75/90（离线无模型）
 
 ### 6. dense/rerank 状态
 
-`HybridIndex` 接口已验证，但本机没有可离线加载的 dense/rerank 模型缓存，当前不把未评测模型设为默认。
+新增：
+
+```text
+app/rag/dense.py
+  SentenceTransformerDense
+  CrossEncoderReranker
+```
+
+- 模型通过注入加载，不在导入时下载；
+- 测试用 fake encoder 验证排序、ACL 和 metadata filter；
+- 本机没有可离线加载的 dense/rerank 模型缓存，尚未产生真实模型指标；
+- 当前不把未评测模型设为默认。
 
 ### 7. 数据源
 
@@ -115,7 +126,7 @@ auto    75/90（离线无模型）
 ## 验收
 
 ```text
-Ran 290 tests in 14.214s
+Ran 292 tests in 14.578s
 OK
 manual-holdout-v1: 12/12 passed
 ```
@@ -135,7 +146,7 @@ manual-holdout-v1: 12/12 passed
 
 ```text
 [ ] policy 全量切换到共享检索（当前是 legacy + BM25 候选 union）
-[ ] 真实 dense/rerank 配置与同题集指标（本机无离线模型）
+[ ] 真实 dense/rerank 模型指标（代码路径已备，本机无离线模型）
 [ ] SQLite/PostgreSQL 同一固定数据集的基准对照
 [ ] 150 题多域评测和发布门槛（M5）
 ```

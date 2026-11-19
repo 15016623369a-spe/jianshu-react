@@ -2,7 +2,7 @@
 
 V3 从 [V2 冻结检查点](docs/v2.0.0-checkpoint.md) 延续开发。调查入口支持选择政策计算或手册问答，共用文档版本、访问控制和引用字段。[双域演示](docs/v3-dual-domain.md)
 
-当前 V3 基础层：**290 项自动测试**，支持 Markdown/HTML/PDF/DOCX 政策与手册上传、policy/manual/retail 三个 domain、通用 BM25 检索和可插拔 hybrid 接口。`v2.0.0` 检查点的 244 项回归仍作为回退基线。
+当前 V3 基础层：**292 项自动测试**，支持 Markdown/HTML/PDF/DOCX 政策与手册上传、policy/manual/retail 三个 domain、通用 BM25 检索和可插拔 hybrid/dense/rerank 接口。`v2.0.0` 检查点的 244 项回归仍作为回退基线。
 
 见数把政策正文和只读账本接到同一个调查入口。用自然语言比较两个月的净营收，可按其中一个月的退款口径重算，并核对每段生效规则、引用、SQL 和绑定参数。
 

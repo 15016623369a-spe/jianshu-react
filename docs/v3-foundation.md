@@ -48,11 +48,11 @@ UI 已允许政策/手册上传 .html/.htm
 ## 验收
 
 ```text
-Ran 290 tests in 14.214s
+Ran 292 tests in 14.578s
 OK
 ```
 
-新增 40 项测试，覆盖：
+新增 42 项测试，覆盖：
 
 - Markdown 标题行号；
 - HTML 提取与 script 忽略；
