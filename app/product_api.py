@@ -14,7 +14,7 @@ from urllib.parse import urlsplit
 from typing import Annotated, Literal
 from uuid import UUID, uuid4
 
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import Body, FastAPI, HTTPException, Query, Request
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import Response, StreamingResponse
@@ -31,9 +31,21 @@ from app.file_analysis_history import FileAnalysisHistory
 from app.gateway_identity import configured_key, gateway_user, owner_id
 from app.hard_policy_data import prepare_hard_policy_database
 from app.hard_policy_workflow import HardMode, HardPolicyRequest, run_hard_policy
+from app.investigation_history import InvestigationHistory, InvestigationMissing, csv_report, markdown_report
+from app.investigation_v3 import (
+    ManualInvestigationV3, PolicyInvestigationV3, RetailInvestigationV3,
+    investigation_result, policy_evidence, run_manual_investigation,
+)
+from app.retail_investigation import run_retail_investigation
 from app.multisource_data import prepare_multisource_database
 from app.multisource_workflow import MultiSourceMode, MultiSourceRequest, multisource_selector, run_multisource_workflow
+from app.observability import log_investigation
+from app.policy_documents import PolicyDocumentInput, PolicyDocumentLimit, PolicyDocumentMissing, PolicyDocumentStore
+from app.policy_documents_api import manual_router, router as policy_documents_router
+from app.policy_investigation import InvestigationMode, InvestigationRequest, run_policy_investigation
 from app.policy_react import deepseek_policy_selector
+from app.rag.domains import default_registry
+from app.rag.rerank import rerank_configured, rerank_mode
 from app.policy_workflow import PolicyMode, PolicyRevenueRequest, run_policy_workflow
 from app.product_assistant import answer_data_turn
 from app.product_errors import chat_http_error, is_chat_request
@@ -111,6 +123,35 @@ def _hard_policy_demo_database(root: Path) -> Path | None:
         return None
 
 
+async def _policy_v3_handler(body: PolicyInvestigationV3, request: Request, mode: InvestigationMode) -> dict:
+    result = await policy_investigation(body, request, mode)
+    return investigation_result("policy", result, policy_evidence(result))
+
+
+async def _retail_v3_handler(body: RetailInvestigationV3, request: Request, mode: InvestigationMode) -> dict:
+    if mode == "model":
+        raise HTTPException(422, "零售指标使用确定性 SQL。")
+    state = request.app.state
+    if state.hard_policy_database is None:
+        raise HTTPException(503, "零售演示数据暂不可用。")
+    return await run_in_threadpool(run_retail_investigation, state.hard_policy_database, body, mode=mode)
+
+
+async def _manual_v3_handler(body: ManualInvestigationV3, request: Request, mode: InvestigationMode) -> dict:
+    if mode not in ("auto", "fixed"):
+        raise HTTPException(422, "手册问答使用确定性检索。")
+    state = request.app.state
+    if state.policy_slots.locked():
+        raise HTTPException(503, "调查请求较多，请稍后重试。")
+    async with state.policy_slots:
+        document = None
+        if body.document_id is not None:
+            document, = await run_in_threadpool(
+                state.manual_documents.pin, request.state.owner, [body.document_id], version=body.version,
+            )
+        return await run_in_threadpool(run_manual_investigation, body, document)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.root = Path(os.getenv("RAG_DATA_DIR", PROJECT_ROOT / "data" / "step8")).resolve()
@@ -121,6 +162,14 @@ async def lifespan(app: FastAPI):
     app.state.history = ConversationHistory(app.state.root / "conversation_history.sqlite")
     app.state.file_history = FileAnalysisHistory(app.state.root / "file_analysis.sqlite")
     app.state.query_exports = QueryExportStore(app.state.root / "query_exports.sqlite")
+    app.state.policy_documents = PolicyDocumentStore(app.state.root / "policy_documents.sqlite")
+    app.state.manual_documents = PolicyDocumentStore(app.state.root / "manual_documents.sqlite")
+    app.state.domains = default_registry()
+    app.state.domains.bind("policy", _policy_v3_handler)
+    app.state.domains.bind("manual", _manual_v3_handler)
+    app.state.domains.bind("retail", _retail_v3_handler)
+    app.state.investigations = InvestigationHistory(app.state.root / "investigations.sqlite")
+    app.state.demo_data_version = "hard-policy-demo-v1"
     bird = os.getenv("RAG_BIRD_ROOT")
     app.state.bird = Path(bird).resolve() if bird else None
     app.state.settings = load_settings()
@@ -138,6 +187,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="见数 · Text2SQL Agent", version="2.0.0", lifespan=lifespan)
 app.add_middleware(BoundedJSON)
+app.include_router(policy_documents_router)
+app.include_router(manual_router)
 _STREAM = {200: {"content": {"application/x-ndjson": {}}, "description": "Workflow events and final trace summary"}}
 
 
@@ -179,6 +230,21 @@ async def http_failure(request, exc):
     if is_chat_request(request):
         return await chat_http_error(request, exc.status_code, exc.detail, headers=exc.headers)
     return await http_exception_handler(request, exc)
+
+
+@app.exception_handler(PolicyDocumentMissing)
+async def policy_document_missing(_request, _exc):
+    return JSONResponse({"detail": "此文档或版本不可用。"}, status_code=404)
+
+
+@app.exception_handler(PolicyDocumentInput)
+async def policy_document_invalid(_request, exc):
+    return JSONResponse({"detail": str(exc)}, status_code=422)
+
+
+@app.exception_handler(PolicyDocumentLimit)
+async def policy_document_limit(_request, exc):
+    return JSONResponse({"detail": str(exc)}, status_code=409)
 
 
 @app.get("/healthz")
@@ -232,6 +298,115 @@ async def hard_policy_revenue(
     with tracing_context(enabled=False):
         async with state.policy_slots:
             return await run_in_threadpool(run_hard_policy, state.hard_policy_database, body, mode=mode, choose=choose)
+
+
+@app.post("/api/v2/policy-investigation")
+async def policy_investigation(body: InvestigationRequest, request: Request, mode: InvestigationMode = "auto"):
+    state = request.app.state
+    if state.hard_policy_database is None:
+        raise HTTPException(503, "政策调查账本暂不可用，请检查服务状态。")
+    if state.policy_slots.locked():
+        raise HTTPException(503, "政策调查请求较多，请稍后重试。")
+    with tracing_context(enabled=False):
+        async with state.policy_slots:
+            settings = state.settings
+            snapshot = None
+            choose = None
+            if body.document_ids:
+                snapshot = await run_in_threadpool(state.policy_documents.snapshot, request.state.owner, body.document_ids)
+                if mode == "model":
+                    raise HTTPException(422, "上传文档仅使用本地检索，可选择自动或词面补查。")
+            elif mode in ("auto", "model") and settings.llm_configured and settings.llm_base_url:
+                choose = multisource_selector(settings)
+            return await run_in_threadpool(
+                run_policy_investigation, state.hard_policy_database, body, mode=mode, choose=choose, snapshot=snapshot,
+            )
+
+
+@app.get("/api/v3/domains")
+def list_v3_domains(request: Request):
+    return {"domains": request.app.state.domains.describe()}
+
+
+@app.post("/api/v3/investigations")
+async def investigate_v3(
+    body: Annotated[PolicyInvestigationV3 | ManualInvestigationV3 | RetailInvestigationV3, Body(discriminator="domain")],
+    request: Request, mode: InvestigationMode = "auto",
+):
+    pack = request.app.state.domains.get(body.domain)
+    result = await request.app.state.domains.handler(pack.name)(body, request, mode)
+    data_version = result.get("document_version") or request.app.state.demo_data_version
+    parent_id = getattr(body, "investigation_id", None)
+    record = request.app.state.investigations.save(
+        request.state.owner, body.domain, body.question, result, data_version=data_version,
+        parent_id=str(parent_id) if parent_id else None,
+    )
+    log_investigation(record)
+    return record
+
+
+@app.get("/api/v3/status")
+def v3_status(request: Request):
+    state = request.app.state
+    return {
+        "version": app.version,
+        "model_configured": bool(state.settings.llm_configured and state.settings.llm_base_url),
+        "data_sources": {
+            "policy_database": state.hard_policy_database is not None,
+            "policy_documents": "available",
+            "manual_documents": "available",
+        },
+        "history_available": True,
+        "domains": state.domains.describe(),
+        "retrieval": "BM25 + metadata filters",
+        "rerank": {"mode": rerank_mode(), "configured": rerank_configured()},
+    }
+
+
+@app.get("/api/v3/metrics")
+def investigation_metrics(request: Request):
+    return request.app.state.investigations.summary(request.state.owner)
+
+
+@app.get("/api/v3/investigations")
+def list_investigations(
+    request: Request,
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+    before: Annotated[str | None, Query(max_length=64)] = None,
+):
+    return request.app.state.investigations.list(request.state.owner, limit=limit, before=before)
+
+
+@app.get("/api/v3/investigations/{investigation_id}")
+def get_investigation(investigation_id: str, request: Request):
+    try:
+        return request.app.state.investigations.get(request.state.owner, investigation_id)
+    except InvestigationMissing:
+        raise HTTPException(404, "调查记录不存在或当前账号无权读取。") from None
+
+
+@app.get("/api/v3/investigations/{investigation_id}/report.md")
+def investigation_report(investigation_id: str, request: Request):
+    try:
+        record = request.app.state.investigations.get(request.state.owner, investigation_id)
+    except InvestigationMissing:
+        raise HTTPException(404, "调查记录不存在或当前账号无权读取。") from None
+    return Response(
+        markdown_report(record), media_type="text/markdown; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="investigation-{investigation_id}.md"'},
+    )
+
+
+@app.get("/api/v3/investigations/{investigation_id}/amounts.csv")
+def investigation_amounts(investigation_id: str, request: Request):
+    try:
+        record = request.app.state.investigations.get(request.state.owner, investigation_id)
+    except InvestigationMissing:
+        raise HTTPException(404, "调查记录不存在或当前账号无权读取。") from None
+    return Response(
+        csv_report(record).encode("utf-8-sig"), media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="investigation-{investigation_id}.csv"'},
+    )
 
 
 def _conversation_root(owner: str) -> Path:

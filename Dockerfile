@@ -1,17 +1,22 @@
 FROM docker:29-cli AS docker_cli
 
 FROM python:3.11-slim-trixie AS api
-RUN apt-get update && apt-get install -y --no-install-recommends --only-upgrade zlib1g \
+RUN apt-get update && apt-get install -y --no-install-recommends --only-upgrade zlib1g openssl \
     && dpkg --compare-versions "$(dpkg-query -W -f='${Version}' zlib1g)" ge '1:1.3.dfsg+really1.3.1-1+deb13u1' \
     && rm -rf /var/lib/apt/lists/*
+RUN python -m pip install --no-cache-dir --upgrade pip setuptools==78.1.1 wheel jaraco-context \
+    && find /usr/local/lib/python3.11/site-packages -maxdepth 1 \( -name 'setuptools-70*.dist-info' -o -name 'wheel-0.45*.dist-info' -o -name 'jaraco_context-5*.dist-info' -o -name 'jaraco.context-5*.dist-info' \) -exec rm -rf {} +
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 LANGSMITH_TRACING=false
 WORKDIR /opt/rag
 COPY requirements.txt requirements-step8.txt ./
 RUN --mount=type=cache,target=/root/.cache/pip python -m pip install --timeout 15 --retries 2 --only-binary=:all: -r requirements.txt -r requirements-step8.txt
 COPY app/*.py app/
+COPY app/rag/*.py app/rag/
 COPY app/policy_corpus/*.md app/policy_corpus/
 COPY app/multisource_corpus/*.json app/multisource_corpus/
 COPY app/hard_policy_corpus/*.json app/hard_policy_corpus/*.md app/hard_policy_corpus/
+COPY app/investigation_corpus/*.md app/investigation_corpus/
+COPY app/manual_corpus/*.md app/manual_corpus/
 COPY app/tools/*.py app/tools/
 COPY evaluation/__init__.py evaluation/bird_column_notes.py evaluation/
 COPY sandbox/__init__.py sandbox/

@@ -18,7 +18,13 @@ from app.file_downloads import csv_table, table_rows, xlsx_table
 from app.file_preview_ui import choose_layout
 from app.gateway_identity import KEY_HEADER, USER_HEADER, configured_key, gateway_user
 from app.hard_policy_ui import render_hard_policy_workspace
+from app.investigation_history_ui import render_investigation_history
+from app.manual_investigation_ui import render_manual_investigation
 from app.multisource_ui import render_multisource_workspace
+from app.policy_investigation_ui import render_policy_investigation
+from app.retail_investigation_ui import render_retail_investigation
+from app.policy_library_ui import read_policy_library, render_policy_library
+from app.system_status_ui import render_system_status
 
 API = os.getenv("RAG_API_URL", "http://127.0.0.1:8000")
 STAGES = {
@@ -44,12 +50,14 @@ DEMO_QUESTIONS = (
     ("上月退款总额", "上月退款总额是多少？"),
 )
 WORKSPACES = {
-    "对话": ("", "和数据对话", "用自然语言查数据库，继续追问，并核对结果背后的 SQL。"),
-    "文件分析": ("file", "文件分析", "上传 CSV 或 Excel，确认表头，再做排名、图表与公式核对。"),
-    "政策问数": ("policy", "政策问数", "按政策生效日期分段计算净营收，核对每段的政策条款和查询结果。"),
-    "多源实验": ("multisource", "多源问数实验", "从退款订单识别产品和地区，再查政策与补充公告，按适用口径计算净营收。"),
-    "政策探索": ("policy-exploration", "政策探索实验", "检索适用政策和公告，确认退款账本，再核对引用和净营收。"),
+    "对话": ("chat", "和数据对话", "用自然语言查数据库，继续追问，并核对结果背后的 SQL。"),
+    "文件分析": ("files", "文件分析", "上传 CSV 或 Excel，确认表头，再做排名、图表与公式核对。"),
+    "政策调查": ("policy-exploration", "政策调查", "用自然语言比较政策口径，核对每笔汇总背后的文档版本和账本。"),
 }
+_POLICY_WORKSPACE = WORKSPACES["政策调查"][0]
+_POLICY_TABS = ("自然语言调查", "文档库", "调查历史", "系统状态", "高级实验")
+_ADVANCED_TABS = ("按条件查口径", "日期分段", "多源实验")
+_LEGACY_POLICY_VIEWS = {"policy": "日期分段", "multisource": "多源实验"}
 POLICY_STAGES = {
     "resolve_scope": "确认日期和地区",
     "load_policies": "读取适用政策",
@@ -545,7 +553,7 @@ def choose_postgres_tables(session_id: str, saved_tables: list[str]) -> list[str
     return selected
 
 
-st.set_page_config(page_title="见数 V2 · 数据 Agent", layout="wide")
+st.set_page_config(page_title="见数 · 调查工作台", layout="wide")
 GATEWAY_KEY = configured_key()
 GATEWAY_HEADERS = {}
 user = None
@@ -579,22 +587,70 @@ except (httpx.HTTPError, ValueError):
     st.stop()
 
 workspace = st.query_params.get("workspace", "")
+legacy_view = _LEGACY_POLICY_VIEWS.get(workspace)
 workspace_ids = [entry[0] for entry in WORKSPACES.values()]
+selected_workspace = {"": _POLICY_WORKSPACE, "file": "files"}.get(workspace, workspace)
+if legacy_view:
+    selected_workspace = _POLICY_WORKSPACE
 mode = st.sidebar.radio("工作区", list(WORKSPACES),
-                        index=workspace_ids.index(workspace) if workspace in workspace_ids else 0,
+                        index=workspace_ids.index(selected_workspace if selected_workspace in workspace_ids else _POLICY_WORKSPACE),
                         key="workspace-mode")
 render_workspace_header(mode)
 mode_id = WORKSPACES[mode][0]
-if mode_id and workspace != mode_id:
+if legacy_view and mode_id == _POLICY_WORKSPACE:
+    st.query_params.from_dict({**st.query_params.to_dict(), "workspace": mode_id, "policy_view": legacy_view})
+elif workspace != mode_id:
     st.query_params["workspace"] = mode_id
-elif not mode_id and "workspace" in st.query_params:
-    del st.query_params["workspace"]
-if mode == "政策问数":
-    render_policy_workspace(session_id, capabilities["model_configured"])
-elif mode == "多源实验":
-    render_multisource_workspace(API, GATEWAY_HEADERS, session_id, capabilities["model_configured"])
-elif mode == "政策探索":
-    render_hard_policy_workspace(API, GATEWAY_HEADERS, session_id, capabilities["model_configured"])
+if mode_id == _POLICY_WORKSPACE:
+    policy_view = legacy_view or st.query_params.get("policy_view")
+
+    def remember_policy_view() -> None:
+        active = st.session_state["policy-view-tab"]
+        if active != _POLICY_TABS[0]:
+            st.query_params["policy_view"] = active
+        elif "policy_view" in st.query_params:
+            del st.query_params["policy_view"]
+
+    advanced_view = policy_view if policy_view in _ADVANCED_TABS else None
+    investigation, library, history, status, advanced = st.tabs(
+        _POLICY_TABS, default=advanced_view and "高级实验",
+        key="policy-view-tab", on_change=remember_policy_view,
+    )
+    model_configured = capabilities["model_configured"]
+    if investigation.open:
+        with investigation:
+            task = st.radio("调查任务", ["政策计算", "手册问答", "零售指标"], horizontal=True, key=f"investigation-domain-{session_id}")
+            if task == "手册问答":
+                registry = read_policy_library(API, GATEWAY_HEADERS, manual=True)
+                render_manual_investigation(API, GATEWAY_HEADERS, session_id, registry)
+            elif task == "零售指标":
+                render_retail_investigation(API, GATEWAY_HEADERS, session_id)
+            else:
+                registry = read_policy_library(API, GATEWAY_HEADERS)
+                render_policy_investigation(API, GATEWAY_HEADERS, session_id, model_configured, registry)
+    if library.open:
+        with library:
+            kind = st.radio("文档库类型", ["政策与公告", "产品手册"], horizontal=True, key=f"library-kind-{session_id}")
+            manual = kind == "产品手册"
+            registry = read_policy_library(API, GATEWAY_HEADERS, manual=manual)
+            render_policy_library(API, GATEWAY_HEADERS, session_id, registry, manual=manual)
+    if history.open:
+        with history:
+            render_investigation_history(API, GATEWAY_HEADERS, session_id)
+    if status.open:
+        with status:
+            render_system_status(API, GATEWAY_HEADERS)
+    if advanced.open:
+        with advanced:
+            structured, classic, multisource = st.tabs(
+                _ADVANCED_TABS, default=advanced_view, key="policy-advanced-tab",
+            )
+            with structured:
+                render_hard_policy_workspace(API, GATEWAY_HEADERS, session_id, model_configured)
+            with classic:
+                render_policy_workspace(session_id, model_configured)
+            with multisource:
+                render_multisource_workspace(API, GATEWAY_HEADERS, session_id, model_configured)
 elif mode == "文件分析":
     render_file_workspace(session_id, capabilities["model_configured"])
 else:

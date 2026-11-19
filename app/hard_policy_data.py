@@ -1,14 +1,17 @@
 """Typed fixture, document retrieval, and read-only query tools for the policy lab."""
 from __future__ import annotations
 
-import json
 import os
 import re
 import sqlite3
 import unicodedata
+from collections import Counter
 from contextlib import closing
-from datetime import date
+from dataclasses import dataclass
+from datetime import date, timedelta
+from decimal import Decimal
 from hashlib import sha256
+from math import log
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Annotated, Literal
@@ -27,8 +30,27 @@ _CORPUS = Path(__file__).with_name("hard_policy_corpus")
 _APPLICATION_ID = 0x52414748
 _MAX_SOURCE_BYTES = 65_536
 _SEED_FILES = ("catalog", "orders", "refunds", "chargebacks")
-_DOCUMENT_PARTS = re.compile(r"^## (?P<heading>[^\n]+)\n<!-- (?P<metadata>[^\n]+) -->\n(?P<excerpt>.+)$", re.DOTALL)
+DocumentSource = Literal["policy", "bulletin"]
+PassageSource = Literal["policy", "bulletin", "manual", "retail"]
+_DOCUMENT_NUMBER = re.compile(r"^文号[：:]\s*(?P<id>[a-z][a-z0-9-]{0,63})。$", re.MULTILINE)
 _REFERENCED_TITLE = re.compile(r"《([^《》]+)》")
+_REF_TOPIC = re.compile(r"“(?P<topic>[^”]+)”专题最新公告")
+_SCOPE = re.compile(r"(?P<region>华南|华东|华北)(?:销售的|地区的)(?P<category>[^，。\n]+?)类商品")
+_PRODUCT_SCOPE = re.compile(r"具体限于(?P<product>[^，。\n]+)")
+_CHINESE_DATE = r"\d{4}年\s*\d{1,2}月\s*\d{1,2}日"
+_EFFECTIVE_INTERVAL = re.compile(
+    rf"(?:自|从)\s*(?P<start>{_CHINESE_DATE})\s*起(?:生效|执行)，(?:到|至)\s*"
+    rf"(?P<end>{_CHINESE_DATE})(?:\s*前有效|(?P<inclusive>\s*为止（含当天）))"
+)
+_CAP_AMOUNT = re.compile(
+    r"(?:每笔|逐笔)(?:扣减)?\s*(?:不超过|上限(?:为)?|最多扣除)\s*(?:人民币\s*)?(\d+(?:\.\d{1,2})?)\s*元"
+)
+_FULL_REFUND_RULE = re.compile(r"[一-鿿]+订单逐笔扣除原订单记录中的全部退款。")
+_LEDGER_TERMS: dict[Ledger, tuple[str, ...]] = {
+    "orders": ("原订单退款列", "原单退款列", "原订单记录"),
+    "refunds": ("售后退款台账",),
+    "chargebacks": ("争议扣回台账",),
+}
 _SCHEMA = """
 CREATE TABLE orders (
     id INTEGER PRIMARY KEY,
@@ -87,6 +109,35 @@ class _LedgerEntry(BaseModel):
     amount_cents: _CENTS
 
 
+@dataclass(frozen=True)
+class TextPassage:
+    title: str
+    quote: str
+    source: PassageSource
+    file: str
+    line_start: int
+    line_end: int
+    locator: str | None = None
+
+
+@dataclass(frozen=True)
+class DocumentSnapshot:
+    version: str
+    catalog: tuple[tuple[str, str], ...]
+    passages: tuple[TextPassage, ...]
+
+
+@dataclass(frozen=True)
+class _ApplicablePassage:
+    passage: TextPassage
+    product: str | None
+    category: str
+    region: str
+    start: date
+    end_exclusive: date
+    rule_text: str
+
+
 class _Document(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     id: _ID
@@ -96,34 +147,17 @@ class _Document(BaseModel):
     region: Region
     start: date
     end_exclusive: date
-    source: Literal["policy", "bulletin"]
-    authority: Literal["official", "informational"]
+    source: DocumentSource
+    authority: Literal["official"]
     ref_kind: Literal["latest", "title"] | None
     ref_title: _TEXT | None
+    ref_topic: _TEXT | None
     cap_cents: _CENTS | None
     ledger: Ledger | None
-    quote: Annotated[str, StringConstraints(min_length=1, max_length=400)]
-
-    @model_validator(mode="after")
-    def valid_rule(self):
-        if self.start >= self.end_exclusive:
-            raise ValueError("Document effective period must be positive")
-        if self.authority == "informational":
-            if self.ref_kind or self.ref_title or self.ledger or self.cap_cents is not None:
-                raise ValueError("Informational text cannot authorize a deduction")
-            return self
-        if self.ref_kind is not None:
-            if self.source != "policy" or self.ledger is not None or self.cap_cents is not None:
-                raise ValueError("A policy referral cannot set a ledger or deduction amount")
-            titles = _REFERENCED_TITLE.findall(self.quote)
-            if self.ref_kind == "title":
-                if not self.ref_title or [_normalize(title) for title in titles] != [_normalize(self.ref_title)]:
-                    raise ValueError("Indexed heading must match the title in the policy prose")
-            elif self.ref_title or "最新公告" not in self.quote:
-                raise ValueError("Latest-bulletin referral must appear in the policy prose")
-        elif self.ref_title is not None or self.ledger is None:
-            raise ValueError("An executable rule requires a ledger and no referral title")
-        return self
+    quote: str
+    file: str
+    line_start: int
+    line_end: int
 
 
 _CATALOG = TypeAdapter(Annotated[list[_CatalogEntry], Field(min_length=1, max_length=32)])
@@ -157,92 +191,199 @@ def _catalog(content: bytes) -> dict[str, str]:
     return names
 
 
-def product_category(product: str) -> str | None:
-    """Resolve a product from the catalog, without inferring unknown categories."""
-    return _catalog(_read("catalog.json")).get(product)
+def _passages(content: bytes, source: PassageSource, filename: str) -> tuple[TextPassage, ...]:
+    lines = content.decode("utf-8").splitlines()
+    headings = [index for index, line in enumerate(lines) if line.startswith("## ")]
+    passages = []
+    for start, end in zip(headings, headings[1:] + [len(lines)]):
+        while end > start + 1 and not lines[end - 1].strip():
+            end -= 1
+        passages.append(TextPassage(
+            title=lines[start][3:].strip(),
+            quote="\n".join(lines[start + 1:end]).lstrip("\n"),
+            source=source,
+            file=f"app/hard_policy_corpus/{filename}",
+            line_start=start + 1,
+            line_end=end,
+        ))
+    return tuple(passages)
 
 
-def _documents(source: Literal["policy", "bulletin"]) -> list[_Document]:
-    filename = "policies.md" if source == "policy" else "bulletins.md"
-    blocks = re.split(r"\n(?=## )", _read(filename).decode("utf-8"))[1:]
-    documents = []
-    identifiers = set()
-    for block in blocks:
-        parsed = _DOCUMENT_PARTS.fullmatch(block.strip())
-        if parsed is None:
-            raise ValueError("Malformed policy lab document")
-        metadata = json.loads(parsed["metadata"])
-        if not isinstance(metadata, dict) or "quote" in metadata or metadata.get("title") != parsed["heading"]:
-            raise ValueError("Malformed policy lab index")
-        record = json.dumps({**metadata, "quote": parsed["excerpt"].strip()})
-        document = _Document.model_validate_json(record)
-        if document.source != source or document.id in identifiers:
-            raise ValueError("Invalid document identity")
-        documents.append(document)
-        identifiers.add(document.id)
-    return documents
-
-
-def _retrieved(documents: list[_Document], query: str) -> list[_Document]:
-    """Find normalized textual matches. Exact applicability is checked separately."""
-    query_terms = _terms(query)
-    matches = []
-    for document in documents:
-        relevance = len(query_terms & _terms(" ".join(
-            (document.title, document.category, document.region, document.quote)
-        )))
-        if relevance:
-            matches.append((relevance, document))
-    return [document for _, document in sorted(matches, key=lambda match: (-match[0], match[1].id))]
-
-
-def _applies(document: _Document, product: str, category: str, region: str, start: date, end: date) -> bool:
-    return (
-        document.authority == "official"
-        and document.category == category
-        and document.region == region
-        and (document.product is None or _normalize(document.product) == _normalize(product))
-        and document.start <= start < end <= document.end_exclusive
+def load_document_snapshot() -> DocumentSnapshot:
+    """Read each content file once so retrieval and version checks share a snapshot."""
+    catalog = _read("catalog.json")
+    policies = _read("policies.md")
+    bulletins = _read("bulletins.md")
+    version = sha256(b"\0".join((catalog, policies, bulletins))).hexdigest()
+    return DocumentSnapshot(
+        version=version,
+        catalog=tuple(_catalog(catalog).items()),
+        passages=(
+            *_passages(policies, "policy", "policies.md"),
+            *_passages(bulletins, "bulletin", "bulletins.md"),
+        ),
     )
 
 
-def _select(documents: list[_Document], *, category_fallback: bool = False) -> dict | None:
+def document_version() -> str:
+    return load_document_snapshot().version
+
+
+def product_category(product: str, *, snapshot: DocumentSnapshot | None = None) -> str | None:
+    """Resolve a product from the catalog, without inferring unknown categories."""
+    catalog = dict(snapshot.catalog) if snapshot else _catalog(_read("catalog.json"))
+    return catalog.get(product)
+
+
+def _rank_passages(passages: tuple[TextPassage, ...], source: PassageSource, query: str) -> list[TextPassage]:
+    """Retrieve ranked lexical hits from headings and raw Markdown prose."""
+    documents = [passage for passage in passages if passage.source == source]
+    document_terms = [_terms(passage.title + "\n" + passage.quote) for passage in documents]
+    frequencies = Counter(term for terms in document_terms for term in terms)
+    query_terms = _terms(query)
+    weights = {
+        term: log(1 + (len(documents) - count + 0.5) / (count + 0.5))
+        for term, count in frequencies.items()
+        if term in query_terms
+    }
+
+    matches = []
+    for passage, terms in zip(documents, document_terms):
+        heading_terms = _terms(passage.title)
+        score = sum(
+            weights[term] * (2 if term in heading_terms else 1)
+            for term in sorted(query_terms & terms)
+        )
+        if score:
+            matches.append((score, passage))
+    return [passage for _, passage in sorted(matches, key=lambda match: (-match[0], match[1].line_start))]
+
+
+def _date_in_prose(value: str) -> date:
+    return date(*(int(part) for part in re.findall(r"\d+", value)))
+
+
+def _applicable_passage(
+    passage: TextPassage, product: str, category: str, region: str, start: date, end: date,
+) -> _ApplicablePassage | None:
+    quote = passage.quote
+    if "不得作为结算依据" in quote:
+        return None
+    scope = _SCOPE.search(quote)
+    if not scope or scope["category"] != category or scope["region"] != region:
+        return None
+    specific = _PRODUCT_SCOPE.search(quote)
+    scoped_product = specific["product"] if specific else None
+    if scoped_product and _normalize(scoped_product) != _normalize(product):
+        return None
+
+    validity = _EFFECTIVE_INTERVAL.search(quote)
+    if not validity:
+        raise AmbiguousDocument("The retrieved rule does not state a recognizable effective interval")
+    effective_start = _date_in_prose(validity["start"])
+    effective_end = _date_in_prose(validity["end"])
+    if validity["inclusive"]:
+        effective_end += timedelta(days=1)
+    if not effective_start <= start < end <= effective_end:
+        return None
+
+    return _ApplicablePassage(
+        passage, scoped_product, category, region, effective_start, effective_end,
+        quote[validity.end():].lstrip("。\n"),
+    )
+
+
+def _extract_rule(candidate: _ApplicablePassage) -> _Document:
+    passage = candidate.passage
+    document_number = _DOCUMENT_NUMBER.search(passage.quote)
+    if not document_number:
+        raise AmbiguousDocument("The retrieved rule does not have a document number")
+    terms = candidate.rule_text.strip()
+    titles = _REFERENCED_TITLE.findall(terms)
+    latest = "最新公告" in terms
+    topic = _REF_TOPIC.search(terms)
+    ledgers = [ledger for ledger, names in _LEDGER_TERMS.items() if any(name in terms for name in names)]
+    amounts = _CAP_AMOUNT.findall(terms)
+    if titles or latest:
+        if len(titles) > 1 or (titles and latest) or ledgers or amounts:
+            raise AmbiguousDocument("The retrieved rule gives conflicting deductions or referrals")
+    else:
+        full_refund = ledgers == ["orders"] and _FULL_REFUND_RULE.fullmatch(terms) is not None
+        if len(ledgers) != 1 or len(amounts) > 1 or (not amounts and not full_refund):
+            raise AmbiguousDocument("The retrieved rule does not establish a ledger and a deduction amount")
+    return _Document(
+        id=document_number["id"],
+        title=passage.title,
+        product=candidate.product,
+        category=candidate.category,
+        region=candidate.region,
+        start=candidate.start,
+        end_exclusive=candidate.end_exclusive,
+        source=passage.source,
+        authority="official",
+        ref_kind="title" if titles else "latest" if latest else None,
+        ref_title=titles[0] if titles else None,
+        ref_topic=topic["topic"] if topic else None,
+        cap_cents=int(Decimal(amounts[0]) * 100) if amounts else None,
+        ledger=ledgers[0] if ledgers else None,
+        quote=passage.quote,
+        file=passage.file,
+        line_start=passage.line_start,
+        line_end=passage.line_end,
+    )
+
+
+def _select(documents: list[_ApplicablePassage]) -> dict | None:
     if not documents:
         return None
 
-    def priority(document: _Document) -> tuple[bool, date]:
-        return category_fallback and document.product is not None, document.start
+    def priority(document: _ApplicablePassage) -> tuple[bool, date]:
+        return document.product is not None, document.start
 
     winning_priority = max(priority(document) for document in documents)
     winners = [document for document in documents if priority(document) == winning_priority]
     if len(winners) != 1:
         raise AmbiguousDocument("More than one policy source has the best applicability")
-    return winners[0].model_dump(mode="json")
+    return _extract_rule(winners[0]).model_dump(mode="json")
 
 
-def search_policy(product: str, category: str, region: str, start: date, end_exclusive: date) -> dict | None:
-    """Return the most specific eligible authority, with no fallback to FAQs."""
-    retrieved = _retrieved(_documents("policy"), f"{product} {category} {region} 退款政策")
-    return _select([document for document in retrieved if _applies(
-        document, product, category, region, start, end_exclusive,
-    )], category_fallback=True)
+def search_policy(
+    product: str, category: str, region: str, start: date, end_exclusive: date,
+    *, snapshot: DocumentSnapshot | None = None,
+) -> dict | None:
+    """Return the most specific authority found in the policy text."""
+    snapshot = snapshot or load_document_snapshot()
+    matches = _rank_passages(snapshot.passages, "policy", f"{product} {category} {region} 退款政策")
+    documents = [
+        document for passage in matches
+        if (document := _applicable_passage(passage, product, category, region, start, end_exclusive)) is not None
+    ]
+    return _select(documents)
 
 
-def search_bulletin(policy: dict, category: str, region: str, start: date, end_exclusive: date) -> dict | None:
-    """Resolve a title in the prose or choose the latest authority covering the interval."""
+def search_bulletin(
+    policy: dict, category: str, region: str, start: date, end_exclusive: date,
+    *, product: str | None = None, snapshot: DocumentSnapshot | None = None,
+) -> dict | None:
+    """Follow a title or topic recovered from the referring passage."""
     kind = policy["ref_kind"]
     if kind not in ("title", "latest"):
         return None
+    snapshot = snapshot or load_document_snapshot()
     title = policy["ref_title"] if kind == "title" else None
     if kind == "title" and not title:
         return None
-    retrieved = _retrieved(_documents("bulletin"), f"{title or ''} {category} {region} 退款公告")
-    product = policy["product"]
-    return _select([
-        document for document in retrieved
-        if _applies(document, product or "", category, region, start, end_exclusive)
-        and (title is None or _normalize(document.title) == _normalize(title))
-    ])
+    topic = policy.get("ref_topic") if kind == "latest" else None
+    product = product or policy["product"] or ""
+    query = f"{title or topic or ''} {product} {category} {region} 退款公告"
+    matches = _rank_passages(snapshot.passages, "bulletin", query)
+    documents = [
+        document for passage in matches
+        if (title is None or _normalize(passage.title) == _normalize(title))
+        and (topic is None or _normalize(topic) in _normalize(passage.title))
+        and (document := _applicable_passage(passage, product, category, region, start, end_exclusive)) is not None
+    ]
+    return _select(documents)
 
 
 def prepare_hard_policy_database(root: Path) -> Path:

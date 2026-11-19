@@ -1,0 +1,12 @@
+{
+  "suite": "m5-browser-latency-v1",
+  "repeats": 3,
+  "samples": 3,
+  "p50_ms": 304.656,
+  "p95_ms": 323.473,
+  "timings_ms": [
+    292.133,
+    304.656,
+    323.473
+  ]
+}

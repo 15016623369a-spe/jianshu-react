@@ -1,0 +1,29 @@
+{
+  "suite": "m5-multidomain-v1",
+  "target_total": 150,
+  "splits": {
+    "development": "policy grounding/investigation development sets",
+    "holdout": [
+      "evaluation/policy_grounding_holdout/cases.json",
+      "evaluation/policy_investigation_holdout/cases.json",
+      "evaluation/m5/manual_cases.json",
+      "evaluation/m5/retail_cases.json",
+      "evaluation/m5/policy_extra_cases.json"
+    ]
+  },
+  "counts": {
+    "policy": 60,
+    "manual": 45,
+    "retail": 45
+  },
+  "policy_breakdown": {
+    "existing_grounding": 30,
+    "existing_investigation": 12,
+    "m5_extra": 18
+  },
+  "notes": [
+    "Policy 42 base cases are executed by the existing policy evaluation runners.",
+    "The M5 gate currently executes policy extra 18 + manual 45 + retail 45 = 108 cases directly.",
+    "Target 150 is defined at suite level; policy base aggregation remains an M5 deliverable."
+  ]
+}

@@ -1,45 +1,163 @@
 # 合成退款资料
 
 ## 华南家电九月原单退款公告
-<!-- {"id": "bulletin-south-appliances-sep", "title": "华南家电九月原单退款公告", "product": null, "category": "家电", "region": "华南", "start": "2026-09-01", "end_exclusive": "2026-10-01", "source": "bulletin", "authority": "official", "ref_kind": null, "ref_title": null, "cap_cents": 300, "ledger": "orders"} -->
+
+文号：bulletin-south-appliances-sep。
+
+华南地区的家电类商品按本页口径办理。从2026年9月1日起执行，到2026年9月30日为止（含当天）。
+
 九月只使用原订单退款列，每笔扣减不超过 3 元。
 
 ## 华南家电十月售后台账公告
-<!-- {"id": "bulletin-south-appliances-oct", "title": "华南家电十月售后台账公告", "product": null, "category": "家电", "region": "华南", "start": "2026-10-01", "end_exclusive": "2026-11-01", "source": "bulletin", "authority": "official", "ref_kind": null, "ref_title": null, "cap_cents": 500, "ledger": "refunds"} -->
+
+文号：bulletin-south-appliances-oct。
+
+在华南销售的家电类商品适用本页规则。自2026年10月1日起生效，至2026年11月1日前有效。
+
 十月使用售后退款台账。先按订单合计入账，再逐单扣减，每笔扣减不超过 5 元。
 
 ## 华南家电十一月争议扣回公告
-<!-- {"id": "bulletin-south-appliances-nov", "title": "华南家电十一月争议扣回公告", "product": null, "category": "家电", "region": "华南", "start": "2026-11-01", "end_exclusive": "2026-12-01", "source": "bulletin", "authority": "official", "ref_kind": null, "ref_title": null, "cap_cents": 800, "ledger": "chargebacks"} -->
+
+文号：bulletin-south-appliances-nov。
+
+华南地区的家电类商品按本页口径办理。自2026年11月1日起生效，至2026年12月1日前有效。
+
 十一月使用争议扣回台账。先合并同一订单的全部扣回，再逐单扣减，每笔不超过 8 元。
 
 ## 华南家电十二月公告
-<!-- {"id": "bulletin-south-appliances-dec", "title": "华南家电十二月公告", "product": null, "category": "家电", "region": "华南", "start": "2026-12-01", "end_exclusive": "2027-01-01", "source": "bulletin", "authority": "official", "ref_kind": null, "ref_title": null, "cap_cents": 1200, "ledger": "refunds"} -->
+
+文号：bulletin-south-appliances-dec。
+
+在华南销售的家电类商品适用本页规则。从2026年12月1日起执行，到2026年12月31日为止（含当天）。
+
 十二月使用售后退款台账，每笔扣减不超过 12 元。
 
 ## 家电直营网售退款细则
-<!-- {"id": "bulletin-east-appliances", "title": "家电直营网售退款细则", "product": null, "category": "家电", "region": "华东", "start": "2026-10-01", "end_exclusive": "2026-12-01", "source": "bulletin", "authority": "official", "ref_kind": null, "ref_title": null, "cap_cents": 1000, "ledger": "orders"} -->
+
+文号：bulletin-east-appliances。
+
+华东地区的家电类商品按本页口径办理。自2026年10月1日起生效，至2026年12月1日前有效。
+
 核对原订单退款列，每笔扣减不超过 10 元。
 
 ## 华东空气炸锅争议扣回细则
-<!-- {"id": "bulletin-east-airfryer", "title": "华东空气炸锅争议扣回细则", "product": "空气炸锅", "category": "家电", "region": "华东", "start": "2026-10-01", "end_exclusive": "2026-12-01", "source": "bulletin", "authority": "official", "ref_kind": null, "ref_title": null, "cap_cents": 700, "ledger": "chargebacks"} -->
+
+文号：bulletin-east-airfryer。
+
+本规则适用于在华东销售的家电类商品，具体限于空气炸锅。自2026年10月1日起生效，至2026年12月1日前有效。
+
 空气炸锅使用争议扣回台账，逐笔扣减上限 7 元。
 
 ## 北区户外售后补扣细则
-<!-- {"id": "bulletin-north-outdoor-v1", "title": "北区户外售后补扣细则", "product": null, "category": "户外", "region": "华北", "start": "2026-08-01", "end_exclusive": "2026-10-01", "source": "bulletin", "authority": "official", "ref_kind": null, "ref_title": null, "cap_cents": 900, "ledger": "orders"} -->
+
+文号：bulletin-north-outdoor-v1。
+
+华北地区的户外类商品按本页口径办理。从2026年8月1日起执行，到2026年9月30日为止（含当天）。
+
 十月前根据原单退款列计算，每笔扣减上限 9 元。
 
 ## 北区户外售后补扣细则
-<!-- {"id": "bulletin-north-outdoor-v2", "title": "北区户外售后补扣细则", "product": null, "category": "户外", "region": "华北", "start": "2026-10-01", "end_exclusive": "2026-12-01", "source": "bulletin", "authority": "official", "ref_kind": null, "ref_title": null, "cap_cents": 1500, "ledger": "refunds"} -->
+
+文号：bulletin-north-outdoor-v2。
+
+在华北销售的户外类商品适用本页规则。自2026年10月1日起生效，至2026年12月1日前有效。
+
 以售后退款台账为准。同一订单合并后扣减，逐笔扣减上限 15 元。
 
 ## 华东户外秋季补充公告 A
-<!-- {"id": "bulletin-east-outdoor-a", "title": "华东户外秋季补充公告 A", "product": null, "category": "户外", "region": "华东", "start": "2026-10-01", "end_exclusive": "2026-12-01", "source": "bulletin", "authority": "official", "ref_kind": null, "ref_title": null, "cap_cents": 1000, "ledger": "orders"} -->
+
+文号：bulletin-east-outdoor-a。
+
+华东地区的户外类商品按本页口径办理。自2026年10月1日起生效，至2026年12月1日前有效。
+
 以原订单退款列为准，逐笔扣减上限 10 元。
 
 ## 华东户外秋季补充公告 B
-<!-- {"id": "bulletin-east-outdoor-b", "title": "华东户外秋季补充公告 B", "product": null, "category": "户外", "region": "华东", "start": "2026-10-01", "end_exclusive": "2026-12-01", "source": "bulletin", "authority": "official", "ref_kind": null, "ref_title": null, "cap_cents": 1400, "ledger": "chargebacks"} -->
+
+文号：bulletin-east-outdoor-b。
+
+在华东销售的户外类商品适用本页规则。从2026年10月1日起执行，到2026年11月30日为止（含当天）。
+
 以争议扣回台账为准，逐笔扣减上限 14 元。
 
 ## 华东清仓手表退款公告问答
-<!-- {"id": "faq-east-clearance-bulletin", "title": "华东清仓手表退款公告问答", "product": null, "category": "特价", "region": "华东", "start": "2026-10-01", "end_exclusive": "2026-12-01", "source": "bulletin", "authority": "informational", "ref_kind": null, "ref_title": null, "cap_cents": null, "ledger": null} -->
+
+文号：faq-east-clearance-bulletin。
+
+华东地区的特价类商品按本页口径办理。自2026年10月1日起生效，至2026年12月1日前有效。
+
+这是面向消费者的参考说明，不得作为结算依据。
+
 华东清仓手表退款公告问答，此页暂无正式扣减口径。
+
+## 华南家电一月结算指引
+
+文号：bulletin-south-appliances-jan-index。
+
+华南地区的家电类商品按本页口径办理。自2027年1月1日起生效，至2027年2月1日前有效。
+
+一月调整涉及争议交易，结算最终以“家电一月争议清算”专题最新公告为准。
+
+## 家电一月争议清算执行公告
+
+文号：bulletin-south-appliances-jan-final。
+
+在华南销售的家电类商品适用本页规则。从2027年1月1日起执行，到2027年1月31日为止（含当天）。
+
+争议扣回台账是本周期扣减的依据。按订单归集后，每笔最多扣除人民币 7 元。
+
+## 家电一月争议清算资料转发
+
+文号：faq-south-appliances-jan-forward。
+
+在华南销售的家电类商品适用本页规则。自2027年1月1日起生效，至2027年2月1日前有效。
+
+这是同事整理的参考说明，不得作为结算依据。示例中的金额无需沿用。
+
+## 华北户外冬令售后分类公告
+
+文号：bulletin-north-outdoor-jan-index。
+
+华北地区的户外类商品按本页口径办理。从2027年1月1日起执行，到2027年1月31日为止（含当天）。
+
+退款明细改从售后组确认。数值规则及实际台账请查《华北户外一月售后执行细则》。
+
+## 华北户外一月售后执行细则
+
+文号：bulletin-north-outdoor-jan-final。
+
+在华北销售的户外类商品适用本页规则。自2027年1月1日起生效，至2027年2月1日前有效。
+
+以售后退款台账为准。先汇总同一笔订单下的退款事件，逐笔扣减上限为人民币 12 元。
+
+## 华东数码一月退款口径转引
+
+文号：bulletin-east-audio-jan-loop。
+
+在华东销售的数码类商品适用本页规则。自2027年1月1日起生效，至2027年2月1日前有效。
+
+此页仅转引。核算时请执行《华东数码一月退款口径转引》。
+
+## 华东空气炸锅一月核算转引
+
+文号：bulletin-east-airfryer-jan-index。
+
+本规则适用于在华东销售的家电类商品，具体限于空气炸锅。自2027年1月1日起生效，至2027年2月1日前有效。
+
+直营和经销的凭据已合并，实际核算规则以“空气炸锅渠道复核”专题最新公告为准。
+
+## 空气炸锅渠道复核公告
+
+文号：bulletin-east-airfryer-jan-channel。
+
+本规则适用于在华东销售的家电类商品，具体限于空气炸锅。从2027年1月1日起执行，到2027年1月31日为止（含当天）。
+
+复核确认此前渠道说明已撤回，所有订单应按《华东空气炸锅原单扣减细则》处理。
+
+## 华东空气炸锅原单扣减细则
+
+文号：bulletin-east-airfryer-jan-final。
+
+本规则适用于在华东销售的家电类商品，具体限于空气炸锅。自2027年1月1日起生效，至2027年2月1日前有效。
+
+扣减依据为原订单退款列。逐笔扣减上限为人民币 6.50 元。

@@ -1,0 +1,559 @@
+{
+  "suite": "policy-grounding-frozen-expansion",
+  "cases": [
+    {
+      "id": "projector-split-month",
+      "family": "projector",
+      "group": "midmonth_switch",
+      "question": "2028年六月华东便携投影仪的净营收是多少？",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "便携投影仪",
+        "region": "华东",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-06-16"}, "ledger": "orders", "cap_cents": 400, "document_ids": ["ground-projector-jun-first"], "order_count": 1, "gross_cents": 5167, "deducted_cents": 400, "net_cents": 4767}, {"period": {"start": "2028-06-16", "end_exclusive": "2028-07-01"}, "ledger": "refunds", "cap_cents": 700, "document_ids": ["ground-projector-jun-next"], "order_count": 2, "gross_cents": 11354, "deducted_cents": 1400, "net_cents": 9954}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "projector-stable-normalization",
+      "family": "projector",
+      "group": "cross_period_normalization",
+      "question": "对比华东便携投影仪2028年6月和7月净营收，两个期间都按7月规则重算。",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "便携投影仪",
+        "region": "华东",
+        "baseline_period": 1,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-06-16"}, "ledger": "orders", "cap_cents": 400, "document_ids": ["ground-projector-jun-first"], "order_count": 1, "gross_cents": 5167, "deducted_cents": 400, "net_cents": 4767}, {"period": {"start": "2028-06-16", "end_exclusive": "2028-07-01"}, "ledger": "refunds", "cap_cents": 700, "document_ids": ["ground-projector-jun-next"], "order_count": 2, "gross_cents": 11354, "deducted_cents": 1400, "net_cents": 9954}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "chargebacks", "cap_cents": 1100, "document_ids": ["ground-projector-jul"], "order_count": 3, "gross_cents": 18546, "deducted_cents": 3300, "net_cents": 15246}]
+        ],
+        "counterfactual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "chargebacks", "cap_cents": 1100, "document_ids": ["ground-projector-jul"], "order_count": 3, "gross_cents": 16521, "deducted_cents": 3300, "net_cents": 13221}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "chargebacks", "cap_cents": 1100, "document_ids": ["ground-projector-jul"], "order_count": 3, "gross_cents": 18546, "deducted_cents": 3300, "net_cents": 15246}]
+        ],
+        "actual_delta_cents": 525,
+        "counterfactual_delta_cents": 2025,
+        "policy_effect_cents": -1500
+      }
+    },
+    {
+      "id": "projector-ambiguous-baseline",
+      "family": "projector",
+      "group": "clarification",
+      "question": "比较华东便携投影仪2028年6月与7月净营收，如果按六月口径重算呢？",
+      "expected": {
+        "kind": "clarification",
+        "reason": "baseline_ambiguous"
+      }
+    },
+    {
+      "id": "mixer-filter-date-and-region",
+      "family": "mixer",
+      "group": "same_title_disambiguation",
+      "question": "请给出2028年6月华北榨汁机的净销售额。",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "榨汁机",
+        "region": "华北",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "refunds", "cap_cents": 1200, "document_ids": ["ground-mixer-jun", "ground-mixer-jun-now"], "order_count": 3, "gross_cents": 16992, "deducted_cents": 3363, "net_cents": 13629}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "mixer-compare-actual",
+      "family": "mixer",
+      "group": "actual_comparison",
+      "question": "华北榨汁机2028年6月与7月净营收相差多少？",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "榨汁机",
+        "region": "华北",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "refunds", "cap_cents": 1200, "document_ids": ["ground-mixer-jun", "ground-mixer-jun-now"], "order_count": 3, "gross_cents": 16992, "deducted_cents": 3363, "net_cents": 13629}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "orders", "cap_cents": 600, "document_ids": ["ground-mixer-jul"], "order_count": 3, "gross_cents": 19017, "deducted_cents": 1800, "net_cents": 17217}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": 3588,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "mixer-reverse-mentions",
+      "family": "mixer",
+      "group": "cross_period_normalization",
+      "question": "比较华北榨汁机2028年7月和6月净营收，两个月统一采用6月口径。",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "榨汁机",
+        "region": "华北",
+        "baseline_period": 0,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "refunds", "cap_cents": 1200, "document_ids": ["ground-mixer-jun", "ground-mixer-jun-now"], "order_count": 3, "gross_cents": 16992, "deducted_cents": 3363, "net_cents": 13629}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "orders", "cap_cents": 600, "document_ids": ["ground-mixer-jul"], "order_count": 3, "gross_cents": 19017, "deducted_cents": 1800, "net_cents": 17217}]
+        ],
+        "counterfactual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "refunds", "cap_cents": 1200, "document_ids": ["ground-mixer-jun", "ground-mixer-jun-now"], "order_count": 3, "gross_cents": 16992, "deducted_cents": 3363, "net_cents": 13629}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "refunds", "cap_cents": 1200, "document_ids": ["ground-mixer-jun", "ground-mixer-jun-now"], "order_count": 3, "gross_cents": 19017, "deducted_cents": 3600, "net_cents": 15417}]
+        ],
+        "actual_delta_cents": 3588,
+        "counterfactual_delta_cents": 1788,
+        "policy_effect_cents": 1800
+      }
+    },
+    {
+      "id": "desk-two-hop",
+      "family": "desk",
+      "group": "multi_hop",
+      "question": "查2028年6月华南升降桌净营收。",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "升降桌",
+        "region": "华南",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "orders", "cap_cents": 1300, "document_ids": ["ground-desk-jun", "ground-desk-route", "ground-desk-final"], "order_count": 3, "gross_cents": 17463, "deducted_cents": 3529, "net_cents": 13934}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "desk-two-hop-normalize",
+      "family": "desk",
+      "group": "cross_period_normalization",
+      "question": "比较华南升降桌2028年6月、7月净营收，这两个月都沿用6月口径重算。",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "升降桌",
+        "region": "华南",
+        "baseline_period": 0,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "orders", "cap_cents": 1300, "document_ids": ["ground-desk-jun", "ground-desk-route", "ground-desk-final"], "order_count": 3, "gross_cents": 17463, "deducted_cents": 3529, "net_cents": 13934}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "refunds", "cap_cents": 1000, "document_ids": ["ground-desk-jul"], "order_count": 3, "gross_cents": 19488, "deducted_cents": 3000, "net_cents": 16488}]
+        ],
+        "counterfactual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "orders", "cap_cents": 1300, "document_ids": ["ground-desk-jun", "ground-desk-route", "ground-desk-final"], "order_count": 3, "gross_cents": 17463, "deducted_cents": 3529, "net_cents": 13934}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "orders", "cap_cents": 1300, "document_ids": ["ground-desk-jun", "ground-desk-route", "ground-desk-final"], "order_count": 3, "gross_cents": 19488, "deducted_cents": 3700, "net_cents": 15788}]
+        ],
+        "actual_delta_cents": 2554,
+        "counterfactual_delta_cents": 1854,
+        "policy_effect_cents": 700
+      }
+    },
+    {
+      "id": "helmet-former-caption",
+      "family": "helmet",
+      "group": "literal_alias_recovery",
+      "question": "2028年6月华东骑行头盔净销售额是多少？",
+      "expected_path": "lexical",
+      "expected": {
+        "kind": "answer",
+        "product": "骑行头盔",
+        "region": "华东",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "chargebacks", "cap_cents": 900, "document_ids": ["ground-helmet-jun", "ground-helmet-real"], "order_count": 3, "gross_cents": 17934, "deducted_cents": 2700, "net_cents": 15234}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "helmet-normalized",
+      "family": "helmet",
+      "group": "cross_period_normalization",
+      "question": "比较2028年6月和7月华东骑行头盔净营收。两个期间都按六月口径计算。",
+      "expected_path": "lexical",
+      "expected": {
+        "kind": "answer",
+        "product": "骑行头盔",
+        "region": "华东",
+        "baseline_period": 0,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "chargebacks", "cap_cents": 900, "document_ids": ["ground-helmet-jun", "ground-helmet-real"], "order_count": 3, "gross_cents": 17934, "deducted_cents": 2700, "net_cents": 15234}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "refunds", "cap_cents": 1000, "document_ids": ["ground-helmet-jul"], "order_count": 3, "gross_cents": 19959, "deducted_cents": 3000, "net_cents": 16959}]
+        ],
+        "counterfactual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "chargebacks", "cap_cents": 900, "document_ids": ["ground-helmet-jun", "ground-helmet-real"], "order_count": 3, "gross_cents": 17934, "deducted_cents": 2700, "net_cents": 15234}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "chargebacks", "cap_cents": 900, "document_ids": ["ground-helmet-jun", "ground-helmet-real"], "order_count": 3, "gross_cents": 19959, "deducted_cents": 2700, "net_cents": 17259}]
+        ],
+        "actual_delta_cents": 1725,
+        "counterfactual_delta_cents": 2025,
+        "policy_effect_cents": -300
+      }
+    },
+    {
+      "id": "humidifier-buried-backlink",
+      "family": "humidifier",
+      "group": "buried_alias_recovery",
+      "question": "2028年6月华南加湿器净营收多少？",
+      "expected_path": "model",
+      "expected": {
+        "kind": "answer",
+        "product": "加湿器",
+        "region": "华南",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "refunds", "cap_cents": 1700, "document_ids": ["ground-humidifier-jun", "ground-humidifier-replacement"], "order_count": 3, "gross_cents": 18405, "deducted_cents": 4497, "net_cents": 13908}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "humidifier-compare-buried-backlink",
+      "family": "humidifier",
+      "group": "cross_period_normalization",
+      "question": "比较华南加湿器2028年6月、7月净营收，都按7月规则重算。",
+      "expected_path": "model",
+      "expected": {
+        "kind": "answer",
+        "product": "加湿器",
+        "region": "华南",
+        "baseline_period": 1,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "refunds", "cap_cents": 1700, "document_ids": ["ground-humidifier-jun", "ground-humidifier-replacement"], "order_count": 3, "gross_cents": 18405, "deducted_cents": 4497, "net_cents": 13908}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "orders", "cap_cents": 800, "document_ids": ["ground-humidifier-jul"], "order_count": 3, "gross_cents": 20430, "deducted_cents": 2400, "net_cents": 18030}]
+        ],
+        "counterfactual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "orders", "cap_cents": 800, "document_ids": ["ground-humidifier-jul"], "order_count": 3, "gross_cents": 18405, "deducted_cents": 2400, "net_cents": 16005}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "orders", "cap_cents": 800, "document_ids": ["ground-humidifier-jul"], "order_count": 3, "gross_cents": 20430, "deducted_cents": 2400, "net_cents": 18030}]
+        ],
+        "actual_delta_cents": 4122,
+        "counterfactual_delta_cents": 2025,
+        "policy_effect_cents": 2097
+      }
+    },
+    {
+      "id": "router-buried-backlink",
+      "family": "router",
+      "group": "buried_alias_recovery",
+      "question": "2028年七月华北路由器的净销售额是多少？",
+      "expected_path": "model",
+      "expected": {
+        "kind": "answer",
+        "product": "路由器",
+        "region": "华北",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "refunds", "cap_cents": 1700, "document_ids": ["ground-router-jul", "ground-router-replacement"], "order_count": 3, "gross_cents": 20901, "deducted_cents": 5038, "net_cents": 15863}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "router-compare-buried-backlink",
+      "family": "router",
+      "group": "cross_period_normalization",
+      "question": "对比2028年6月与7月华北路由器净营收，两个期间都按7月口径重算。",
+      "expected_path": "model",
+      "expected": {
+        "kind": "answer",
+        "product": "路由器",
+        "region": "华北",
+        "baseline_period": 1,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "chargebacks", "cap_cents": 1400, "document_ids": ["ground-router-jun"], "order_count": 3, "gross_cents": 18876, "deducted_cents": 4200, "net_cents": 14676}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "refunds", "cap_cents": 1700, "document_ids": ["ground-router-jul", "ground-router-replacement"], "order_count": 3, "gross_cents": 20901, "deducted_cents": 5038, "net_cents": 15863}]
+        ],
+        "counterfactual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "refunds", "cap_cents": 1700, "document_ids": ["ground-router-jul", "ground-router-replacement"], "order_count": 3, "gross_cents": 18876, "deducted_cents": 4675, "net_cents": 14201}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "refunds", "cap_cents": 1700, "document_ids": ["ground-router-jul", "ground-router-replacement"], "order_count": 3, "gross_cents": 20901, "deducted_cents": 5038, "net_cents": 15863}]
+        ],
+        "actual_delta_cents": 1187,
+        "counterfactual_delta_cents": 1662,
+        "policy_effect_cents": -475
+      }
+    },
+    {
+      "id": "camera-faq-and-incidental-mention",
+      "family": "camera",
+      "group": "insufficient_authority",
+      "question": "2028年6月华南运动相机净营收多少？",
+      "expected": {
+        "kind": "abstained",
+        "reason": "bulletin_missing"
+      }
+    },
+    {
+      "id": "camera-no-partial-comparison",
+      "family": "camera",
+      "group": "insufficient_authority",
+      "question": "请比较华南运动相机2028年6月和7月净营收变化。",
+      "expected": {
+        "kind": "abstained",
+        "reason": "bulletin_missing"
+      }
+    },
+    {
+      "id": "camera-covered-month",
+      "family": "camera",
+      "group": "direct_authority",
+      "question": "2028年7月华南运动相机净营收。",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "运动相机",
+        "region": "华南",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "orders", "cap_cents": 900, "document_ids": ["ground-camera-jul"], "order_count": 3, "gross_cents": 21372, "deducted_cents": 2700, "net_cents": 18672}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "pillow-active-same-title-conflict",
+      "family": "pillow",
+      "group": "conflicting_authority",
+      "question": "华东乳胶枕2028年6月净营收如何？",
+      "expected": {
+        "kind": "abstained",
+        "reason": "bulletin_conflict"
+      }
+    },
+    {
+      "id": "pillow-specific-beats-generic",
+      "family": "pillow",
+      "group": "product_specificity",
+      "question": "华东乳胶枕2028年7月净营收？",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "乳胶枕",
+        "region": "华东",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "chargebacks", "cap_cents": 500, "document_ids": ["ground-pillow-specific"], "order_count": 3, "gross_cents": 21843, "deducted_cents": 1201, "net_cents": 20642}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "torch-cycle",
+      "family": "torch",
+      "group": "reference_cycle",
+      "question": "华北露营灯2028年6月净营收。",
+      "expected": {
+        "kind": "abstained",
+        "reason": "referral_cycle"
+      }
+    },
+    {
+      "id": "torch-fresh-month",
+      "family": "torch",
+      "group": "direct_authority",
+      "question": "2028年7月华北露营灯净营收多少？",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "露营灯",
+        "region": "华北",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "orders", "cap_cents": 3000, "document_ids": ["ground-torch-jul"], "order_count": 3, "gross_cents": 22314, "deducted_cents": 6279, "net_cents": 16035}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "shoe-unbounded-refund",
+      "family": "shoe",
+      "group": "unbounded_deduction",
+      "question": "2028年6月华南徒步鞋净营收是多少？",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "徒步鞋",
+        "region": "华南",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "orders", "cap_cents": null, "document_ids": ["ground-shoe-jun"], "order_count": 3, "gross_cents": 20760, "deducted_cents": 6075, "net_cents": 14685}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "shoe-valid-no-orders",
+      "family": "shoe",
+      "group": "zero_orders",
+      "question": "2028年7月华南徒步鞋净营收是多少？",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "徒步鞋",
+        "region": "华南",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "chargebacks", "cap_cents": 0, "document_ids": ["ground-shoe-jul"], "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "net_cents": 0}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "shoe-zero-cap-normalization",
+      "family": "shoe",
+      "group": "cross_period_normalization",
+      "question": "对比华南徒步鞋2028年6月和7月的净营收，统一按7月口径重算。",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "徒步鞋",
+        "region": "华南",
+        "baseline_period": 1,
+        "actual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "orders", "cap_cents": null, "document_ids": ["ground-shoe-jun"], "order_count": 3, "gross_cents": 20760, "deducted_cents": 6075, "net_cents": 14685}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "chargebacks", "cap_cents": 0, "document_ids": ["ground-shoe-jul"], "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "net_cents": 0}]
+        ],
+        "counterfactual": [
+          [{"period": {"start": "2028-06-01", "end_exclusive": "2028-07-01"}, "ledger": "chargebacks", "cap_cents": 0, "document_ids": ["ground-shoe-jul"], "order_count": 3, "gross_cents": 20760, "deducted_cents": 0, "net_cents": 20760}],
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "chargebacks", "cap_cents": 0, "document_ids": ["ground-shoe-jul"], "order_count": 0, "gross_cents": 0, "deducted_cents": 0, "net_cents": 0}]
+        ],
+        "actual_delta_cents": -14685,
+        "counterfactual_delta_cents": -20760,
+        "policy_effect_cents": 6075
+      }
+    },
+    {
+      "id": "clock-cross-year-actual",
+      "family": "clock",
+      "group": "cross_year_comparison",
+      "question": "比较华北机械钟2027年12月与2028年1月净营收。",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "机械钟",
+        "region": "华北",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2027-12-01", "end_exclusive": "2028-01-01"}, "ledger": "chargebacks", "cap_cents": 800, "document_ids": ["ground-clock-dec"], "order_count": 3, "gross_cents": 21231, "deducted_cents": 1749, "net_cents": 19482}],
+          [{"period": {"start": "2028-01-01", "end_exclusive": "2028-02-01"}, "ledger": "refunds", "cap_cents": 1100, "document_ids": ["ground-clock-jan"], "order_count": 3, "gross_cents": 23256, "deducted_cents": 2247, "net_cents": 21009}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": 1527,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "clock-cross-year-normalized",
+      "family": "clock",
+      "group": "cross_year_comparison",
+      "question": "比较华北机械钟2027年12月与2028年1月净营收，如果采用2027年12月口径重算呢？",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "机械钟",
+        "region": "华北",
+        "baseline_period": 0,
+        "actual": [
+          [{"period": {"start": "2027-12-01", "end_exclusive": "2028-01-01"}, "ledger": "chargebacks", "cap_cents": 800, "document_ids": ["ground-clock-dec"], "order_count": 3, "gross_cents": 21231, "deducted_cents": 1749, "net_cents": 19482}],
+          [{"period": {"start": "2028-01-01", "end_exclusive": "2028-02-01"}, "ledger": "refunds", "cap_cents": 1100, "document_ids": ["ground-clock-jan"], "order_count": 3, "gross_cents": 23256, "deducted_cents": 2247, "net_cents": 21009}]
+        ],
+        "counterfactual": [
+          [{"period": {"start": "2027-12-01", "end_exclusive": "2028-01-01"}, "ledger": "chargebacks", "cap_cents": 800, "document_ids": ["ground-clock-dec"], "order_count": 3, "gross_cents": 21231, "deducted_cents": 1749, "net_cents": 19482}],
+          [{"period": {"start": "2028-01-01", "end_exclusive": "2028-02-01"}, "ledger": "chargebacks", "cap_cents": 800, "document_ids": ["ground-clock-dec"], "order_count": 3, "gross_cents": 23256, "deducted_cents": 1399, "net_cents": 21857}]
+        ],
+        "actual_delta_cents": 1527,
+        "counterfactual_delta_cents": 2375,
+        "policy_effect_cents": -848
+      }
+    },
+    {
+      "id": "pan-incomplete-month",
+      "family": "pan",
+      "group": "coverage_gap",
+      "question": "2028年6月华东煎锅净营收多少？",
+      "expected": {
+        "kind": "abstained",
+        "reason": "policy_missing"
+      }
+    },
+    {
+      "id": "pan-next-month",
+      "family": "pan",
+      "group": "direct_authority",
+      "question": "2028年7月华东煎锅的净营收。",
+      "expected_path": "none",
+      "expected": {
+        "kind": "answer",
+        "product": "煎锅",
+        "region": "华东",
+        "baseline_period": null,
+        "actual": [
+          [{"period": {"start": "2028-07-01", "end_exclusive": "2028-08-01"}, "ledger": "refunds", "cap_cents": 1600, "document_ids": ["ground-pan-jul"], "order_count": 3, "gross_cents": 23727, "deducted_cents": 3336, "net_cents": 20391}]
+        ],
+        "counterfactual": [],
+        "actual_delta_cents": null,
+        "counterfactual_delta_cents": null,
+        "policy_effect_cents": null
+      }
+    },
+    {
+      "id": "request-ambiguous-regions",
+      "family": "request",
+      "group": "clarification",
+      "question": "比较2028年6月和7月华东、华北榨汁机净营收。",
+      "expected": {
+        "kind": "clarification",
+        "reason": "ambiguous_region"
+      }
+    },
+    {
+      "id": "request-no-stated-baseline",
+      "family": "request",
+      "group": "clarification",
+      "question": "2028年6月和7月华南升降桌净营收变化是多少？统一口径重算。",
+      "expected": {
+        "kind": "clarification",
+        "reason": "missing_baseline"
+      }
+    }
+  ]
+}

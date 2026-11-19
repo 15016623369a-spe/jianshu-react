@@ -1,0 +1,14 @@
+[
+  {"product": "便携投影仪", "category": "数码"},
+  {"product": "榨汁机", "category": "家电"},
+  {"product": "升降桌", "category": "家居"},
+  {"product": "骑行头盔", "category": "户外"},
+  {"product": "加湿器", "category": "家电"},
+  {"product": "路由器", "category": "数码"},
+  {"product": "运动相机", "category": "数码"},
+  {"product": "乳胶枕", "category": "家居"},
+  {"product": "露营灯", "category": "户外"},
+  {"product": "徒步鞋", "category": "户外"},
+  {"product": "机械钟", "category": "家居"},
+  {"product": "煎锅", "category": "家电"}
+]

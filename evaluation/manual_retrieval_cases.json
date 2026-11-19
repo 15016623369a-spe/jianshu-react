@@ -1,0 +1,17 @@
+{
+  "suite": "manual-retrieval-holdout-v1",
+  "cases": [
+    {"id": "v1-wifi", "query": "怎样连接 Wi-Fi？", "version": 1, "gold": "连接 Wi-Fi"},
+    {"id": "v1-wifi-color", "query": "Wi-Fi 连接成功时指示灯是什么颜色？", "version": 1, "gold": "连接 Wi-Fi"},
+    {"id": "v1-guest", "query": "访客网络怎么开启？", "version": 1, "gold": "开启访客网络"},
+    {"id": "v1-guest-password", "query": "访客网络密码在哪里设置？", "version": 1, "gold": "开启访客网络"},
+    {"id": "v1-battery", "query": "怎么检查设备电量？", "version": 1, "gold": "检查电量"},
+    {"id": "v1-battery-key", "query": "电量键怎么用？", "version": 1, "gold": "检查电量"},
+    {"id": "v2-wifi", "query": "怎样连接 Wi-Fi？", "version": 2, "gold": "连接 Wi-Fi"},
+    {"id": "v2-wifi-color", "query": "Wi-Fi 连接成功时指示灯是什么颜色？", "version": 2, "gold": "连接 Wi-Fi"},
+    {"id": "v2-guest", "query": "访客网络怎么开启？", "version": 2, "gold": "开启访客网络"},
+    {"id": "v2-guest-duration", "query": "访客网络有效时长在哪里设置？", "version": 2, "gold": "开启访客网络"},
+    {"id": "v2-battery", "query": "怎么检查设备电量？", "version": 2, "gold": "检查电量"},
+    {"id": "v2-battery-percent", "query": "在哪里查看剩余电量百分比？", "version": 2, "gold": "检查电量"}
+  ]
+}

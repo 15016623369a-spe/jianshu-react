@@ -1,0 +1,132 @@
+{
+  "suite": "m6-concurrency-v1",
+  "workers": 4,
+  "requests": 24,
+  "success": 24,
+  "load_shed_503": 0,
+  "errors": [],
+  "p50_ms": 17.949,
+  "p95_ms": 63.011,
+  "rows": [
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 68.66970800911076
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 63.01087499014102
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 62.811250012600794
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 67.84154201159254
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 9.67966701136902
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 9.425625001313165
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 17.686333012534305
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 17.04670800245367
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 20.668124983785674
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 22.05112500814721
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 11.840916005894542
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 11.673417000565678
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 25.793167005758733
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 18.79024997469969
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 15.705833007814363
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 21.232708997558802
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 9.897457988699898
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 7.31679197633639
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 22.272209025686607
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 20.741332991747186
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 17.166250006994233
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 18.211124988738447
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 7.106208009645343
+    },
+    {
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 7.3093750106636435
+    }
+  ]
+}

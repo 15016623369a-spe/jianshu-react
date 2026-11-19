@@ -1,0 +1,750 @@
+{
+  "modes": {
+    "fixed": {
+      "overall": {
+        "evaluated": 90,
+        "passed": 72,
+        "amount_cases": 66,
+        "amount_passed": 48,
+        "amount_correct": 48,
+        "citations_correct": 48,
+        "sql_bound_correct": 48,
+        "safe_expected_stops": 24,
+        "numeric_outputs": 48,
+        "incorrect_numeric_outputs": 0,
+        "incorrect_numeric_output_rate": 0.0,
+        "median_ms": 2.009,
+        "p95_ms": 4.396,
+        "total_tokens": 0,
+        "model_calls": 0,
+        "sql_queries": 90,
+        "retrievals": 177,
+        "rewrites": 0,
+        "stops_by_reason": {
+          "ambiguous_region": 3,
+          "baseline_ambiguous": 3,
+          "bulletin_conflict": 3,
+          "bulletin_missing": 24,
+          "missing_baseline": 3,
+          "policy_missing": 3,
+          "referral_cycle": 3
+        },
+        "failed_cases": [
+          "helmet-former-caption",
+          "helmet-normalized",
+          "humidifier-buried-backlink",
+          "humidifier-compare-buried-backlink",
+          "router-buried-backlink",
+          "router-compare-buried-backlink"
+        ],
+        "retrieval_units": 141,
+        "first_pass_candidate_recall_at_k": {
+          "1": 0.510638,
+          "3": 0.87234,
+          "5": 0.87234
+        },
+        "all_stage_candidate_recall_at_k": {
+          "1": 0.510638,
+          "3": 0.87234,
+          "5": 0.87234
+        },
+        "verified_selection_recall": 0.829787,
+        "citation_counts": {
+          "expected": 219,
+          "predicted": 144,
+          "correct": 144
+        },
+        "citation_precision": 1.0,
+        "citation_recall": 0.657534,
+        "lexical_hits": 0,
+        "model_fallbacks": 0
+      },
+      "by_expected_path": {
+        "none": {
+          "evaluated": 48,
+          "passed": 48,
+          "amount_cases": 48,
+          "amount_passed": 48,
+          "amount_correct": 48,
+          "citations_correct": 48,
+          "sql_bound_correct": 48,
+          "safe_expected_stops": 0,
+          "numeric_outputs": 48,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": 0.0,
+          "median_ms": 2.12,
+          "p95_ms": 4.779,
+          "total_tokens": 0,
+          "model_calls": 0,
+          "sql_queries": 90,
+          "retrievals": 96,
+          "rewrites": 0,
+          "stops_by_reason": {},
+          "failed_cases": [],
+          "retrieval_units": 96,
+          "first_pass_candidate_recall_at_k": {
+            "1": 0.59375,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": 0.59375,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "verified_selection_recall": 1.0,
+          "citation_counts": {
+            "expected": 144,
+            "predicted": 144,
+            "correct": 144
+          },
+          "citation_precision": 1.0,
+          "citation_recall": 1.0,
+          "lexical_hits": 0,
+          "model_fallbacks": 0
+        },
+        "lexical": {
+          "evaluated": 6,
+          "passed": 0,
+          "amount_cases": 6,
+          "amount_passed": 0,
+          "amount_correct": 0,
+          "citations_correct": 0,
+          "sql_bound_correct": 0,
+          "safe_expected_stops": 0,
+          "numeric_outputs": 0,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": null,
+          "median_ms": 1.845,
+          "p95_ms": 4.132,
+          "total_tokens": 0,
+          "model_calls": 0,
+          "sql_queries": 0,
+          "retrievals": 12,
+          "rewrites": 0,
+          "stops_by_reason": {
+            "bulletin_missing": 6
+          },
+          "failed_cases": [
+            "helmet-former-caption",
+            "helmet-normalized"
+          ],
+          "retrieval_units": 15,
+          "first_pass_candidate_recall_at_k": {
+            "1": 0.4,
+            "3": 0.8,
+            "5": 0.8
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": 0.4,
+            "3": 0.8,
+            "5": 0.8
+          },
+          "verified_selection_recall": 0.4,
+          "citation_counts": {
+            "expected": 27,
+            "predicted": 0,
+            "correct": 0
+          },
+          "citation_precision": null,
+          "citation_recall": 0.0,
+          "lexical_hits": 0,
+          "model_fallbacks": 0
+        },
+        "model": {
+          "evaluated": 12,
+          "passed": 0,
+          "amount_cases": 12,
+          "amount_passed": 0,
+          "amount_correct": 0,
+          "citations_correct": 0,
+          "sql_bound_correct": 0,
+          "safe_expected_stops": 0,
+          "numeric_outputs": 0,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": null,
+          "median_ms": 1.93,
+          "p95_ms": 4.396,
+          "total_tokens": 0,
+          "model_calls": 0,
+          "sql_queries": 0,
+          "retrievals": 27,
+          "rewrites": 0,
+          "stops_by_reason": {
+            "bulletin_missing": 12
+          },
+          "failed_cases": [
+            "humidifier-buried-backlink",
+            "humidifier-compare-buried-backlink",
+            "router-buried-backlink",
+            "router-compare-buried-backlink"
+          ],
+          "retrieval_units": 30,
+          "first_pass_candidate_recall_at_k": {
+            "1": 0.3,
+            "3": 0.5,
+            "5": 0.5
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": 0.3,
+            "3": 0.5,
+            "5": 0.5
+          },
+          "verified_selection_recall": 0.5,
+          "citation_counts": {
+            "expected": 48,
+            "predicted": 0,
+            "correct": 0
+          },
+          "citation_precision": null,
+          "citation_recall": 0.0,
+          "lexical_hits": 0,
+          "model_fallbacks": 0
+        },
+        "null": {
+          "evaluated": 24,
+          "passed": 24,
+          "amount_cases": 0,
+          "amount_passed": 0,
+          "amount_correct": 0,
+          "citations_correct": 0,
+          "sql_bound_correct": 0,
+          "safe_expected_stops": 24,
+          "numeric_outputs": 0,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": null,
+          "median_ms": 1.673,
+          "p95_ms": 3.885,
+          "total_tokens": 0,
+          "model_calls": 0,
+          "sql_queries": 0,
+          "retrievals": 42,
+          "rewrites": 0,
+          "stops_by_reason": {
+            "ambiguous_region": 3,
+            "baseline_ambiguous": 3,
+            "bulletin_conflict": 3,
+            "bulletin_missing": 6,
+            "missing_baseline": 3,
+            "policy_missing": 3,
+            "referral_cycle": 3
+          },
+          "failed_cases": [],
+          "retrieval_units": 0,
+          "first_pass_candidate_recall_at_k": {
+            "1": null,
+            "3": null,
+            "5": null
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": null,
+            "3": null,
+            "5": null
+          },
+          "verified_selection_recall": null,
+          "citation_counts": {
+            "expected": 0,
+            "predicted": 0,
+            "correct": 0
+          },
+          "citation_precision": null,
+          "citation_recall": null,
+          "lexical_hits": 0,
+          "model_fallbacks": 0
+        }
+      }
+    },
+    "lexical": {
+      "overall": {
+        "evaluated": 90,
+        "passed": 78,
+        "amount_cases": 66,
+        "amount_passed": 54,
+        "amount_correct": 54,
+        "citations_correct": 54,
+        "sql_bound_correct": 54,
+        "safe_expected_stops": 24,
+        "numeric_outputs": 54,
+        "incorrect_numeric_outputs": 0,
+        "incorrect_numeric_output_rate": 0.0,
+        "median_ms": 2.392,
+        "p95_ms": 6.824,
+        "total_tokens": 0,
+        "model_calls": 0,
+        "sql_queries": 102,
+        "retrievals": 204,
+        "rewrites": 0,
+        "stops_by_reason": {
+          "ambiguous_region": 3,
+          "baseline_ambiguous": 3,
+          "bulletin_conflict": 3,
+          "bulletin_missing": 18,
+          "missing_baseline": 3,
+          "policy_missing": 3,
+          "referral_cycle": 3
+        },
+        "failed_cases": [
+          "humidifier-buried-backlink",
+          "humidifier-compare-buried-backlink",
+          "router-buried-backlink",
+          "router-compare-buried-backlink"
+        ],
+        "retrieval_units": 141,
+        "first_pass_candidate_recall_at_k": {
+          "1": 0.510638,
+          "3": 0.893617,
+          "5": 0.893617
+        },
+        "all_stage_candidate_recall_at_k": {
+          "1": 0.510638,
+          "3": 0.893617,
+          "5": 0.893617
+        },
+        "verified_selection_recall": 0.893617,
+        "citation_counts": {
+          "expected": 219,
+          "predicted": 171,
+          "correct": 171
+        },
+        "citation_precision": 1.0,
+        "citation_recall": 0.780822,
+        "lexical_hits": 6,
+        "model_fallbacks": 0
+      },
+      "by_expected_path": {
+        "none": {
+          "evaluated": 48,
+          "passed": 48,
+          "amount_cases": 48,
+          "amount_passed": 48,
+          "amount_correct": 48,
+          "citations_correct": 48,
+          "sql_bound_correct": 48,
+          "safe_expected_stops": 0,
+          "numeric_outputs": 48,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": 0.0,
+          "median_ms": 2.349,
+          "p95_ms": 7.119,
+          "total_tokens": 0,
+          "model_calls": 0,
+          "sql_queries": 90,
+          "retrievals": 96,
+          "rewrites": 0,
+          "stops_by_reason": {},
+          "failed_cases": [],
+          "retrieval_units": 96,
+          "first_pass_candidate_recall_at_k": {
+            "1": 0.59375,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": 0.59375,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "verified_selection_recall": 1.0,
+          "citation_counts": {
+            "expected": 144,
+            "predicted": 144,
+            "correct": 144
+          },
+          "citation_precision": 1.0,
+          "citation_recall": 1.0,
+          "lexical_hits": 0,
+          "model_fallbacks": 0
+        },
+        "lexical": {
+          "evaluated": 6,
+          "passed": 6,
+          "amount_cases": 6,
+          "amount_passed": 6,
+          "amount_correct": 6,
+          "citations_correct": 6,
+          "sql_bound_correct": 6,
+          "safe_expected_stops": 0,
+          "numeric_outputs": 6,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": 0.0,
+          "median_ms": 3.572,
+          "p95_ms": 7.568,
+          "total_tokens": 0,
+          "model_calls": 0,
+          "sql_queries": 12,
+          "retrievals": 21,
+          "rewrites": 0,
+          "stops_by_reason": {},
+          "failed_cases": [],
+          "retrieval_units": 15,
+          "first_pass_candidate_recall_at_k": {
+            "1": 0.4,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": 0.4,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "verified_selection_recall": 1.0,
+          "citation_counts": {
+            "expected": 27,
+            "predicted": 27,
+            "correct": 27
+          },
+          "citation_precision": 1.0,
+          "citation_recall": 1.0,
+          "lexical_hits": 6,
+          "model_fallbacks": 0
+        },
+        "model": {
+          "evaluated": 12,
+          "passed": 0,
+          "amount_cases": 12,
+          "amount_passed": 0,
+          "amount_correct": 0,
+          "citations_correct": 0,
+          "sql_bound_correct": 0,
+          "safe_expected_stops": 0,
+          "numeric_outputs": 0,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": null,
+          "median_ms": 3.22,
+          "p95_ms": 6.824,
+          "total_tokens": 0,
+          "model_calls": 0,
+          "sql_queries": 0,
+          "retrievals": 39,
+          "rewrites": 0,
+          "stops_by_reason": {
+            "bulletin_missing": 12
+          },
+          "failed_cases": [
+            "humidifier-buried-backlink",
+            "humidifier-compare-buried-backlink",
+            "router-buried-backlink",
+            "router-compare-buried-backlink"
+          ],
+          "retrieval_units": 30,
+          "first_pass_candidate_recall_at_k": {
+            "1": 0.3,
+            "3": 0.5,
+            "5": 0.5
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": 0.3,
+            "3": 0.5,
+            "5": 0.5
+          },
+          "verified_selection_recall": 0.5,
+          "citation_counts": {
+            "expected": 48,
+            "predicted": 0,
+            "correct": 0
+          },
+          "citation_precision": null,
+          "citation_recall": 0.0,
+          "lexical_hits": 0,
+          "model_fallbacks": 0
+        },
+        "null": {
+          "evaluated": 24,
+          "passed": 24,
+          "amount_cases": 0,
+          "amount_passed": 0,
+          "amount_correct": 0,
+          "citations_correct": 0,
+          "sql_bound_correct": 0,
+          "safe_expected_stops": 24,
+          "numeric_outputs": 0,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": null,
+          "median_ms": 2.019,
+          "p95_ms": 3.361,
+          "total_tokens": 0,
+          "model_calls": 0,
+          "sql_queries": 0,
+          "retrievals": 48,
+          "rewrites": 0,
+          "stops_by_reason": {
+            "ambiguous_region": 3,
+            "baseline_ambiguous": 3,
+            "bulletin_conflict": 3,
+            "bulletin_missing": 6,
+            "missing_baseline": 3,
+            "policy_missing": 3,
+            "referral_cycle": 3
+          },
+          "failed_cases": [],
+          "retrieval_units": 0,
+          "first_pass_candidate_recall_at_k": {
+            "1": null,
+            "3": null,
+            "5": null
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": null,
+            "3": null,
+            "5": null
+          },
+          "verified_selection_recall": null,
+          "citation_counts": {
+            "expected": 0,
+            "predicted": 0,
+            "correct": 0
+          },
+          "citation_precision": null,
+          "citation_recall": null,
+          "lexical_hits": 0,
+          "model_fallbacks": 0
+        }
+      }
+    },
+    "auto": {
+      "overall": {
+        "evaluated": 90,
+        "passed": 90,
+        "amount_cases": 66,
+        "amount_passed": 66,
+        "amount_correct": 66,
+        "citations_correct": 66,
+        "sql_bound_correct": 66,
+        "safe_expected_stops": 24,
+        "numeric_outputs": 66,
+        "incorrect_numeric_outputs": 0,
+        "incorrect_numeric_output_rate": 0.0,
+        "median_ms": 2.551,
+        "p95_ms": 1078.382,
+        "total_tokens": 3824,
+        "model_calls": 12,
+        "sql_queries": 126,
+        "retrievals": 219,
+        "rewrites": 12,
+        "stops_by_reason": {
+          "ambiguous_region": 3,
+          "baseline_ambiguous": 3,
+          "bulletin_conflict": 3,
+          "bulletin_missing": 6,
+          "missing_baseline": 3,
+          "policy_missing": 3,
+          "referral_cycle": 3
+        },
+        "failed_cases": [],
+        "retrieval_units": 141,
+        "first_pass_candidate_recall_at_k": {
+          "1": 0.510638,
+          "3": 0.914894,
+          "5": 0.914894
+        },
+        "all_stage_candidate_recall_at_k": {
+          "1": 0.595745,
+          "3": 1.0,
+          "5": 1.0
+        },
+        "verified_selection_recall": 1.0,
+        "citation_counts": {
+          "expected": 219,
+          "predicted": 219,
+          "correct": 219
+        },
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "lexical_hits": 6,
+        "model_fallbacks": 12
+      },
+      "by_expected_path": {
+        "none": {
+          "evaluated": 48,
+          "passed": 48,
+          "amount_cases": 48,
+          "amount_passed": 48,
+          "amount_correct": 48,
+          "citations_correct": 48,
+          "sql_bound_correct": 48,
+          "safe_expected_stops": 0,
+          "numeric_outputs": 48,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": 0.0,
+          "median_ms": 2.27,
+          "p95_ms": 7.731,
+          "total_tokens": 0,
+          "model_calls": 0,
+          "sql_queries": 90,
+          "retrievals": 96,
+          "rewrites": 0,
+          "stops_by_reason": {},
+          "failed_cases": [],
+          "retrieval_units": 96,
+          "first_pass_candidate_recall_at_k": {
+            "1": 0.59375,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": 0.59375,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "verified_selection_recall": 1.0,
+          "citation_counts": {
+            "expected": 144,
+            "predicted": 144,
+            "correct": 144
+          },
+          "citation_precision": 1.0,
+          "citation_recall": 1.0,
+          "lexical_hits": 0,
+          "model_fallbacks": 0
+        },
+        "lexical": {
+          "evaluated": 6,
+          "passed": 6,
+          "amount_cases": 6,
+          "amount_passed": 6,
+          "amount_correct": 6,
+          "citations_correct": 6,
+          "sql_bound_correct": 6,
+          "safe_expected_stops": 0,
+          "numeric_outputs": 6,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": 0.0,
+          "median_ms": 3.155,
+          "p95_ms": 10.093,
+          "total_tokens": 0,
+          "model_calls": 0,
+          "sql_queries": 12,
+          "retrievals": 21,
+          "rewrites": 0,
+          "stops_by_reason": {},
+          "failed_cases": [],
+          "retrieval_units": 15,
+          "first_pass_candidate_recall_at_k": {
+            "1": 0.4,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": 0.4,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "verified_selection_recall": 1.0,
+          "citation_counts": {
+            "expected": 27,
+            "predicted": 27,
+            "correct": 27
+          },
+          "citation_precision": 1.0,
+          "citation_recall": 1.0,
+          "lexical_hits": 6,
+          "model_fallbacks": 0
+        },
+        "model": {
+          "evaluated": 12,
+          "passed": 12,
+          "amount_cases": 12,
+          "amount_passed": 12,
+          "amount_correct": 12,
+          "citations_correct": 12,
+          "sql_bound_correct": 12,
+          "safe_expected_stops": 0,
+          "numeric_outputs": 12,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": 0.0,
+          "median_ms": 1032.715,
+          "p95_ms": 1321.723,
+          "total_tokens": 3824,
+          "model_calls": 12,
+          "sql_queries": 24,
+          "retrievals": 54,
+          "rewrites": 12,
+          "stops_by_reason": {},
+          "failed_cases": [],
+          "retrieval_units": 30,
+          "first_pass_candidate_recall_at_k": {
+            "1": 0.3,
+            "3": 0.6,
+            "5": 0.6
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": 0.7,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "verified_selection_recall": 1.0,
+          "citation_counts": {
+            "expected": 48,
+            "predicted": 48,
+            "correct": 48
+          },
+          "citation_precision": 1.0,
+          "citation_recall": 1.0,
+          "lexical_hits": 0,
+          "model_fallbacks": 12
+        },
+        "null": {
+          "evaluated": 24,
+          "passed": 24,
+          "amount_cases": 0,
+          "amount_passed": 0,
+          "amount_correct": 0,
+          "citations_correct": 0,
+          "sql_bound_correct": 0,
+          "safe_expected_stops": 24,
+          "numeric_outputs": 0,
+          "incorrect_numeric_outputs": 0,
+          "incorrect_numeric_output_rate": null,
+          "median_ms": 1.844,
+          "p95_ms": 6.118,
+          "total_tokens": 0,
+          "model_calls": 0,
+          "sql_queries": 0,
+          "retrievals": 48,
+          "rewrites": 0,
+          "stops_by_reason": {
+            "ambiguous_region": 3,
+            "baseline_ambiguous": 3,
+            "bulletin_conflict": 3,
+            "bulletin_missing": 6,
+            "missing_baseline": 3,
+            "policy_missing": 3,
+            "referral_cycle": 3
+          },
+          "failed_cases": [],
+          "retrieval_units": 0,
+          "first_pass_candidate_recall_at_k": {
+            "1": null,
+            "3": null,
+            "5": null
+          },
+          "all_stage_candidate_recall_at_k": {
+            "1": null,
+            "3": null,
+            "5": null
+          },
+          "verified_selection_recall": null,
+          "citation_counts": {
+            "expected": 0,
+            "predicted": 0,
+            "correct": 0
+          },
+          "citation_precision": null,
+          "citation_recall": null,
+          "lexical_hits": 0,
+          "model_fallbacks": 0
+        }
+      }
+    }
+  },
+  "paired": {
+    "auto_vs_fixed": {
+      "improved": 18,
+      "regressed": 0
+    },
+    "auto_vs_lexical": {
+      "improved": 12,
+      "regressed": 0
+    }
+  }
+}

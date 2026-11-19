@@ -1,0 +1,78 @@
+{
+  "suite": "m5-http-latency-v1",
+  "base_url": "http://127.0.0.1:28002",
+  "repeats": 3,
+  "cases": 9,
+  "normal_cases": 9,
+  "fallback_cases": 0,
+  "normal_p50_ms": 7.865,
+  "normal_p95_ms": 12.743,
+  "fallback_p50_ms": 0.0,
+  "fallback_p95_ms": 0.0,
+  "errors": 0,
+  "rows": [
+    {
+      "id": "flagship",
+      "fallback": false,
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 12.743250001221895
+    },
+    {
+      "id": "a1",
+      "fallback": false,
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 8.96279199514538
+    },
+    {
+      "id": "a3",
+      "fallback": false,
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 8.13941698288545
+    },
+    {
+      "id": "flagship",
+      "fallback": false,
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 8.360499981790781
+    },
+    {
+      "id": "a1",
+      "fallback": false,
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 7.864834013162181
+    },
+    {
+      "id": "a3",
+      "fallback": false,
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 7.243208994623274
+    },
+    {
+      "id": "flagship",
+      "fallback": false,
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 6.689166009891778
+    },
+    {
+      "id": "a1",
+      "fallback": false,
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 7.347915990976617
+    },
+    {
+      "id": "a3",
+      "fallback": false,
+      "status": 200,
+      "kind": "answer",
+      "latency_ms": 7.241624989546835
+    }
+  ]
+}

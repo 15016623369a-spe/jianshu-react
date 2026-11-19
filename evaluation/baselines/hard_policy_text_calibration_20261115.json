@@ -1,0 +1,2156 @@
+{
+  "methods": {
+    "fixed": {
+      "overall": {
+        "attempts": 78,
+        "passed": 36,
+        "median_ms": 2.5860000000000003,
+        "p95_ms": 17.923,
+        "model_calls": 0,
+        "metered_model_calls": 0,
+        "tokens": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "sql_queries": 15,
+        "cache_hits": 0,
+        "cache_invalidated": 0,
+        "routes": {
+          "fixed": 78
+        },
+        "safe_unsupported": 42,
+        "replans": 0,
+        "validated_model_plan_sequences": {},
+        "validated_model_plan_diversity": 0,
+        "successful_observed_tool_sequences": {
+          "query": 3,
+          "find_latest_bulletin → inspect_ledger → query": 6,
+          "find_titled_bulletin → inspect_ledger → query": 3,
+          "find_titled_bulletin → query": 3
+        },
+        "successful_observed_tool_diversity": 4,
+        "tool_sequence_correct": 39,
+        "tool_sequence_applicable": 78,
+        "amount_attempts": 54,
+        "verified_amount_answers": 15,
+        "unexpected_amount_answers": 0,
+        "failed_cases": [
+          "east-three-referrals-cap-exclusive-end",
+          "south-cap-over-events-exclusive-end",
+          "south-next-order-inclusive-start",
+          "south-zero-valid-authority",
+          "cycle-self-referral",
+          "south-new-product-cache-key",
+          "south-title-latest-full-month",
+          "north-zero-valid-authority",
+          "east-three-referrals-original-order-inclusive-start",
+          "north-next-order-inclusive-start",
+          "north-latest-title-full-month",
+          "north-cap-over-events-exclusive-end",
+          "north-new-product-cache-key",
+          "east-three-referrals-full-month",
+          "north-latest-title-full-month",
+          "south-next-order-inclusive-start",
+          "north-next-order-inclusive-start",
+          "east-three-referrals-cap-exclusive-end",
+          "east-three-referrals-original-order-inclusive-start",
+          "north-new-product-cache-key",
+          "north-cap-over-events-exclusive-end",
+          "south-title-latest-full-month",
+          "east-three-referrals-full-month",
+          "cycle-self-referral",
+          "south-new-product-cache-key",
+          "south-zero-valid-authority",
+          "north-zero-valid-authority",
+          "south-cap-over-events-exclusive-end",
+          "north-new-product-cache-key",
+          "north-next-order-inclusive-start",
+          "south-title-latest-full-month",
+          "south-next-order-inclusive-start",
+          "east-three-referrals-full-month",
+          "east-three-referrals-cap-exclusive-end",
+          "south-new-product-cache-key",
+          "south-zero-valid-authority",
+          "north-latest-title-full-month",
+          "south-cap-over-events-exclusive-end",
+          "east-three-referrals-original-order-inclusive-start",
+          "north-zero-valid-authority",
+          "north-cap-over-events-exclusive-end",
+          "cycle-self-referral"
+        ]
+      },
+      "by_round": {
+        "1": {
+          "attempts": 26,
+          "passed": 12,
+          "median_ms": 2.009,
+          "p95_ms": 5.966,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 5,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed": 26
+          },
+          "safe_unsupported": 14,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "query": 1,
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "find_titled_bulletin → inspect_ledger → query": 1,
+            "find_titled_bulletin → query": 1
+          },
+          "successful_observed_tool_diversity": 4,
+          "tool_sequence_correct": 13,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 5,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-cap-exclusive-end",
+            "south-cap-over-events-exclusive-end",
+            "south-next-order-inclusive-start",
+            "south-zero-valid-authority",
+            "cycle-self-referral",
+            "south-new-product-cache-key",
+            "south-title-latest-full-month",
+            "north-zero-valid-authority",
+            "east-three-referrals-original-order-inclusive-start",
+            "north-next-order-inclusive-start",
+            "north-latest-title-full-month",
+            "north-cap-over-events-exclusive-end",
+            "north-new-product-cache-key",
+            "east-three-referrals-full-month"
+          ]
+        },
+        "2": {
+          "attempts": 26,
+          "passed": 12,
+          "median_ms": 2.5860000000000003,
+          "p95_ms": 20.115,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 5,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed": 26
+          },
+          "safe_unsupported": 14,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "query": 1,
+            "find_titled_bulletin → query": 1,
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "find_titled_bulletin → inspect_ledger → query": 1
+          },
+          "successful_observed_tool_diversity": 4,
+          "tool_sequence_correct": 13,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 5,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "north-latest-title-full-month",
+            "south-next-order-inclusive-start",
+            "north-next-order-inclusive-start",
+            "east-three-referrals-cap-exclusive-end",
+            "east-three-referrals-original-order-inclusive-start",
+            "north-new-product-cache-key",
+            "north-cap-over-events-exclusive-end",
+            "south-title-latest-full-month",
+            "east-three-referrals-full-month",
+            "cycle-self-referral",
+            "south-new-product-cache-key",
+            "south-zero-valid-authority",
+            "north-zero-valid-authority",
+            "south-cap-over-events-exclusive-end"
+          ]
+        },
+        "3": {
+          "attempts": 26,
+          "passed": 12,
+          "median_ms": 3.662,
+          "p95_ms": 17.923,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 5,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed": 26
+          },
+          "safe_unsupported": 14,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 1,
+            "find_titled_bulletin → query": 1,
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "query": 1
+          },
+          "successful_observed_tool_diversity": 4,
+          "tool_sequence_correct": 13,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 5,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "north-new-product-cache-key",
+            "north-next-order-inclusive-start",
+            "south-title-latest-full-month",
+            "south-next-order-inclusive-start",
+            "east-three-referrals-full-month",
+            "east-three-referrals-cap-exclusive-end",
+            "south-new-product-cache-key",
+            "south-zero-valid-authority",
+            "north-latest-title-full-month",
+            "south-cap-over-events-exclusive-end",
+            "east-three-referrals-original-order-inclusive-start",
+            "north-zero-valid-authority",
+            "north-cap-over-events-exclusive-end",
+            "cycle-self-referral"
+          ]
+        }
+      },
+      "by_group": {
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "median_ms": 0.0505,
+          "p95_ms": 0.194,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed": 6
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 6,
+          "tool_sequence_applicable": 6,
+          "amount_attempts": 0,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "direct": {
+          "attempts": 3,
+          "passed": 3,
+          "median_ms": 2.571,
+          "p95_ms": 20.115,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 3,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed": 3
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "query": 3
+          },
+          "successful_observed_tool_diversity": 1,
+          "tool_sequence_correct": 3,
+          "tool_sequence_applicable": 3,
+          "amount_attempts": 3,
+          "verified_amount_answers": 3,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "evidence_gap": {
+          "attempts": 18,
+          "passed": 15,
+          "median_ms": 2.285,
+          "p95_ms": 10.315,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed": 18
+          },
+          "safe_unsupported": 3,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 18,
+          "tool_sequence_applicable": 18,
+          "amount_attempts": 0,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "cycle-self-referral",
+            "cycle-self-referral",
+            "cycle-self-referral"
+          ]
+        },
+        "multi_hop": {
+          "attempts": 27,
+          "passed": 0,
+          "median_ms": 4.396,
+          "p95_ms": 10.828,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed": 27
+          },
+          "safe_unsupported": 27,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 0,
+          "tool_sequence_applicable": 27,
+          "amount_attempts": 27,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-cap-exclusive-end",
+            "south-cap-over-events-exclusive-end",
+            "south-next-order-inclusive-start",
+            "south-title-latest-full-month",
+            "east-three-referrals-original-order-inclusive-start",
+            "north-next-order-inclusive-start",
+            "north-latest-title-full-month",
+            "north-cap-over-events-exclusive-end",
+            "east-three-referrals-full-month",
+            "north-latest-title-full-month",
+            "south-next-order-inclusive-start",
+            "north-next-order-inclusive-start",
+            "east-three-referrals-cap-exclusive-end",
+            "east-three-referrals-original-order-inclusive-start",
+            "north-cap-over-events-exclusive-end",
+            "south-title-latest-full-month",
+            "east-three-referrals-full-month",
+            "south-cap-over-events-exclusive-end",
+            "north-next-order-inclusive-start",
+            "south-title-latest-full-month",
+            "south-next-order-inclusive-start",
+            "east-three-referrals-full-month",
+            "east-three-referrals-cap-exclusive-end",
+            "north-latest-title-full-month",
+            "south-cap-over-events-exclusive-end",
+            "east-three-referrals-original-order-inclusive-start",
+            "north-cap-over-events-exclusive-end"
+          ]
+        },
+        "multi_hop_zero": {
+          "attempts": 12,
+          "passed": 0,
+          "median_ms": 1.5114999999999998,
+          "p95_ms": 12.235,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed": 12
+          },
+          "safe_unsupported": 12,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 0,
+          "tool_sequence_applicable": 12,
+          "amount_attempts": 12,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "south-zero-valid-authority",
+            "south-new-product-cache-key",
+            "north-zero-valid-authority",
+            "north-new-product-cache-key",
+            "north-new-product-cache-key",
+            "south-new-product-cache-key",
+            "south-zero-valid-authority",
+            "north-zero-valid-authority",
+            "north-new-product-cache-key",
+            "south-new-product-cache-key",
+            "south-zero-valid-authority",
+            "north-zero-valid-authority"
+          ]
+        },
+        "one_hop": {
+          "attempts": 12,
+          "passed": 12,
+          "median_ms": 3.792,
+          "p95_ms": 19.547,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 12,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed": 12
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_latest_bulletin → inspect_ledger → query": 6,
+            "find_titled_bulletin → inspect_ledger → query": 3,
+            "find_titled_bulletin → query": 3
+          },
+          "successful_observed_tool_diversity": 3,
+          "tool_sequence_correct": 12,
+          "tool_sequence_applicable": 12,
+          "amount_attempts": 12,
+          "verified_amount_answers": 12,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        }
+      },
+      "by_route": {
+        "fixed": {
+          "attempts": 78,
+          "passed": 36,
+          "median_ms": 2.5860000000000003,
+          "p95_ms": 17.923,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 15,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed": 78
+          },
+          "safe_unsupported": 42,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "query": 3,
+            "find_latest_bulletin → inspect_ledger → query": 6,
+            "find_titled_bulletin → inspect_ledger → query": 3,
+            "find_titled_bulletin → query": 3
+          },
+          "successful_observed_tool_diversity": 4,
+          "tool_sequence_correct": 39,
+          "tool_sequence_applicable": 78,
+          "amount_attempts": 54,
+          "verified_amount_answers": 15,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-cap-exclusive-end",
+            "south-cap-over-events-exclusive-end",
+            "south-next-order-inclusive-start",
+            "south-zero-valid-authority",
+            "cycle-self-referral",
+            "south-new-product-cache-key",
+            "south-title-latest-full-month",
+            "north-zero-valid-authority",
+            "east-three-referrals-original-order-inclusive-start",
+            "north-next-order-inclusive-start",
+            "north-latest-title-full-month",
+            "north-cap-over-events-exclusive-end",
+            "north-new-product-cache-key",
+            "east-three-referrals-full-month",
+            "north-latest-title-full-month",
+            "south-next-order-inclusive-start",
+            "north-next-order-inclusive-start",
+            "east-three-referrals-cap-exclusive-end",
+            "east-three-referrals-original-order-inclusive-start",
+            "north-new-product-cache-key",
+            "north-cap-over-events-exclusive-end",
+            "south-title-latest-full-month",
+            "east-three-referrals-full-month",
+            "cycle-self-referral",
+            "south-new-product-cache-key",
+            "south-zero-valid-authority",
+            "north-zero-valid-authority",
+            "south-cap-over-events-exclusive-end",
+            "north-new-product-cache-key",
+            "north-next-order-inclusive-start",
+            "south-title-latest-full-month",
+            "south-next-order-inclusive-start",
+            "east-three-referrals-full-month",
+            "east-three-referrals-cap-exclusive-end",
+            "south-new-product-cache-key",
+            "south-zero-valid-authority",
+            "north-latest-title-full-month",
+            "south-cap-over-events-exclusive-end",
+            "east-three-referrals-original-order-inclusive-start",
+            "north-zero-valid-authority",
+            "north-cap-over-events-exclusive-end",
+            "cycle-self-referral"
+          ]
+        }
+      }
+    },
+    "uniform": {
+      "overall": {
+        "attempts": 78,
+        "passed": 78,
+        "median_ms": 3.3145,
+        "p95_ms": 18.339,
+        "model_calls": 0,
+        "metered_model_calls": 0,
+        "tokens": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "sql_queries": 54,
+        "cache_hits": 0,
+        "cache_invalidated": 0,
+        "routes": {
+          "uniform": 78
+        },
+        "safe_unsupported": 0,
+        "replans": 0,
+        "validated_model_plan_sequences": {},
+        "validated_model_plan_diversity": 0,
+        "successful_observed_tool_sequences": {
+          "find_titled_bulletin → query": 3,
+          "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 15,
+          "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 9,
+          "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 15,
+          "find_titled_bulletin → inspect_ledger → query": 3,
+          "find_latest_bulletin → inspect_ledger → query": 6,
+          "query": 3
+        },
+        "successful_observed_tool_diversity": 7,
+        "tool_sequence_correct": 78,
+        "tool_sequence_applicable": 78,
+        "amount_attempts": 54,
+        "verified_amount_answers": 54,
+        "unexpected_amount_answers": 0,
+        "failed_cases": []
+      },
+      "by_round": {
+        "1": {
+          "attempts": 26,
+          "passed": 26,
+          "median_ms": 2.676,
+          "p95_ms": 18.339,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 18,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uniform": 26
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → query": 1,
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 5,
+            "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 3,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 5,
+            "find_titled_bulletin → inspect_ledger → query": 1,
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "query": 1
+          },
+          "successful_observed_tool_diversity": 7,
+          "tool_sequence_correct": 26,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 18,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "2": {
+          "attempts": 26,
+          "passed": 26,
+          "median_ms": 3.1725000000000003,
+          "p95_ms": 19.791,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 18,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uniform": 26
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 5,
+            "query": 1,
+            "find_titled_bulletin → inspect_ledger → query": 1,
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 5,
+            "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 3,
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "find_titled_bulletin → query": 1
+          },
+          "successful_observed_tool_diversity": 7,
+          "tool_sequence_correct": 26,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 18,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "3": {
+          "attempts": 26,
+          "passed": 26,
+          "median_ms": 4.8485,
+          "p95_ms": 12.804,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 18,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uniform": 26
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 5,
+            "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 3,
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 5,
+            "find_titled_bulletin → inspect_ledger → query": 1,
+            "query": 1,
+            "find_titled_bulletin → query": 1
+          },
+          "successful_observed_tool_diversity": 7,
+          "tool_sequence_correct": 26,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 18,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        }
+      },
+      "by_group": {
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "median_ms": 0.044,
+          "p95_ms": 0.128,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uniform": 6
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 6,
+          "tool_sequence_applicable": 6,
+          "amount_attempts": 0,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "direct": {
+          "attempts": 3,
+          "passed": 3,
+          "median_ms": 2.118,
+          "p95_ms": 12.804,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 3,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uniform": 3
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "query": 3
+          },
+          "successful_observed_tool_diversity": 1,
+          "tool_sequence_correct": 3,
+          "tool_sequence_applicable": 3,
+          "amount_attempts": 3,
+          "verified_amount_answers": 3,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "evidence_gap": {
+          "attempts": 18,
+          "passed": 18,
+          "median_ms": 1.4929999999999999,
+          "p95_ms": 4.348,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uniform": 18
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 18,
+          "tool_sequence_applicable": 18,
+          "amount_attempts": 0,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "multi_hop": {
+          "attempts": 27,
+          "passed": 27,
+          "median_ms": 5.051,
+          "p95_ms": 14.168,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 27,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uniform": 27
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 9,
+            "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 9,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 9
+          },
+          "successful_observed_tool_diversity": 3,
+          "tool_sequence_correct": 27,
+          "tool_sequence_applicable": 27,
+          "amount_attempts": 27,
+          "verified_amount_answers": 27,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "multi_hop_zero": {
+          "attempts": 12,
+          "passed": 12,
+          "median_ms": 7.390499999999999,
+          "p95_ms": 25.645,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 12,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uniform": 12
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 6,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 6
+          },
+          "successful_observed_tool_diversity": 2,
+          "tool_sequence_correct": 12,
+          "tool_sequence_applicable": 12,
+          "amount_attempts": 12,
+          "verified_amount_answers": 12,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "one_hop": {
+          "attempts": 12,
+          "passed": 12,
+          "median_ms": 2.7305,
+          "p95_ms": 29.73,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 12,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uniform": 12
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → query": 3,
+            "find_titled_bulletin → inspect_ledger → query": 3,
+            "find_latest_bulletin → inspect_ledger → query": 6
+          },
+          "successful_observed_tool_diversity": 3,
+          "tool_sequence_correct": 12,
+          "tool_sequence_applicable": 12,
+          "amount_attempts": 12,
+          "verified_amount_answers": 12,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        }
+      },
+      "by_route": {
+        "uniform": {
+          "attempts": 78,
+          "passed": 78,
+          "median_ms": 3.3145,
+          "p95_ms": 18.339,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 54,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uniform": 78
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → query": 3,
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 15,
+            "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 9,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 15,
+            "find_titled_bulletin → inspect_ledger → query": 3,
+            "find_latest_bulletin → inspect_ledger → query": 6,
+            "query": 3
+          },
+          "successful_observed_tool_diversity": 7,
+          "tool_sequence_correct": 78,
+          "tool_sequence_applicable": 78,
+          "amount_attempts": 54,
+          "verified_amount_answers": 54,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        }
+      }
+    },
+    "uncached": {
+      "overall": {
+        "attempts": 78,
+        "passed": 68,
+        "median_ms": 1851.4215,
+        "p95_ms": 2836.833,
+        "model_calls": 108,
+        "metered_model_calls": 108,
+        "tokens": {
+          "prompt_tokens": 35328,
+          "completion_tokens": 2827,
+          "total_tokens": 38155
+        },
+        "sql_queries": 44,
+        "cache_hits": 0,
+        "cache_invalidated": 0,
+        "routes": {
+          "replan": 42,
+          "planned": 24,
+          "uncached": 12
+        },
+        "safe_unsupported": 0,
+        "replans": 42,
+        "validated_model_plan_sequences": {
+          "find_titled_bulletin → inspect_ledger → query": 53,
+          "find_latest_bulletin → inspect_ledger → query": 51,
+          "query": 3,
+          "find_titled_bulletin → follow_references → inspect_ledger → query": 1
+        },
+        "validated_model_plan_diversity": 4,
+        "successful_observed_tool_sequences": {
+          "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 15,
+          "find_titled_bulletin → inspect_ledger → query": 3,
+          "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 14,
+          "find_latest_bulletin → inspect_ledger → query": 6,
+          "find_titled_bulletin → query": 3,
+          "query": 3
+        },
+        "successful_observed_tool_diversity": 6,
+        "tool_sequence_correct": 68,
+        "tool_sequence_applicable": 78,
+        "amount_attempts": 54,
+        "verified_amount_answers": 44,
+        "unexpected_amount_answers": 0,
+        "failed_cases": [
+          "east-three-referrals-full-month",
+          "east-three-referrals-cap-exclusive-end",
+          "east-three-referrals-original-order-inclusive-start",
+          "east-three-referrals-cap-exclusive-end",
+          "east-three-referrals-full-month",
+          "east-three-referrals-original-order-inclusive-start",
+          "east-three-referrals-cap-exclusive-end",
+          "north-cap-over-events-exclusive-end",
+          "east-three-referrals-full-month",
+          "east-three-referrals-original-order-inclusive-start"
+        ]
+      },
+      "by_round": {
+        "1": {
+          "attempts": 26,
+          "passed": 23,
+          "median_ms": 2057.6325,
+          "p95_ms": 3029.822,
+          "model_calls": 36,
+          "metered_model_calls": 36,
+          "tokens": {
+            "prompt_tokens": 11776,
+            "completion_tokens": 927,
+            "total_tokens": 12703
+          },
+          "sql_queries": 15,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "replan": 14,
+            "planned": 8,
+            "uncached": 4
+          },
+          "safe_unsupported": 0,
+          "replans": 14,
+          "validated_model_plan_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 18,
+            "find_latest_bulletin → inspect_ledger → query": 17,
+            "query": 1
+          },
+          "validated_model_plan_diversity": 3,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 5,
+            "find_titled_bulletin → inspect_ledger → query": 1,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 5,
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "find_titled_bulletin → query": 1,
+            "query": 1
+          },
+          "successful_observed_tool_diversity": 6,
+          "tool_sequence_correct": 23,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 15,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-full-month",
+            "east-three-referrals-cap-exclusive-end",
+            "east-three-referrals-original-order-inclusive-start"
+          ]
+        },
+        "2": {
+          "attempts": 26,
+          "passed": 23,
+          "median_ms": 1824.239,
+          "p95_ms": 2721.094,
+          "model_calls": 36,
+          "metered_model_calls": 36,
+          "tokens": {
+            "prompt_tokens": 11776,
+            "completion_tokens": 941,
+            "total_tokens": 12717
+          },
+          "sql_queries": 15,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "replan": 14,
+            "planned": 8,
+            "uncached": 4
+          },
+          "safe_unsupported": 0,
+          "replans": 14,
+          "validated_model_plan_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 18,
+            "find_latest_bulletin → inspect_ledger → query": 17,
+            "query": 1
+          },
+          "validated_model_plan_diversity": 3,
+          "successful_observed_tool_sequences": {
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 5,
+            "query": 1,
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 5,
+            "find_titled_bulletin → query": 1,
+            "find_titled_bulletin → inspect_ledger → query": 1,
+            "find_latest_bulletin → inspect_ledger → query": 2
+          },
+          "successful_observed_tool_diversity": 6,
+          "tool_sequence_correct": 23,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 15,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-cap-exclusive-end",
+            "east-three-referrals-full-month",
+            "east-three-referrals-original-order-inclusive-start"
+          ]
+        },
+        "3": {
+          "attempts": 26,
+          "passed": 22,
+          "median_ms": 1752.413,
+          "p95_ms": 2793.619,
+          "model_calls": 36,
+          "metered_model_calls": 36,
+          "tokens": {
+            "prompt_tokens": 11776,
+            "completion_tokens": 959,
+            "total_tokens": 12735
+          },
+          "sql_queries": 14,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "replan": 14,
+            "uncached": 4,
+            "planned": 8
+          },
+          "safe_unsupported": 0,
+          "replans": 14,
+          "validated_model_plan_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 17,
+            "find_latest_bulletin → inspect_ledger → query": 17,
+            "query": 1,
+            "find_titled_bulletin → follow_references → inspect_ledger → query": 1
+          },
+          "validated_model_plan_diversity": 4,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 5,
+            "query": 1,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 4,
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "find_titled_bulletin → inspect_ledger → query": 1,
+            "find_titled_bulletin → query": 1
+          },
+          "successful_observed_tool_diversity": 6,
+          "tool_sequence_correct": 22,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 14,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-cap-exclusive-end",
+            "north-cap-over-events-exclusive-end",
+            "east-three-referrals-full-month",
+            "east-three-referrals-original-order-inclusive-start"
+          ]
+        }
+      },
+      "by_group": {
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "median_ms": 0.0325,
+          "p95_ms": 0.047,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uncached": 6
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 6,
+          "tool_sequence_applicable": 6,
+          "amount_attempts": 0,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "direct": {
+          "attempts": 3,
+          "passed": 3,
+          "median_ms": 956.645,
+          "p95_ms": 1639.131,
+          "model_calls": 3,
+          "metered_model_calls": 3,
+          "tokens": {
+            "prompt_tokens": 954,
+            "completion_tokens": 27,
+            "total_tokens": 981
+          },
+          "sql_queries": 3,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "planned": 3
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {
+            "query": 3
+          },
+          "validated_model_plan_diversity": 1,
+          "successful_observed_tool_sequences": {
+            "query": 3
+          },
+          "successful_observed_tool_diversity": 1,
+          "tool_sequence_correct": 3,
+          "tool_sequence_applicable": 3,
+          "amount_attempts": 3,
+          "verified_amount_answers": 3,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "evidence_gap": {
+          "attempts": 18,
+          "passed": 18,
+          "median_ms": 1093.0835,
+          "p95_ms": 2763.477,
+          "model_calls": 15,
+          "metered_model_calls": 15,
+          "tokens": {
+            "prompt_tokens": 4878,
+            "completion_tokens": 398,
+            "total_tokens": 5276
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uncached": 6,
+            "planned": 9,
+            "replan": 3
+          },
+          "safe_unsupported": 0,
+          "replans": 3,
+          "validated_model_plan_sequences": {
+            "find_latest_bulletin → inspect_ledger → query": 6,
+            "find_titled_bulletin → inspect_ledger → query": 9
+          },
+          "validated_model_plan_diversity": 2,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 18,
+          "tool_sequence_applicable": 18,
+          "amount_attempts": 0,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "multi_hop": {
+          "attempts": 27,
+          "passed": 17,
+          "median_ms": 2199.07,
+          "p95_ms": 3029.822,
+          "model_calls": 54,
+          "metered_model_calls": 54,
+          "tokens": {
+            "prompt_tokens": 17730,
+            "completion_tokens": 1468,
+            "total_tokens": 19198
+          },
+          "sql_queries": 17,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "replan": 27
+          },
+          "safe_unsupported": 0,
+          "replans": 27,
+          "validated_model_plan_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 26,
+            "find_latest_bulletin → inspect_ledger → query": 27,
+            "find_titled_bulletin → follow_references → inspect_ledger → query": 1
+          },
+          "validated_model_plan_diversity": 3,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 9,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 8
+          },
+          "successful_observed_tool_diversity": 2,
+          "tool_sequence_correct": 17,
+          "tool_sequence_applicable": 27,
+          "amount_attempts": 27,
+          "verified_amount_answers": 17,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-full-month",
+            "east-three-referrals-cap-exclusive-end",
+            "east-three-referrals-original-order-inclusive-start",
+            "east-three-referrals-cap-exclusive-end",
+            "east-three-referrals-full-month",
+            "east-three-referrals-original-order-inclusive-start",
+            "east-three-referrals-cap-exclusive-end",
+            "north-cap-over-events-exclusive-end",
+            "east-three-referrals-full-month",
+            "east-three-referrals-original-order-inclusive-start"
+          ]
+        },
+        "multi_hop_zero": {
+          "attempts": 12,
+          "passed": 12,
+          "median_ms": 2387.185,
+          "p95_ms": 2836.833,
+          "model_calls": 24,
+          "metered_model_calls": 24,
+          "tokens": {
+            "prompt_tokens": 7878,
+            "completion_tokens": 622,
+            "total_tokens": 8500
+          },
+          "sql_queries": 12,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "replan": 12
+          },
+          "safe_unsupported": 0,
+          "replans": 12,
+          "validated_model_plan_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 12,
+            "find_latest_bulletin → inspect_ledger → query": 12
+          },
+          "validated_model_plan_diversity": 2,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 6,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 6
+          },
+          "successful_observed_tool_diversity": 2,
+          "tool_sequence_correct": 12,
+          "tool_sequence_applicable": 12,
+          "amount_attempts": 12,
+          "verified_amount_answers": 12,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "one_hop": {
+          "attempts": 12,
+          "passed": 12,
+          "median_ms": 1063.2765,
+          "p95_ms": 2416.993,
+          "model_calls": 12,
+          "metered_model_calls": 12,
+          "tokens": {
+            "prompt_tokens": 3888,
+            "completion_tokens": 312,
+            "total_tokens": 4200
+          },
+          "sql_queries": 12,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "planned": 12
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 6,
+            "find_latest_bulletin → inspect_ledger → query": 6
+          },
+          "validated_model_plan_diversity": 2,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 3,
+            "find_latest_bulletin → inspect_ledger → query": 6,
+            "find_titled_bulletin → query": 3
+          },
+          "successful_observed_tool_diversity": 3,
+          "tool_sequence_correct": 12,
+          "tool_sequence_applicable": 12,
+          "amount_attempts": 12,
+          "verified_amount_answers": 12,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        }
+      },
+      "by_route": {
+        "planned": {
+          "attempts": 24,
+          "passed": 24,
+          "median_ms": 1103.058,
+          "p95_ms": 2279.422,
+          "model_calls": 24,
+          "metered_model_calls": 24,
+          "tokens": {
+            "prompt_tokens": 7752,
+            "completion_tokens": 569,
+            "total_tokens": 8321
+          },
+          "sql_queries": 15,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "planned": 24
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 9,
+            "find_latest_bulletin → inspect_ledger → query": 12,
+            "query": 3
+          },
+          "validated_model_plan_diversity": 3,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 3,
+            "find_latest_bulletin → inspect_ledger → query": 6,
+            "find_titled_bulletin → query": 3,
+            "query": 3
+          },
+          "successful_observed_tool_diversity": 4,
+          "tool_sequence_correct": 24,
+          "tool_sequence_applicable": 24,
+          "amount_attempts": 15,
+          "verified_amount_answers": 15,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "replan": {
+          "attempts": 42,
+          "passed": 32,
+          "median_ms": 2246.1045000000004,
+          "p95_ms": 2840.832,
+          "model_calls": 84,
+          "metered_model_calls": 84,
+          "tokens": {
+            "prompt_tokens": 27576,
+            "completion_tokens": 2258,
+            "total_tokens": 29834
+          },
+          "sql_queries": 29,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "replan": 42
+          },
+          "safe_unsupported": 0,
+          "replans": 42,
+          "validated_model_plan_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 44,
+            "find_latest_bulletin → inspect_ledger → query": 39,
+            "find_titled_bulletin → follow_references → inspect_ledger → query": 1
+          },
+          "validated_model_plan_diversity": 3,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 15,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 14
+          },
+          "successful_observed_tool_diversity": 2,
+          "tool_sequence_correct": 32,
+          "tool_sequence_applicable": 42,
+          "amount_attempts": 39,
+          "verified_amount_answers": 29,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-full-month",
+            "east-three-referrals-cap-exclusive-end",
+            "east-three-referrals-original-order-inclusive-start",
+            "east-three-referrals-cap-exclusive-end",
+            "east-three-referrals-full-month",
+            "east-three-referrals-original-order-inclusive-start",
+            "east-three-referrals-cap-exclusive-end",
+            "north-cap-over-events-exclusive-end",
+            "east-three-referrals-full-month",
+            "east-three-referrals-original-order-inclusive-start"
+          ]
+        },
+        "uncached": {
+          "attempts": 12,
+          "passed": 12,
+          "median_ms": 0.11349999999999999,
+          "p95_ms": 3.343,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "uncached": 12
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 12,
+          "tool_sequence_applicable": 12,
+          "amount_attempts": 0,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        }
+      }
+    },
+    "auto": {
+      "overall": {
+        "attempts": 78,
+        "passed": 76,
+        "median_ms": 3.5805,
+        "p95_ms": 1870.133,
+        "model_calls": 19,
+        "metered_model_calls": 19,
+        "tokens": {
+          "prompt_tokens": 6333,
+          "completion_tokens": 458,
+          "total_tokens": 6791
+        },
+        "sql_queries": 52,
+        "cache_hits": 28,
+        "cache_invalidated": 0,
+        "routes": {
+          "cache": 28,
+          "fixed_fast": 15,
+          "replan": 5,
+          "auto": 21,
+          "planned": 9
+        },
+        "safe_unsupported": 0,
+        "replans": 5,
+        "validated_model_plan_sequences": {
+          "find_latest_bulletin → inspect_ledger → query": 8,
+          "find_titled_bulletin → follow_references → inspect_ledger → query": 2,
+          "follow_references → inspect_ledger → query": 3,
+          "find_titled_bulletin → inspect_ledger → query": 6
+        },
+        "validated_model_plan_diversity": 4,
+        "successful_observed_tool_sequences": {
+          "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 15,
+          "find_titled_bulletin → inspect_ledger → query": 3,
+          "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 7,
+          "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 15,
+          "find_latest_bulletin → inspect_ledger → query": 6,
+          "query": 3,
+          "find_titled_bulletin → query": 3
+        },
+        "successful_observed_tool_diversity": 7,
+        "tool_sequence_correct": 76,
+        "tool_sequence_applicable": 78,
+        "amount_attempts": 54,
+        "verified_amount_answers": 52,
+        "unexpected_amount_answers": 0,
+        "failed_cases": [
+          "east-three-referrals-full-month",
+          "east-three-referrals-cap-exclusive-end"
+        ]
+      },
+      "by_round": {
+        "1": {
+          "attempts": 26,
+          "passed": 25,
+          "median_ms": 2.9779999999999998,
+          "p95_ms": 1870.133,
+          "model_calls": 7,
+          "metered_model_calls": 7,
+          "tokens": {
+            "prompt_tokens": 2335,
+            "completion_tokens": 162,
+            "total_tokens": 2497
+          },
+          "sql_queries": 17,
+          "cache_hits": 9,
+          "cache_invalidated": 0,
+          "routes": {
+            "cache": 9,
+            "fixed_fast": 5,
+            "replan": 2,
+            "auto": 7,
+            "planned": 3
+          },
+          "safe_unsupported": 0,
+          "replans": 2,
+          "validated_model_plan_sequences": {
+            "find_latest_bulletin → inspect_ledger → query": 3,
+            "find_titled_bulletin → follow_references → inspect_ledger → query": 1,
+            "follow_references → inspect_ledger → query": 1,
+            "find_titled_bulletin → inspect_ledger → query": 2
+          },
+          "validated_model_plan_diversity": 4,
+          "successful_observed_tool_sequences": {
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 5,
+            "find_titled_bulletin → inspect_ledger → query": 1,
+            "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 2,
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 5,
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "query": 1,
+            "find_titled_bulletin → query": 1
+          },
+          "successful_observed_tool_diversity": 7,
+          "tool_sequence_correct": 25,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 17,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-full-month"
+          ]
+        },
+        "2": {
+          "attempts": 26,
+          "passed": 25,
+          "median_ms": 4.9395,
+          "p95_ms": 1774.444,
+          "model_calls": 7,
+          "metered_model_calls": 7,
+          "tokens": {
+            "prompt_tokens": 2335,
+            "completion_tokens": 177,
+            "total_tokens": 2512
+          },
+          "sql_queries": 17,
+          "cache_hits": 9,
+          "cache_invalidated": 0,
+          "routes": {
+            "cache": 9,
+            "auto": 7,
+            "planned": 3,
+            "fixed_fast": 5,
+            "replan": 2
+          },
+          "safe_unsupported": 0,
+          "replans": 2,
+          "validated_model_plan_sequences": {
+            "find_latest_bulletin → inspect_ledger → query": 3,
+            "find_titled_bulletin → inspect_ledger → query": 2,
+            "find_titled_bulletin → follow_references → inspect_ledger → query": 1,
+            "follow_references → inspect_ledger → query": 1
+          },
+          "validated_model_plan_diversity": 4,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 5,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 5,
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 2,
+            "query": 1,
+            "find_titled_bulletin → query": 1,
+            "find_titled_bulletin → inspect_ledger → query": 1
+          },
+          "successful_observed_tool_diversity": 7,
+          "tool_sequence_correct": 25,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 17,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-cap-exclusive-end"
+          ]
+        },
+        "3": {
+          "attempts": 26,
+          "passed": 26,
+          "median_ms": 3.205,
+          "p95_ms": 1318.812,
+          "model_calls": 5,
+          "metered_model_calls": 5,
+          "tokens": {
+            "prompt_tokens": 1663,
+            "completion_tokens": 119,
+            "total_tokens": 1782
+          },
+          "sql_queries": 18,
+          "cache_hits": 10,
+          "cache_invalidated": 0,
+          "routes": {
+            "replan": 1,
+            "cache": 10,
+            "fixed_fast": 5,
+            "auto": 7,
+            "planned": 3
+          },
+          "safe_unsupported": 0,
+          "replans": 1,
+          "validated_model_plan_sequences": {
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "follow_references → inspect_ledger → query": 1,
+            "find_titled_bulletin → inspect_ledger → query": 2
+          },
+          "validated_model_plan_diversity": 3,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 3,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 5,
+            "find_latest_bulletin → inspect_ledger → query": 2,
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 5,
+            "find_titled_bulletin → inspect_ledger → query": 1,
+            "find_titled_bulletin → query": 1,
+            "query": 1
+          },
+          "successful_observed_tool_diversity": 7,
+          "tool_sequence_correct": 26,
+          "tool_sequence_applicable": 26,
+          "amount_attempts": 18,
+          "verified_amount_answers": 18,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        }
+      },
+      "by_group": {
+        "clarification": {
+          "attempts": 6,
+          "passed": 6,
+          "median_ms": 0.025,
+          "p95_ms": 0.055,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "auto": 6
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 6,
+          "tool_sequence_applicable": 6,
+          "amount_attempts": 0,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "direct": {
+          "attempts": 3,
+          "passed": 3,
+          "median_ms": 1.316,
+          "p95_ms": 2.812,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 3,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed_fast": 3
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "query": 3
+          },
+          "successful_observed_tool_diversity": 1,
+          "tool_sequence_correct": 3,
+          "tool_sequence_applicable": 3,
+          "amount_attempts": 3,
+          "verified_amount_answers": 3,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "evidence_gap": {
+          "attempts": 18,
+          "passed": 18,
+          "median_ms": 1.7115,
+          "p95_ms": 1374.46,
+          "model_calls": 3,
+          "metered_model_calls": 3,
+          "tokens": {
+            "prompt_tokens": 990,
+            "completion_tokens": 72,
+            "total_tokens": 1062
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "auto": 15,
+            "planned": 3
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 3
+          },
+          "validated_model_plan_diversity": 1,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 18,
+          "tool_sequence_applicable": 18,
+          "amount_attempts": 0,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "multi_hop": {
+          "attempts": 27,
+          "passed": 25,
+          "median_ms": 8.608,
+          "p95_ms": 3145.4,
+          "model_calls": 10,
+          "metered_model_calls": 10,
+          "tokens": {
+            "prompt_tokens": 3360,
+            "completion_tokens": 246,
+            "total_tokens": 3606
+          },
+          "sql_queries": 25,
+          "cache_hits": 22,
+          "cache_invalidated": 0,
+          "routes": {
+            "cache": 22,
+            "replan": 5
+          },
+          "safe_unsupported": 0,
+          "replans": 5,
+          "validated_model_plan_sequences": {
+            "find_latest_bulletin → inspect_ledger → query": 5,
+            "find_titled_bulletin → follow_references → inspect_ledger → query": 2,
+            "follow_references → inspect_ledger → query": 3
+          },
+          "validated_model_plan_diversity": 3,
+          "successful_observed_tool_sequences": {
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 9,
+            "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 7,
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 9
+          },
+          "successful_observed_tool_diversity": 3,
+          "tool_sequence_correct": 25,
+          "tool_sequence_applicable": 27,
+          "amount_attempts": 27,
+          "verified_amount_answers": 25,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-full-month",
+            "east-three-referrals-cap-exclusive-end"
+          ]
+        },
+        "multi_hop_zero": {
+          "attempts": 12,
+          "passed": 12,
+          "median_ms": 481.047,
+          "p95_ms": 1474.372,
+          "model_calls": 6,
+          "metered_model_calls": 6,
+          "tokens": {
+            "prompt_tokens": 1983,
+            "completion_tokens": 140,
+            "total_tokens": 2123
+          },
+          "sql_queries": 12,
+          "cache_hits": 6,
+          "cache_invalidated": 0,
+          "routes": {
+            "cache": 6,
+            "planned": 6
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {
+            "find_latest_bulletin → inspect_ledger → query": 3,
+            "find_titled_bulletin → inspect_ledger → query": 3
+          },
+          "validated_model_plan_diversity": 2,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 6,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 6
+          },
+          "successful_observed_tool_diversity": 2,
+          "tool_sequence_correct": 12,
+          "tool_sequence_applicable": 12,
+          "amount_attempts": 12,
+          "verified_amount_answers": 12,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "one_hop": {
+          "attempts": 12,
+          "passed": 12,
+          "median_ms": 2.6265,
+          "p95_ms": 8.525,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 12,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed_fast": 12
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 3,
+            "find_latest_bulletin → inspect_ledger → query": 6,
+            "find_titled_bulletin → query": 3
+          },
+          "successful_observed_tool_diversity": 3,
+          "tool_sequence_correct": 12,
+          "tool_sequence_applicable": 12,
+          "amount_attempts": 12,
+          "verified_amount_answers": 12,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        }
+      },
+      "by_route": {
+        "auto": {
+          "attempts": 21,
+          "passed": 21,
+          "median_ms": 0.988,
+          "p95_ms": 7.084,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 0,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "auto": 21
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {},
+          "successful_observed_tool_diversity": 0,
+          "tool_sequence_correct": 21,
+          "tool_sequence_applicable": 21,
+          "amount_attempts": 0,
+          "verified_amount_answers": 0,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "cache": {
+          "attempts": 28,
+          "passed": 28,
+          "median_ms": 4.6899999999999995,
+          "p95_ms": 26.834,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 28,
+          "cache_hits": 28,
+          "cache_invalidated": 0,
+          "routes": {
+            "cache": 28
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 12,
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 12,
+            "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 4
+          },
+          "successful_observed_tool_diversity": 3,
+          "tool_sequence_correct": 28,
+          "tool_sequence_applicable": 28,
+          "amount_attempts": 28,
+          "verified_amount_answers": 28,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "fixed_fast": {
+          "attempts": 15,
+          "passed": 15,
+          "median_ms": 2.494,
+          "p95_ms": 8.525,
+          "model_calls": 0,
+          "metered_model_calls": 0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "sql_queries": 15,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "fixed_fast": 15
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {},
+          "validated_model_plan_diversity": 0,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 3,
+            "find_latest_bulletin → inspect_ledger → query": 6,
+            "query": 3,
+            "find_titled_bulletin → query": 3
+          },
+          "successful_observed_tool_diversity": 4,
+          "tool_sequence_correct": 15,
+          "tool_sequence_applicable": 15,
+          "amount_attempts": 15,
+          "verified_amount_answers": 15,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "planned": {
+          "attempts": 9,
+          "passed": 9,
+          "median_ms": 1113.508,
+          "p95_ms": 1474.372,
+          "model_calls": 9,
+          "metered_model_calls": 9,
+          "tokens": {
+            "prompt_tokens": 2973,
+            "completion_tokens": 212,
+            "total_tokens": 3185
+          },
+          "sql_queries": 6,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "planned": 9
+          },
+          "safe_unsupported": 0,
+          "replans": 0,
+          "validated_model_plan_sequences": {
+            "find_titled_bulletin → inspect_ledger → query": 6,
+            "find_latest_bulletin → inspect_ledger → query": 3
+          },
+          "validated_model_plan_diversity": 2,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 3,
+            "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 3
+          },
+          "successful_observed_tool_diversity": 2,
+          "tool_sequence_correct": 9,
+          "tool_sequence_applicable": 9,
+          "amount_attempts": 6,
+          "verified_amount_answers": 6,
+          "unexpected_amount_answers": 0,
+          "failed_cases": []
+        },
+        "replan": {
+          "attempts": 5,
+          "passed": 3,
+          "median_ms": 2187.444,
+          "p95_ms": 3502.699,
+          "model_calls": 10,
+          "metered_model_calls": 10,
+          "tokens": {
+            "prompt_tokens": 3360,
+            "completion_tokens": 246,
+            "total_tokens": 3606
+          },
+          "sql_queries": 3,
+          "cache_hits": 0,
+          "cache_invalidated": 0,
+          "routes": {
+            "replan": 5
+          },
+          "safe_unsupported": 0,
+          "replans": 5,
+          "validated_model_plan_sequences": {
+            "find_latest_bulletin → inspect_ledger → query": 5,
+            "find_titled_bulletin → follow_references → inspect_ledger → query": 2,
+            "follow_references → inspect_ledger → query": 3
+          },
+          "validated_model_plan_diversity": 3,
+          "successful_observed_tool_sequences": {
+            "find_titled_bulletin → find_latest_bulletin → find_titled_bulletin → query": 3
+          },
+          "successful_observed_tool_diversity": 1,
+          "tool_sequence_correct": 3,
+          "tool_sequence_applicable": 5,
+          "amount_attempts": 5,
+          "verified_amount_answers": 3,
+          "unexpected_amount_answers": 0,
+          "failed_cases": [
+            "east-three-referrals-full-month",
+            "east-three-referrals-cap-exclusive-end"
+          ]
+        }
+      }
+    }
+  },
+  "cache_warmup": {
+    "auto": {
+      "attempts": 6,
+      "passed": 6,
+      "median_ms": 1215.979,
+      "p95_ms": 1529.617,
+      "model_calls": 6,
+      "metered_model_calls": 6,
+      "tokens": {
+        "prompt_tokens": 1980,
+        "completion_tokens": 144,
+        "total_tokens": 2124
+      },
+      "sql_queries": 6,
+      "cache_hits": 0,
+      "cache_invalidated": 0,
+      "routes": {
+        "planned": 6
+      },
+      "safe_unsupported": 0,
+      "replans": 0,
+      "validated_model_plan_sequences": {
+        "find_latest_bulletin → inspect_ledger → query": 3,
+        "find_titled_bulletin → inspect_ledger → query": 3
+      },
+      "validated_model_plan_diversity": 2,
+      "successful_observed_tool_sequences": {
+        "find_titled_bulletin → find_latest_bulletin → inspect_ledger → query": 3,
+        "find_latest_bulletin → find_titled_bulletin → inspect_ledger → query": 3
+      },
+      "successful_observed_tool_diversity": 2,
+      "tool_sequence_correct": 6,
+      "tool_sequence_applicable": 6,
+      "amount_attempts": 6,
+      "verified_amount_answers": 6,
+      "unexpected_amount_answers": 0,
+      "failed_cases": []
+    }
+  }
+}
