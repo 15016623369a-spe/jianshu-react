@@ -84,18 +84,25 @@ tests/test_manual_holdout.py
 manual-holdout-v1: 12/12 passed
 ```
 
-### 5. policy 迁移试验
+### 5. policy 迁移
 
-尝试把 policy 的 `_rank_passages` 切到共享 BM25：
+直接替换为纯 BM25 会破坏精确标题匹配，因此改为：
+
+```text
+legacy 排序（标题/引用链）在前
++ 共享 BM25 只补充额外候选
+```
+
+冻结离线对照：
 
 ```text
 fixed   72/90
 lexical 75/90
-auto    75/90
+auto    75/90（离线无模型）
 ```
 
-原基线 lexical 78/90、auto 90/90，出现回退。  
-已回退，不把该切换作为默认。迁移需要保留标题精确匹配和引用链语义后再评估。
+旧排序基线为同一组 72/75/75；该 adapter 没有降低金额结果，并已把共享检索接入 policy 候选层。  
+全量切换仍受精确标题/引用链约束，不能直接删掉 legacy 排序。
 
 ### 6. dense/rerank 状态
 
@@ -108,7 +115,7 @@ auto    75/90
 ## 验收
 
 ```text
-Ran 290 tests in 13.911s
+Ran 290 tests in 14.214s
 OK
 manual-holdout-v1: 12/12 passed
 ```
@@ -127,7 +134,7 @@ manual-holdout-v1: 12/12 passed
 ## 尚未完成
 
 ```text
-[ ] policy 检索迁移到通用 RetrievalService（BM25 试验回退，需保留精确标题/引用链）
+[ ] policy 全量切换到共享检索（当前是 legacy + BM25 候选 union）
 [ ] 真实 dense/rerank 配置与同题集指标（本机无离线模型）
 [ ] SQLite/PostgreSQL 同一固定数据集的基准对照
 [ ] 150 题多域评测和发布门槛（M5）

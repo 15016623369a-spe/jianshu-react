@@ -9,6 +9,8 @@ from hashlib import sha256
 from pathlib import Path
 
 from app import hard_policy_data as rules
+from app.rag.models import DocumentMetadata, Passage
+from app.rag.service import RetrievalService
 
 _ROOT = Path(__file__).resolve().parents[1]
 _SUPPLEMENT = Path(__file__).with_name("investigation_corpus")
@@ -195,6 +197,43 @@ def _log_retrieval(
         })
 
 
+def _rank_policy_passages(passages: tuple[rules.TextPassage, ...], source: rules.PassageSource,
+                         query: str) -> list[rules.TextPassage]:
+    """Augment the legacy exact-title ranking with shared BM25 candidates.
+
+    The legacy order stays first so precise-title and reference-chain behavior is
+    preserved; BM25 only adds candidates that lexical overlap would miss.
+    """
+    legacy = rules._rank_passages(passages, source, query)
+    selected = [passage for passage in passages if passage.source == source]
+    if not selected:
+        return legacy
+    generic = tuple(
+        Passage(
+            document_id=f"{source}-{index}", version=None, title=passage.title, section=passage.title,
+            text=passage.quote, line_start=passage.line_start, line_end=passage.line_end,
+            metadata=DocumentMetadata(
+                document_id=f"{source}-{index}", title=passage.title, source=source,
+                attributes={"file": passage.file},
+            ), source_file=passage.file,
+        )
+        for index, passage in enumerate(selected)
+    )
+    hits = RetrievalService.from_passages(generic).search(query, top_k=len(generic))
+    by_key = {
+        (passage.title, passage.quote, passage.file, passage.line_start): passage
+        for passage in selected
+    }
+    merged = list(legacy)
+    seen = {(item.title, item.quote, item.file, item.line_start) for item in merged}
+    for hit in hits:
+        key = (hit.title, hit.quote, hit.source_file, hit.line_start)
+        if key not in seen and key in by_key:
+            merged.append(by_key[key])
+            seen.add(key)
+    return merged
+
+
 def _find_rule(
     snapshot: rules.DocumentSnapshot, product: str, category: str, region: str,
     start: date, end_exclusive: date, *, reference: dict | None = None, track: Callable[[dict], None] | None = None,
@@ -203,7 +242,7 @@ def _find_rule(
     title = reference["ref_title"] if reference else None
     topic = reference["ref_topic"] if reference else None
     query = f"{title or topic or ''} {product} {category} {region} 退款".strip()
-    matches = rules._rank_passages(snapshot.passages, source, query)
+    matches = _rank_policy_passages(snapshot.passages, source, query)
     filtered = [
         match for match in matches
         if (title is None or rules._normalize(match.title) == rules._normalize(title))
@@ -237,7 +276,7 @@ def _recover_title(
     # Check all explicitly linked, applicable candidates for conflicts before accepting any ranked result.
     verified = _select(candidates, "bulletin_conflict")
     if lexical:
-        matches = rules._rank_passages(snapshot.passages, "bulletin", title)
+        matches = _rank_policy_passages(snapshot.passages, "bulletin", title)
         identity = _citation(verified) if verified else None
         selected = verified if identity is not None and any(
             _citation(match) == identity for match in matches[:RETRIEVAL_TOP_K]
@@ -258,7 +297,7 @@ def _recover_title(
     if not isinstance(edited_query, str) or not 1 <= len(edited_query) <= _MAX_QUERY_LENGTH:
         return None
 
-    matches = rules._rank_passages(snapshot.passages, "bulletin", edited_query)
+    matches = _rank_policy_passages(snapshot.passages, "bulletin", edited_query)
     # In the model tier the rewritten query must independently retrieve the same source
     # whose applicability and textual link were checked above.
     title_terms = rules._terms(verified["title"])
