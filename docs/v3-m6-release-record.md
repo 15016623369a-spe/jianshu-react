@@ -81,6 +81,43 @@ dense/rerank 只通过 app.rag.dense / app.rag.rerank 显式导入
 
 重新构建后 API、UI、broker、gateway 全部 healthy，HTTPS 冒烟通过。
 
+## 镜像扫描
+
+命令：
+
+```bash
+docker scout cves jianshu-react-api:v3.0.0-rc3 --only-severity critical,high
+```
+
+初次：
+
+```text
+0 critical / 28 high
+pypdf 5.1.0 20 high
+openssl 6 high（无修复版本）
+wheel / jaraco-context / setuptools 各 1 high
+```
+
+升级后：
+
+```text
+pypdf 7.1.1
+pip 26.3
+setuptools 78.1.1
+wheel 0.48.0
+jaraco-context 6.1.2
+```
+
+当前扫描仍报：
+
+```text
+0 critical / 9 high
+6 openssl（Debian 尚无修复版本）
+3 Python build tool（镜像实际版本已升级，scanner 仍显示旧 dist-info）
+```
+
+结论：**镜像扫描尚未清零，OpenSSL 6 项需要目标环境风险接受或等待 Debian 修复；发布前必须归档扫描结论。**
+
 ## M6 基础能力
 
 ```text
@@ -99,7 +136,8 @@ dense/rerank 只通过 app.rag.dense / app.rag.rerank 显式导入
 [ ] 真实域名证书和外部访问范围
 [ ] 生产状态卷备份/恢复演练
 [ ] 回滚演练（rc2 ↔ 上一版镜像）
-[ ] 镜像扫描/容量
+[ ] 镜像扫描清零/风险接受（当前 0C/9H，6 项 openssl 无修复）
+[ ] 容量验收
 [ ] 三分钟演示录制
 [ ] v3.0.0 tag
 ```

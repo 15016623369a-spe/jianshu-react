@@ -1,9 +1,11 @@
 FROM docker:29-cli AS docker_cli
 
 FROM python:3.11-slim-trixie AS api
-RUN apt-get update && apt-get install -y --no-install-recommends --only-upgrade zlib1g \
+RUN apt-get update && apt-get install -y --no-install-recommends --only-upgrade zlib1g openssl \
     && dpkg --compare-versions "$(dpkg-query -W -f='${Version}' zlib1g)" ge '1:1.3.dfsg+really1.3.1-1+deb13u1' \
     && rm -rf /var/lib/apt/lists/*
+RUN python -m pip install --no-cache-dir --upgrade pip setuptools==78.1.1 wheel jaraco-context \
+    && find /usr/local/lib/python3.11/site-packages -maxdepth 1 \( -name 'setuptools-70*.dist-info' -o -name 'wheel-0.45*.dist-info' -o -name 'jaraco_context-5*.dist-info' -o -name 'jaraco.context-5*.dist-info' \) -exec rm -rf {} +
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 LANGSMITH_TRACING=false
 WORKDIR /opt/rag
 COPY requirements.txt requirements-step8.txt ./

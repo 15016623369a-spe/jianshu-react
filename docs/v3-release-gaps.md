@@ -76,7 +76,7 @@ M6 本地生产配置 HTTPS 冒烟：已通过
 [ ] 150 题 3 轮重复与方差
 [ ] 真实 CrossEncoder rerank 指标
 [ ] 结构化日志接入告警
-[ ] 镜像扫描/依赖审计
+[ ] 镜像扫描/依赖审计（当前 0C/9H，6 项 openssl 无修复）
 [ ] 生产模型配额/成本告警
 ```
 
@@ -91,7 +91,7 @@ M6 本地生产配置 HTTPS 冒烟：已通过
 [x] M5 延迟：正常 P95 4.45 ms，兜底 P95 1002.51 ms
 [x] M6 结构化日志和 /api/v3/metrics
 [x] M6 备份/恢复脚本和测试
-[x] M6 本地 HTTPS 双账号冒烟
+[x] M6 本地 HTTPS 双账号冒烟（v2 + v3）
 [x] 镜像 digest 记录（disposable smoke 镜像）
 ```
 
