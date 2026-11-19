@@ -74,7 +74,7 @@ GET /api/v3/status
 ## 验收
 
 ```text
-Ran 297 tests in 15.748s
+Ran 301 tests in 15.748s
 OK
 ```
 

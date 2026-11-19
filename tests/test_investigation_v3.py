@@ -163,6 +163,13 @@ class InvestigationV3Tests(unittest.TestCase):
             missing = client.post(INVESTIGATE, json={"domain": "retail", "question": "净营收是多少？"}).json()
             self.assertEqual((missing["kind"], missing["status"], missing["metrics"]["sql_queries"]), ("clarification", "clarification", 0))
 
+    def test_investigation_metrics_endpoint_is_owner_scoped(self):
+        with TestClient(app) as client:
+            client.post(INVESTIGATE, json={"domain": "retail", "question": "2026 年 10 月华南电水壶净营收是多少？"})
+            metrics = client.get("/api/v3/metrics").json()
+            self.assertGreaterEqual(metrics["total"], 1)
+            self.assertIn("domains", metrics)
+
     def test_domain_registry_is_exposed_for_v3_clients(self):
         with TestClient(app) as client:
             response = client.get("/api/v3/domains")

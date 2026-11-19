@@ -39,6 +39,7 @@ from app.investigation_v3 import (
 from app.retail_investigation import run_retail_investigation
 from app.multisource_data import prepare_multisource_database
 from app.multisource_workflow import MultiSourceMode, MultiSourceRequest, multisource_selector, run_multisource_workflow
+from app.observability import log_investigation
 from app.policy_documents import PolicyDocumentInput, PolicyDocumentLimit, PolicyDocumentMissing, PolicyDocumentStore
 from app.policy_documents_api import manual_router, router as policy_documents_router
 from app.policy_investigation import InvestigationMode, InvestigationRequest, run_policy_investigation
@@ -336,10 +337,12 @@ async def investigate_v3(
     result = await request.app.state.domains.handler(pack.name)(body, request, mode)
     data_version = result.get("document_version") or request.app.state.demo_data_version
     parent_id = getattr(body, "investigation_id", None)
-    return request.app.state.investigations.save(
+    record = request.app.state.investigations.save(
         request.state.owner, body.domain, body.question, result, data_version=data_version,
         parent_id=str(parent_id) if parent_id else None,
     )
+    log_investigation(record)
+    return record
 
 
 @app.get("/api/v3/status")
@@ -358,6 +361,11 @@ def v3_status(request: Request):
         "retrieval": "BM25 + metadata filters",
         "rerank": {"mode": rerank_mode(), "configured": rerank_configured()},
     }
+
+
+@app.get("/api/v3/metrics")
+def investigation_metrics(request: Request):
+    return request.app.state.investigations.summary(request.state.owner)
 
 
 @app.get("/api/v3/investigations")

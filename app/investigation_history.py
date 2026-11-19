@@ -96,6 +96,16 @@ class InvestigationHistory:
             raise InvestigationMissing
         return json.loads(row["result_json"])
 
+    def summary(self, owner: str) -> dict:
+        with closing(self._connect()) as connection:
+            rows = connection.execute(
+                "SELECT domain, status, COUNT(*) AS total FROM investigations WHERE owner = ? "
+                "GROUP BY domain, status ORDER BY domain, status",
+                (owner,),
+            ).fetchall()
+        return {"domains": [dict(row) for row in rows],
+                "total": sum(row["total"] for row in rows)}
+
     def list(self, owner: str, *, limit: int = 20, before: str | None = None) -> dict:
         limit = max(1, min(limit, _MAX_LIMIT))
         query = "SELECT result_json FROM investigations WHERE owner = ?"
