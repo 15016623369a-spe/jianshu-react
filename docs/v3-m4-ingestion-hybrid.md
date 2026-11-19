@@ -163,4 +163,4 @@ manual-holdout-v1: 12/12 passed
 
 ## 结论
 
-> **M4 先落地了“四种文档格式 + 可插拔混合检索接口”；默认仍是可解释、可回归的 BM25，dense/rerank 只有注入并评测后才启用。**
+> **M4 已落地四格式、共享 BM25 的 policy 全量排序、manual dense 对照、retail、manual 留出集和 SQLite/PostgreSQL 对照；只有 CrossEncoder rerank 真实指标受离线模型限制，150 题属于 M5。**
