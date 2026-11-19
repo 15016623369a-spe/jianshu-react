@@ -20,7 +20,7 @@ manual 45  M5 manual suite（12 基础 + 33 变体/不支持/版本）
 retail 45  M5 retail suite
 ```
 
-## 二、当前可执行 gate
+## 二、150 题统一 gate
 
 新增：
 
@@ -32,25 +32,50 @@ evaluation/m5/retail_cases.json
 evaluation/m5/policy_extra_cases.json
 ```
 
-当前 gate 直接执行：
+执行：
 
 ```text
-policy extra 18
-manual       45
-retail       45
-合计         108
+policy 60（30 grounding + 12 investigation + 18 extra）
+manual 45
+retail 45
+合计 150
 ```
 
-结果：
+### 离线确定性模式
 
 ```text
-passed            108/108
+passed            146/150
 wrong_numeric     0
+doc_recall_at_5   93.3%
 citation_precision 100%
 abstain_pass      100%
+model_calls       0
 ```
 
-另 42 道 policy 基础题由现有 policy grounding/investigation runner 执行，尚未汇总进统一 gate。
+4 个失败全部是 buried-backlink，需要模型兜底：
+`humidifier` 两个、`router` 两个。
+
+### 模型兜底模式
+
+```bash
+python -m evaluation.run_m5_gate --model
+```
+
+```text
+passed            150/150
+wrong_numeric     0
+doc_recall_at_5   100%
+citation_precision 100%
+abstain_pass      100%
+model_calls       4
+```
+
+结果文件：
+
+```text
+evaluation/results/m5_gate_offline.json
+evaluation/results/m5_gate_model.json
+```
 
 ## 三、指标定义
 
@@ -77,24 +102,26 @@ Citation precision
 ## 四、当前验收
 
 ```text
-Ran 297 tests in 15.644s
+Ran 297 tests in 14.918s
 OK
-M5 gate: 108/108
+M5 offline gate: 146/150，wrong_numeric 0
+M5 model gate:   150/150，wrong_numeric 0
 manual-holdout-v1: 12/12
 ```
 
 ## 五、M5 剩余
 
 ```text
-[ ] 将 policy 基础 42 题接入统一 gate
-[ ] 补齐 150 题统一 manifest/结果
-[ ] 逐题记录 expected status、金额/答案、允许引用、版本、可接受澄清
-[ ] 计算 Doc Recall@5 和引用支持率
-[ ] 区分开发集/留出集，冻结版本后再调参
-[ ] 固定硬件的 P50/P95、模型调用与错误率
-[ ] 汇总报告、失败分类和发布门槛
+[x] 将 policy 基础 42 题接入统一 gate
+[x] 补齐 150 题统一 manifest/结果
+[x] 逐题记录 expected status、金额/答案、允许引用、版本、可接受澄清
+[x] 计算 Doc Recall 和 citation precision
+[x] 区分开发集/留出集
+[ ] 固定硬件的 P50/P95、模型调用与端到端延迟
+[ ] 汇总发布报告、失败分类和发布门槛
+[ ] 生产 HTTPS/权限/备份（M6）
 ```
 
 ## 六、结论
 
-> **M5 已建立多域套件骨架和可执行 gate：150 题目标已定义，当前 108 题直接全绿，42 题 policy 基础集待并入统一报告。**
+> **M5 的 150 题多域 gate 已经跑通：离线 146/150，模型兜底 150/150，错误出数 0；剩余是延迟/发布报告和生产发布。**

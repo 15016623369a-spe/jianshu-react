@@ -35,8 +35,7 @@ _BASELINE = re.compile(
 _GOAL = re.compile(r"净营收|净销售额|净收入|(?:扣除|扣掉)退款后(?:的)?(?:销售额|营收|收入)")
 _MONTH_TOKEN = rf"(?:(?:20\d{{2}})\s*年\s*)?(?:{_MONTH_VALUE})\s*月(?:份)?"
 _DIRECTION = re.compile(
-    rf"(?:(?:比较|对比|相比)\s*(?P<left_a>{_MONTH_TOKEN})\s*(?:和|与|、)\s*(?P<right_a>{_MONTH_TOKEN}))"
-    rf"|(?:(?P<left_b>{_MONTH_TOKEN})\s*(?:比|较|相对)\s*(?P<right_b>{_MONTH_TOKEN}))"
+    rf"(?:(?P<left_b>{_MONTH_TOKEN})\s*(?:比|较|相对)\s*(?P<right_b>{_MONTH_TOKEN}))"
     rf"|(?:(?P<left_c>{_MONTH_TOKEN})\s*(?:减|减去)\s*(?P<right_c>{_MONTH_TOKEN}))"
 )
 _OUT_OF_SCOPE = re.compile(
@@ -153,8 +152,8 @@ def _direction_sign(text: str, dates: list[tuple[int, int]]) -> int:
     match = _DIRECTION.search(text)
     if match is None:
         return 1
-    left = next((match[name] for name in ("left_a", "left_b", "left_c") if match[name]), None)
-    right = next((match[name] for name in ("right_a", "right_b", "right_c") if match[name]), None)
+    left = next((match[name] for name in ("left_b", "left_c") if match[name]), None)
+    right = next((match[name] for name in ("right_b", "right_c") if match[name]), None)
     if left is None or right is None:
         return 1
     left_month, right_month = _month_of(left), _month_of(right)
