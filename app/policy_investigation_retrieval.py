@@ -10,6 +10,7 @@ from pathlib import Path
 
 from app import hard_policy_data as rules
 from app.rag.models import DocumentMetadata, Passage
+from app.rag.rerank import build_reranker
 from app.rag.service import RetrievalService
 
 _ROOT = Path(__file__).resolve().parents[1]
@@ -218,7 +219,7 @@ def _rank_policy_passages(passages: tuple[rules.TextPassage, ...], source: rules
         )
         for index, passage in enumerate(selected)
     )
-    hits = RetrievalService.from_passages(generic).search(query, top_k=len(generic))
+    hits = RetrievalService.from_passages(generic, reranker=build_reranker(generic)).search(query, top_k=len(generic))
     by_key = {
         (passage.title, passage.quote, passage.file, passage.line_start): passage
         for passage in selected

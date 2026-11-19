@@ -21,4 +21,6 @@ def render_system_status(api: str, headers: dict[str, str]) -> None:
     st.markdown("### 数据与索引")
     st.json(status.get("data_sources", {}))
     st.caption(f"检索：{status.get('retrieval', '—')}")
+    rerank = status.get("rerank") or {}
+    st.caption(f"Rerank：{rerank.get('mode', 'off')} · {'配置' if rerank.get('configured') else '关闭'}")
     st.caption("说明：模型不可用时，政策/手册的确定性路径仍会执行；只有模型补查会失败并返回可读原因。")

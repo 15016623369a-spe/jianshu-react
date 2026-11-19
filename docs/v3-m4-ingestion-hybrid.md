@@ -121,7 +121,27 @@ BM25   median 0.011 ms
 Dense  median 32.47 ms
 ```
 
-结论：当前数据规模下 BM25 已足够，dense 没有召回收益但延迟增加；因此默认仍用 BM25，dense 只在配置并评测后启用。CrossEncoderReranker 代码路径保留，未产生真实 rerank 指标。
+结论：当前数据规模下 BM25 已足够，dense 没有召回收益但延迟增加；因此默认仍用 BM25，dense 只在配置并评测后启用。
+
+### 8. rerank 开关
+
+新增环境配置：
+
+```dotenv
+RAG_RERANK_MODE=off        # off | embedding | on
+RAG_DENSE_MODEL=/path/to/bge-m3
+RAG_RERANK_MODEL=/path/to/cross-encoder
+```
+
+`embedding` 模式用本地 BGE-M3 对 BM25 候选做向量 rerank。manual 12 题 ×3 轮结果：
+
+```text
+Recall@1/3/5 = 100% / 100% / 100%
+median 0.020 ms（query embedding 缓存后）
+p95    33.18 ms
+```
+
+默认仍是 `off`。`on/cross` 模式需要实际的 CrossEncoder 模型；本机没有该模型，因此 CrossEncoder 指标未伪造。
 
 ### 7. 数据源
 
@@ -136,7 +156,7 @@ SQLite  = PostgreSQL（订单数、毛营收、退款、净营收）
 ## 验收
 
 ```text
-Ran 292 tests in 15.748s
+Ran 295 tests in 16.832s
 OK
 manual-holdout-v1: 12/12 passed
 ```

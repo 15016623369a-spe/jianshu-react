@@ -14,6 +14,7 @@ from app.hard_policy_data import PassageSource, TextPassage, _normalize, _passag
 from app.policy_documents import PinnedDocument
 from app.policy_investigation import InvestigationRequest
 from app.rag.models import DocumentMetadata, Evidence, Passage
+from app.rag.rerank import build_reranker
 from app.rag.service import RetrievalService
 
 _MANUAL_ROOT = Path(__file__).with_name("manual_corpus")
@@ -142,7 +143,7 @@ def run_manual_investigation(request: ManualInvestigationV3, document: PinnedDoc
         for item in passages
     )
     matching = [
-        hit for hit in RetrievalService.from_passages(indexed).search(question, top_k=5)
+        hit for hit in RetrievalService.from_passages(indexed, reranker=build_reranker(indexed)).search(question, top_k=5)
         if _matches_topic(question, hit)
     ]
     if not matching:

@@ -44,6 +44,7 @@ from app.policy_documents_api import manual_router, router as policy_documents_r
 from app.policy_investigation import InvestigationMode, InvestigationRequest, run_policy_investigation
 from app.policy_react import deepseek_policy_selector
 from app.rag.domains import default_registry
+from app.rag.rerank import rerank_configured, rerank_mode
 from app.policy_workflow import PolicyMode, PolicyRevenueRequest, run_policy_workflow
 from app.product_assistant import answer_data_turn
 from app.product_errors import chat_http_error, is_chat_request
@@ -355,6 +356,7 @@ def v3_status(request: Request):
         "history_available": True,
         "domains": state.domains.describe(),
         "retrieval": "BM25 + metadata filters",
+        "rerank": {"mode": rerank_mode(), "configured": rerank_configured()},
     }
 
 
