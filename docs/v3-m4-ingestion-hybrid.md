@@ -86,14 +86,9 @@ manual-holdout-v1: 12/12 passed
 
 ### 5. policy 迁移
 
-直接替换为纯 BM25 会破坏精确标题匹配，因此改为：
+policy 的候选排序已切换到共享 `RetrievalService` BM25；精确标题/主题过滤、日期边界、适用性校验和引用链仍在 policy 模块内。
 
-```text
-legacy 排序（标题/引用链）在前
-+ 共享 BM25 只补充额外候选
-```
-
-冻结离线对照：
+冻结离线对照（30 题 ×3）：
 
 ```text
 fixed   72/90
@@ -101,8 +96,8 @@ lexical 75/90
 auto    75/90（离线无模型）
 ```
 
-旧排序基线为同一组 72/75/75；该 adapter 没有降低金额结果，并已把共享检索接入 policy 候选层。  
-全量切换仍受精确标题/引用链约束，不能直接删掉 legacy 排序。
+旧排序基线为同一组 72/75/75；金额结果没有回退，首轮候选 Recall@5 为 87.2%–89.4%。  
+全量切换已完成；模型兜底模式只有在配置模型后才产生更高结果。
 
 ### 6. dense/rerank 状态
 
@@ -141,7 +136,7 @@ SQLite  = PostgreSQL（订单数、毛营收、退款、净营收）
 ## 验收
 
 ```text
-Ran 292 tests in 14.578s
+Ran 292 tests in 15.748s
 OK
 manual-holdout-v1: 12/12 passed
 ```

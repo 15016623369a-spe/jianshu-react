@@ -199,15 +199,14 @@ def _log_retrieval(
 
 def _rank_policy_passages(passages: tuple[rules.TextPassage, ...], source: rules.PassageSource,
                          query: str) -> list[rules.TextPassage]:
-    """Augment the legacy exact-title ranking with shared BM25 candidates.
+    """Rank policy passages through the shared BM25 service.
 
-    The legacy order stays first so precise-title and reference-chain behavior is
-    preserved; BM25 only adds candidates that lexical overlap would miss.
+    Exact title/topic filters and applicability/verification stay in this module;
+    only the ranking primitive is shared.
     """
-    legacy = rules._rank_passages(passages, source, query)
     selected = [passage for passage in passages if passage.source == source]
     if not selected:
-        return legacy
+        return []
     generic = tuple(
         Passage(
             document_id=f"{source}-{index}", version=None, title=passage.title, section=passage.title,
@@ -224,14 +223,8 @@ def _rank_policy_passages(passages: tuple[rules.TextPassage, ...], source: rules
         (passage.title, passage.quote, passage.file, passage.line_start): passage
         for passage in selected
     }
-    merged = list(legacy)
-    seen = {(item.title, item.quote, item.file, item.line_start) for item in merged}
-    for hit in hits:
-        key = (hit.title, hit.quote, hit.source_file, hit.line_start)
-        if key not in seen and key in by_key:
-            merged.append(by_key[key])
-            seen.add(key)
-    return merged
+    return [by_key[(hit.title, hit.quote, hit.source_file, hit.line_start)] for hit in hits
+            if (hit.title, hit.quote, hit.source_file, hit.line_start) in by_key]
 
 
 def _find_rule(
