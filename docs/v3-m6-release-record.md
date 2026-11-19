@@ -118,6 +118,20 @@ jaraco-context 6.1.2
 
 结论：**镜像扫描尚未清零，OpenSSL 6 项需要目标环境风险接受或等待 Debian 修复；发布前必须归档扫描结论。**
 
+## 并发探测
+
+```text
+4 workers / 24 requests
+  success 24，load_shed 0
+  P50 17.949 ms，P95 63.011 ms
+
+8 workers / 24 requests
+  success 22，load_shed 503 ×2
+  P50 27.971 ms，P95 39.632 ms
+```
+
+8 并发下的 503 是 `policy_slots` 有界拒绝，不是 5xx 崩溃。默认设计为最多 4 个并行调查。
+
 ## M6 基础能力
 
 ```text

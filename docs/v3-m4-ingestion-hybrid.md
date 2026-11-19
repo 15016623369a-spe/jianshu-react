@@ -156,7 +156,7 @@ SQLite  = PostgreSQL（订单数、毛营收、退款、净营收）
 ## 验收
 
 ```text
-Ran 301 tests in 16.806s
+Ran 301 tests in 15.639s
 OK
 manual-holdout-v1: 12/12 passed
 ```
