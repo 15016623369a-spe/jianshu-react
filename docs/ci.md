@@ -21,7 +21,7 @@ RAG_TEST_PYTHON=.venv/bin/python bash .github/scripts/run_checks.sh browser
 
 ## 夜间真模型
 
-`Nightly live model regression` 在默认分支每天北京时间 02:17 计划运行，也支持在 Actions 手动触发。仓库需要一个 `LLM_API_KEY` Actions secret。夜间跑产品 SQL 路径的 50 道 BIRD 开发题，并用真实模型重跑 30 个合成会话。确定性澄清和筛选照常由本地规则处理。
+`Nightly live model regression` 在默认分支每天北京时间 02:17 计划运行，也支持在 Actions 手动触发。配置 `LLM_API_KEY` Actions secret 后才会真正执行；未配置时只跑一次凭据检查并跳过回归，运行记录显示为跳过而不是失败。夜间跑产品 SQL 路径的 50 道 BIRD 开发题，并用真实模型重跑 30 个合成会话。确定性澄清和筛选照常由本地规则处理。
 
 BIRD 数据在运行时从固定官方快照下载并校验 SHA256。夜间顺序跑三遍同一组 50 题，每遍使用 3 个 worker。每批保留三个正确题数和三个 P95，验收取各自的中位数。题目变化按三次中至少两次答对的名单计算。对照冻结的产品开发集基准，并从最近五次成功运行中选取首份可比报告。
 

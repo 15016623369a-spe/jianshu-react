@@ -14,8 +14,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  credential:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - name: Check whether the nightly credential is configured
+        id: check
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: |
+          if [ -n "$LLM_API_KEY" ]; then
+            echo 'configured=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'configured=false' >> "$GITHUB_OUTPUT"
+            echo '::notice::LLM_API_KEY is not set, so the nightly live-model regression is skipped. Add the repository secret to enable it.'
+          fi
+
   regressions:
-    if: ${{ github.event_name == 'schedule' || (github.ref_type == 'branch' && github.ref_name == github.event.repository.default_branch) }}
+    needs: credential
+    if: ${{ needs.credential.outputs.configured == 'true' && (github.event_name == 'schedule' || (github.ref_type == 'branch' && github.ref_name == github.event.repository.default_branch)) }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
@@ -31,14 +50,6 @@ jobs:
       - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
         with:
           python-version: '3.11'
-      - name: Verify nightly credential is configured
-        env:
-          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
-        run: |
-          if [ -z "$LLM_API_KEY" ]; then
-            echo '::error::Set the LLM_API_KEY repository secret to enable the nightly model regression.'
-            exit 1
-          fi
       - run: python -m pip install -r requirements.txt -r requirements-step8.txt
       - name: Download up to five previous successful reports
         env:
