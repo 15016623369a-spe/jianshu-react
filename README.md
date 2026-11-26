@@ -237,3 +237,7 @@ docs/
 ## 来源
 
 从 [见数 Text2SQL Agent `43b151a`](https://github.com/15016623369a-spe/text2sql-agent/commit/43b151aa4505e3bb98acdfa19a30e8b6fceb2ccb) 派生，保留原有数据库问数、文件分析和批准流程，并在此基础上实现 V3 调查工作台。
+
+## 许可
+
+[MIT License](./LICENSE) © 2026 Jace Huang（黄晖杰）。
